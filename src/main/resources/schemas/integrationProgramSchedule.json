@@ -1,0 +1,30 @@
+{
+    "type": "object",
+    "$schema": "http://json-schema.org/draft-04/schema",
+    "title": "value",
+    "description": "Associate Program with the Schedule",
+    "properties": {
+        "programId": {
+            "type": "string",
+            "name": "programId"
+        },
+        "cronExpression": {
+            "type": "string",
+            "name": "cronExpression"
+        },
+        "description": {
+            "type": ["null", "string"],
+            "name": "description"
+        },
+        "configuration": {
+            "type": "object",
+            "name": "configuration",
+            "$ref": "integrationConfiguration.json"
+        }
+    },
+    "required": [
+        "programId",
+        "cronExpression",
+        "configuration"
+    ]
+}

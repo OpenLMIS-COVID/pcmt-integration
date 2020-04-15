@@ -1,0 +1,14 @@
+*~
+*.iml
+*.ipr
+*.iws
+.gradle/
+build/
+out/
+.idea/
+gradle/
+gradlew*
+.env
+.tx/
+node_modules/
+demo-data/*.sql

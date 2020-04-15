@@ -1,0 +1,15 @@
+{
+  "service": {
+    "Name": "pcmtintegration",
+    "Port": 8080,
+    "Tags": ["openlmis-service"]
+  },
+  "raml": "src/main/resources/api-definition.yaml",
+  "path": [
+    "pcmtintegration",
+    "pcmtintegration/docs",
+    "pcmtintegration/docs/<all>",
+    "pcmtintegration/webjars",
+    "pcmtintegration/webjars/<all>"
+  ]
+}

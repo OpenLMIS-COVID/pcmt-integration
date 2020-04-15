@@ -1,0 +1,17 @@
+version: "2"
+services:
+  pcmt-integration:
+    image: openlmis/dev:5.2
+    ports:
+      - "5005:5005"
+      - "8080:8080"
+    volumes:
+      - '.:/app'
+      - 'gradlecache:/gradle'
+    env_file: .env
+  db:
+    ports:
+      - "5432"
+volumes:
+  gradlecache:
+    external: false

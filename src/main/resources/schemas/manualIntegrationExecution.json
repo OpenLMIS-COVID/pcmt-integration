@@ -1,0 +1,28 @@
+{
+    "type": "object",
+    "$schema": "http://json-schema.org/draft-04/schema",
+    "title": "manualIntegrationExecution",
+    "description": "Manual integration execution",
+    "properties": {
+        "integrationId": {
+            "type": "string",
+            "name": "integrationId"
+        },
+        "facilityId": {
+            "type": "string",
+            "name": "facilityId"
+        },
+        "periodId": {
+            "type": "string",
+            "name": "periodId"
+        },
+        "description": {
+            "type": ["null", "string"],
+            "name": "description"
+        }
+    },
+    "required": [
+        "integrationId",
+        "periodId"
+    ]
+}

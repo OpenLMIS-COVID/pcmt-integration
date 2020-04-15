@@ -1,0 +1,259 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:1.5.21.RELEASE"
+    }
+}
+
+plugins {
+    id "org.flywaydb.flyway" version "4.2.0"
+    id "com.moowork.node" version "1.2.0"
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+apply plugin: 'checkstyle'
+apply plugin: 'jacoco'
+apply plugin: 'pmd'
+
+group = serviceGroup
+version = serviceVersion
+archivesBaseName = rootProject.name
+project.ext.buildTime = java.time.Instant.now().toString() // for versioning
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+}
+
+dependencies {
+    compile "org.springframework.boot:spring-boot-starter-data-jpa"
+    compile "org.springframework.boot:spring-boot-starter-data-rest"
+    compile "org.springframework.boot:spring-boot-starter-web"
+    compile "org.springframework.security.oauth:spring-security-oauth2"
+
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-hibernate4"
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
+
+    compile "org.postgresql:postgresql:42.2.6"
+    compile 'org.hibernate:hibernate-java8'
+    compile 'org.flywaydb:flyway-core:4.1.2'
+
+    compile "org.projectlombok:lombok:1.18.8"
+
+    compile "org.slf4j:slf4j-ext:1.7.26"
+
+    compile 'commons-io:commons-io:2.6'
+    compile 'org.apache.commons:commons-collections4:4.3'
+    compile 'org.apache.commons:commons-csv:1.7'
+    compile 'org.apache.commons:commons-lang3:3.9'
+
+    compile 'org.javers:javers-spring-boot-starter-sql:2.8.1'
+
+    compile 'org.openlmis:openlmis-service-util:3.1.0'
+
+    compile 'org.webjars.npm:api-console:3.0.17'
+
+    compile 'ca.uhn.hapi.fhir:hapi-fhir-client:3.7.0'
+    compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:3.7.0'
+
+    testCompile "org.springframework.boot:spring-boot-starter-test"
+    testCompile "org.springframework:spring-test"
+
+    testCompile "junit:junit"
+    testCompile "org.mockito:mockito-core:1.+"
+
+    testCompile "com.github.tomakehurst:wiremock:1.58"
+
+    testCompile "com.jayway.restassured:rest-assured:2.7.0"
+    testCompile "guru.nidi.raml:raml-tester:0.8.9"
+
+    testCompile "org.powermock:powermock-api-mockito:1.7.+"
+    testCompile "org.powermock:powermock-module-junit4:1.7.+"
+
+    testCompile "nl.jqno.equalsverifier:equalsverifier:2.4"
+    testCompile "be.joengenduvel.java.verifiers:to-string:1.0.2"
+}
+
+idea {
+    project {
+        vcs = 'Git'
+        ipr.withXml { xmlFile ->
+            // enable 'Annotation Processors', source: https://gist.github.com/stephanos/8645809
+            xmlFile.asNode().component
+                    .find { it.@name == 'CompilerConfiguration' }['annotationProcessing'][0]
+                    .replaceNode {
+                annotationProcessing {
+                    profile(default: true, name: 'Default', useClasspath: 'true', enabled: true)
+                }
+            }
+        }
+    }
+}
+
+flyway {
+    url = "$System.env.DATABASE_URL"
+    user = "$System.env.POSTGRES_USER"
+    password = "$System.env.POSTGRES_PASSWORD"
+    schemas = ['pcmtintegration']
+    sqlMigrationPrefix = ''
+    placeholderPrefix = '#['
+    placeholderSuffix = ']'
+}
+
+sourceSets {
+    integrationTest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/integration-test/java')
+        }
+        resources.srcDir file('src/integration-test/resources')
+    }
+}
+
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
+}
+
+task flywayTest(type: Test) {
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat = 'full'
+    }
+
+    include '**/migration/**'
+}
+
+task integrationTest(type: Test) {
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat = 'full'
+    }
+    mustRunAfter test
+    environment 'BASE_URL', "http://localhost"
+
+    exclude '**/migration/**'
+}
+
+flywayTest.mustRunAfter integrationTest
+
+tasks.withType(Test) {
+    reports.html.destination = file("${reporting.baseDir}/${name}")
+    reports.junitXml.destination = file("${testResultsDir}/${name}")
+}
+
+// Usage: gradle generateMigration [-PmigrationName=name_of_migration]
+//          Defaults to 'migration' as migration name
+// Example: gradle generateMigration -PmigrationName=add_column_to_users
+//          Will create a file in migration folder with name yyyyMMddHHmmssSSS_add_column_to_users.sql.
+task generateMigration {
+    description 'Creates an empty new file within the src/main/resources/db/migration directory into which developers can add new SQL migration code.'
+    doLast {
+        def fileName = project.hasProperty('migrationName') ? migrationName : 'migration'
+        def timestamp = new Date().format('yyyyMMddHHmmssSSS', TimeZone.getTimeZone('GMT'))
+        def fullFileName = "${timestamp}__${fileName}.sql"
+        def migrationFile = new File(sourceSets.main.resources.srcDirs.first(), 'db/migration/' + fullFileName)
+        migrationFile << "-- WHEN COMMITTING OR REVIEWING THIS FILE: Make sure that the timestamp in the file name (that serves as a version) is the latest timestamp, and that no new migration have been added in the meanwhile.\n"
+        migrationFile << "-- Adding migrations out of order may cause this migration to never execute or behave in an unexpected way.\n"
+        migrationFile << "-- Migrations should NOT BE EDITED. Add a new migration to apply changes."
+        migrationFile.createNewFile()
+    }
+}
+
+
+task checkApiIsRaml(type:Exec) {
+    executable "raml-cop"
+    args "src/main/resources/api-definition.yaml"
+}
+
+configure(checkApiIsRaml) {
+    group = JavaBasePlugin.VERIFICATION_GROUP
+    description = 'Verify that the api-specification is valid RAML'
+}
+
+jacocoTestReport {
+    group = "reporting"
+    description = "Generate Jacoco coverage reports after running tests."
+    reports {
+        xml.enabled false
+        html.enabled true
+        csv.enabled false
+    }
+
+    additionalSourceDirs = files(sourceSets.main.allJava.srcDirs)
+}
+
+checkstyle {
+    toolVersion = "8.12"
+}
+
+pmd {
+    toolVersion = '5.4.0'
+    consoleOutput= true
+    ignoreFailures = false
+    ruleSetFiles = files("config/pmd/ruleset.xml")
+    reportsDir = file("build/reports/pmd")
+}
+
+tasks.withType(Pmd){
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
+}
+
+
+test {
+    testLogging {
+        events 'started', 'passed'
+        exceptionFormat = 'full'
+    }
+}
+
+apply from: "documentation.gradle"
+integrationTest {
+    dependsOn ramlToHtml
+}
+
+processResources {
+    // we want the generated HTML spec file included in the output jar
+    finalizedBy ramlToHtml
+
+    // update version information in build
+    filesMatching('**/version.properties') {
+        expand(project.properties)
+    }
+}
+
+apply from: "registration.gradle"
+
+assemble {
+    dependsOn ramlToHtml
+    dependsOn copyRamlHtmlToBuild
+    dependsOn copyConsulRegistrationToBuild
+    dependsOn jacocoTestReport
+}
+
+check {
+    dependsOn ramlToHtml
+    dependsOn copyRamlHtmlToBuild
+    dependsOn integrationTest
+    dependsOn copyConsulRegistrationToBuild
+}
+
+build {
+    dependsOn jacocoTestReport
+    dependsOn check
+}
