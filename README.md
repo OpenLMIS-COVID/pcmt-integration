@@ -1,1 +1,1 @@
-# cov-pcmt-integration
+# pcmt-integration
