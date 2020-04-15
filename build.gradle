@@ -79,6 +79,8 @@ dependencies {
 
     testCompile "nl.jqno.equalsverifier:equalsverifier:2.4"
     testCompile "be.joengenduvel.java.verifiers:to-string:1.0.2"
+
+    testCompile 'org.awaitility:awaitility:4.0.1'
 }
 
 idea {

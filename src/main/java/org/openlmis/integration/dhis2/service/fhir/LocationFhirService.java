@@ -29,20 +29,40 @@ public class LocationFhirService extends BaseFhirService<Location> {
     super(Location.class);
   }
 
+  /**
+   * Find a location with id.
+   */
   public Location getLocation(String id) {
-    return getResource(id);
+    log().debug("Get location with id {}", id);
+    Location resource = getResource(id);
+
+    if (null == resource) {
+      log().warn("Can't find location with id {}", id);
+    } else {
+      log().debug("Found location with id {}", id);
+    }
+
+    return resource;
   }
 
   /**
    * Finds location by identifier.
    */
   public Location findByIdentifier(String system, String value) {
+    log().debug("Try to find location with identifier with system {} and value {}", system, value);
     Bundle bundle = searchResources()
         .where(Location.IDENTIFIER.exactly().systemAndValues(system, value))
         .execute();
 
     List<BundleEntryComponent> entries = bundle.getEntry();
-    return CollectionUtils.isEmpty(entries) ? null : (Location) entries.get(0).getResource();
+
+    if (CollectionUtils.isEmpty(entries)) {
+      log().warn("Can't find location with identifier with system {} and value {}", system, value);
+      return null;
+    }
+
+    log().debug("Found location with identifier with system {} and value {}", system, value);
+    return (Location) entries.get(0).getResource();
   }
 
 }

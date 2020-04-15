@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 
 /**
@@ -51,5 +53,12 @@ final class Payload {
     this.reportingPeriod = reportingPeriod.format(REPORTING_PERIOD_FORMATTER);
   }
 
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
+        .append("description", description)
+        .append("reportingPeriod", reportingPeriod)
+        .toString();
+  }
 }
 

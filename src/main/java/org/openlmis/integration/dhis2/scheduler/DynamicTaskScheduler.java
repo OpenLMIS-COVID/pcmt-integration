@@ -81,6 +81,12 @@ public class DynamicTaskScheduler implements SchedulingConfigurer {
       LOGGER.warn("Auto sending data is disabled");
       return;
     }
+
+    LOGGER.info("Destroying current cron tasks");
+    taskRegistrar.destroy();
+    LOGGER.info("Destroyed current cron tasks");
+
+    LOGGER.info("Create new cron tasks");
     List<CronTask> tasks = integrationRepository
         .findAll()
         .stream()
@@ -90,8 +96,8 @@ public class DynamicTaskScheduler implements SchedulingConfigurer {
         .map(this::createTask)
         .collect(Collectors.toList());
 
-    taskRegistrar.destroy();
     taskRegistrar.setCronTasksList(tasks);
+    LOGGER.info("Set new cron tasks");
 
     if (!initialization) {
       // when the service is initialized by spring the following method does not need to be call
@@ -102,6 +108,10 @@ public class DynamicTaskScheduler implements SchedulingConfigurer {
   }
 
   private CronTask createTask(Map.Entry<String, List<Integration>> entry) {
+    LOGGER.info(
+        "Create task for >{}< cron expression (integration count: {})",
+        entry.getKey(), entry.getValue().size());
+
     CronTrigger trigger = new CronTrigger(entry.getKey(), timeZone);
     Runnable task = () -> sendData(entry.getValue());
 
@@ -127,15 +137,26 @@ public class DynamicTaskScheduler implements SchedulingConfigurer {
    * Place for init tasks.
    */
   private void sendData(List<Integration> integrations) {
-    LocalDate now = LocalDate.now(clock).minusMonths(1);
-    LocalDate startDate = now.with(TemporalAdjusters.firstDayOfMonth());
-    LocalDate endDate = now.with(TemporalAdjusters.lastDayOfMonth());
+    LOGGER.debug("Send data for {} integrations", integrations.size());
+
+    LocalDate now = LocalDate.now(clock);
+    LocalDate nowMinusMonth = now.minusMonths(1);
+    LocalDate startDate = nowMinusMonth.with(TemporalAdjusters.firstDayOfMonth());
+    LocalDate endDate = nowMinusMonth.with(TemporalAdjusters.lastDayOfMonth());
+
+    LOGGER.debug("Current date: {}", now);
+    LOGGER.trace("Previous date: {}", nowMinusMonth);
+    LOGGER.trace("First day of month: {}", startDate);
+    LOGGER.trace("Last day of month: {}", endDate);
 
     ProcessingPeriodDto period = periodReferenceDataService.search(startDate, endDate).get(0);
+    LOGGER.info("Retrieved period: {}", period.getName());
 
     for (Integration integration : integrations) {
       sendData(integration, period);
     }
+
+    LOGGER.debug("Sent data for {} integrations", integrations.size());
   }
 
   private void sendData(Integration integration, ProcessingPeriodDto period) {

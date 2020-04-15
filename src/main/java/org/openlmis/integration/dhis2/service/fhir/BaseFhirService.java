@@ -27,6 +27,8 @@ import org.hl7.fhir.instance.model.api.IBaseBundle;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Bundle;
 import org.openlmis.integration.dhis2.service.auth.AuthService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,6 +49,8 @@ abstract class BaseFhirService<T extends IBaseResource> implements InitializingB
   @Autowired
   private AuthService authService;
 
+  private Logger logger;
+
   private IGenericClient client;
   private CacheControlDirective cacheControl;
 
@@ -54,6 +58,7 @@ abstract class BaseFhirService<T extends IBaseResource> implements InitializingB
 
   BaseFhirService(Class<T> resourceClass) {
     this.resourceClass = resourceClass;
+    this.logger = LoggerFactory.getLogger(getClass());
   }
 
   @Override
@@ -68,7 +73,10 @@ abstract class BaseFhirService<T extends IBaseResource> implements InitializingB
     client = clientFactory.newGenericClient(fhirUrl);
 
     if (loggingEnable) {
-      client.registerInterceptor(new LoggingInterceptor(loggingVerbose));
+      LoggingInterceptor loggingInterceptor = new LoggingInterceptor(loggingVerbose);
+      loggingInterceptor.setLogger(logger);
+
+      client.registerInterceptor(loggingInterceptor);
     }
 
     client.registerInterceptor(new DynamicBearerTokenAuthInterceptor(authService));
@@ -92,6 +100,10 @@ abstract class BaseFhirService<T extends IBaseResource> implements InitializingB
         .cacheControl(cacheControl)
         .count(100)
         .returnBundle(Bundle.class);
+  }
+
+  Logger log() {
+    return logger;
   }
 
   void forEachBundle(Bundle bundle, Consumer<Bundle> action) {

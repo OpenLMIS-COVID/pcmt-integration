@@ -47,6 +47,10 @@ public class MeasureReportFhirService extends BaseFhirService<MeasureReport> {
         .map(item -> item.getIdElement().getIdPart())
         .collect(Collectors.toSet());
 
+    log().debug(
+        "Try to find measure reports for measures {}, period {} {} and location {}",
+        measuresById, startDate, endDate, locationId);
+
     IQuery<Bundle> query = searchResources()
         .where(MeasureReport
             .PERIOD
@@ -72,6 +76,8 @@ public class MeasureReportFhirService extends BaseFhirService<MeasureReport> {
     Set<MeasureReport> reports = Sets.newHashSet();
     forEachBundle(bundle, page -> reports.addAll(getReports(page)));
 
+    log().debug("Found {} measure reports for measures {}, period {} {} and location {}",
+        reports.size(), measuresById, startDate, endDate, locationId);
     return reports;
   }
 

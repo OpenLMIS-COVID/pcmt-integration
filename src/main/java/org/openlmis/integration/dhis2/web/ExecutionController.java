@@ -72,15 +72,13 @@ public class ExecutionController extends BaseController {
 
   @Autowired
   private AuthenticationHelper authenticationHelper;
+
   /**
    * This method is used to manual trigger Integration.
-   *
    */
-
   @PostMapping
   @ResponseStatus(HttpStatus.ACCEPTED)
-  public void runManualIntegration(
-      @RequestBody ManualIntegrationDto manualIntegrationDto) {
+  public void runManualIntegration(@RequestBody ManualIntegrationDto manualIntegrationDto) {
     permissionService.canManageDhis2();
 
     Integration integration = integrationRepository

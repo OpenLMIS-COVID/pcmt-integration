@@ -26,6 +26,14 @@ schemas:
   - manualIntegrationExecution: !include schemas/manualIntegrationExecution.json
   - integrationExecutionPage: !include schemas/integrationExecutionPage.json
   - integrationExecution: !include schemas/integrationExecution.json
+
+  - integrationExecutionQueueItem: !include schemas/integrationExecutionQueueItem.json
+  - integrationExecutionQueue: |
+      {
+          "type": "array",
+          "items": { "type": "object", "$ref": "integrationExecutionQueueItem" }
+      }
+
   - integrationConfiguration: !include schemas/integrationConfiguration.json
   - integrationConfigurationPage: !include schemas/integrationConfigurationPage.json
   - integrationProgramSchedule: !include schemas/integrationProgramSchedule.json
@@ -220,6 +228,22 @@ resourceTypes:
               body:
                 application/json:
                   schema: localizedErrorResponse
+  /integrationExecutionQueue:
+    get:
+      is: [ secured ]
+      description: Get executions from the execution queue.
+      responses:
+        200:
+          body:
+            application/json:
+              schema: integrationExecutionQueue
+        401:
+          body:
+            application/json:
+        403:
+          body:
+            application/json:
+              schema: localizedErrorResponse
   /integrationConfigurations:
     displayName: integrationConfigurations
     get:

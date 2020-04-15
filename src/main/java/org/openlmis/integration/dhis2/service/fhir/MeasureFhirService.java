@@ -37,6 +37,7 @@ public class MeasureFhirService extends BaseFhirService<Measure> {
    * Retrieve measures for given names.
    */
   public Set<Measure> getMeasures(Collection<String> names) {
+    log().debug("Try to find measures with names {}", names);
     Bundle bundle = searchResources()
         .where(Measure.NAME.matchesExactly().values(Lists.newArrayList(names)))
         .execute();
@@ -44,6 +45,7 @@ public class MeasureFhirService extends BaseFhirService<Measure> {
     Set<Measure> measures = Sets.newHashSet();
     forEachBundle(bundle, page -> measures.addAll(getMeasures(page)));
 
+    log().debug("Found {} measures for names {}", measures.size(), names);
     return measures;
   }
 
