@@ -18,7 +18,6 @@ project settings and credentials. For a starter environment file, you can use [t
  cd pcmt-integration
  curl -o .env -L https://raw.githubusercontent.com/OpenLMIS/openlmis-ref-distro/master/settings-sample.env
  ```
-#### Enable auto-sending payload data 
 To enable auto-sending data, you have to set variable `PCMT_INTEGRATION_ENABLED` to `true` in .env file. 
 
 
