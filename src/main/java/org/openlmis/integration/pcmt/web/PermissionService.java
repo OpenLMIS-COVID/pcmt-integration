@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service;
 @Service
 class PermissionService {
 
-  private static final String PCMT_MANAGEMENT = "DHIS2_MANAGEMENT";
+  private static final String PCMT_MANAGEMENT = "PCMT_MANAGEMENT";
 
   @Autowired
   private AuthenticationHelper authenticationHelper;
