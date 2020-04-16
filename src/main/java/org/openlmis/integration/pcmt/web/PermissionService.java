@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service;
 @Service
 class PermissionService {
 
-  private static final String DHIS_2_MANAGEMENT = "DHIS2_MANAGEMENT";
+  private static final String PCMT_MANAGEMENT = "DHIS2_MANAGEMENT";
 
   @Autowired
   private AuthenticationHelper authenticationHelper;
@@ -41,9 +41,9 @@ class PermissionService {
   @Value("${auth.server.olmisClientId}")
   private String serviceTokenClientId;
 
-  void canManageDhis2() {
-    if (hasNoPermission(DHIS_2_MANAGEMENT, true)) {
-      throw new MissingPermissionException(DHIS_2_MANAGEMENT);
+  void canManagePcmt() {
+    if (hasNoPermission(PCMT_MANAGEMENT, true)) {
+      throw new MissingPermissionException(PCMT_MANAGEMENT);
     }
   }
 
