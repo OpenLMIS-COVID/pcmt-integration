@@ -82,7 +82,7 @@ public class ExecutionControllerIntegrationTest extends BaseWebIntegrationTest {
 
     given(authenticationHelper.getCurrentUser()).willReturn(userDto);
 
-    willDoNothing().given(permissionService).canManageDhis2();
+    willDoNothing().given(permissionService).canManagePcmt();
   }
 
   // GET /integrationExecutions
@@ -308,7 +308,7 @@ public class ExecutionControllerIntegrationTest extends BaseWebIntegrationTest {
   private void disablePermission() {
     willThrow(new MissingPermissionException("permission"))
         .given(permissionService)
-        .canManageDhis2();
+        .canManagePcmt();
   }
 
   private ManualIntegrationDto generateRequestBody() {

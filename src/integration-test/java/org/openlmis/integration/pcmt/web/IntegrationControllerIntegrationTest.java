@@ -65,7 +65,7 @@ public class IntegrationControllerIntegrationTest extends BaseWebIntegrationTest
 
     integration.export(integrationDto);
 
-    willDoNothing().given(permissionService).canManageDhis2();
+    willDoNothing().given(permissionService).canManagePcmt();
   }
 
   // GET /integrationProgramSchedules
@@ -433,7 +433,7 @@ public class IntegrationControllerIntegrationTest extends BaseWebIntegrationTest
   private void disablePermission() {
     willThrow(new MissingPermissionException("permission"))
         .given(permissionService)
-        .canManageDhis2();
+        .canManagePcmt();
   }
 
 }

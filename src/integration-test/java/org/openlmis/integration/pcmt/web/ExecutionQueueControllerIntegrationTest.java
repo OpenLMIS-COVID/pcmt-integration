@@ -37,7 +37,7 @@ public class ExecutionQueueControllerIntegrationTest extends BaseWebIntegrationT
    */
   @Before
   public void setUp() {
-    willDoNothing().given(permissionService).canManageDhis2();
+    willDoNothing().given(permissionService).canManagePcmt();
   }
 
   // GET /integrationExecutionQueue
@@ -72,7 +72,7 @@ public class ExecutionQueueControllerIntegrationTest extends BaseWebIntegrationT
   private void disablePermission() {
     willThrow(new MissingPermissionException("permission"))
         .given(permissionService)
-        .canManageDhis2();
+        .canManagePcmt();
   }
 
 }

@@ -380,7 +380,7 @@ public class ConfigurationControllerIntegrationTest extends BaseWebIntegrationTe
   private void disablePermission() {
     willThrow(new MissingPermissionException("permission"))
         .given(permissionService)
-        .canManageDhis2();
+        .canManagePcmt();
   }
 
 }

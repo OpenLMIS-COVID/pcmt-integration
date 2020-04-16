@@ -43,7 +43,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 @SuppressWarnings("PMD.TooManyMethods")
 public class PermissionServiceTest {
 
-  private static final String DHIS_2_MANAGEMENT = "DHIS2_MANAGEMENT";
+  private static final String PCMT_MANAGEMENT = "PCMT_MANAGEMENT";
 
   @Rule
   public final ExpectedException exception = ExpectedException.none();
@@ -79,38 +79,38 @@ public class PermissionServiceTest {
   }
 
   @Test
-  public void shouldAllowOtherServiceToManageDhis2() {
+  public void shouldAllowOtherServiceToManagePcmt() {
     when(securityContext.getAuthentication()).thenReturn(serviceAuthentication);
 
-    permissionService.canManageDhis2();
+    permissionService.canManagePcmt();
   }
 
   @Test
-  public void shouldAllowUserWithCorrectRightToManageDhis2() {
+  public void shouldAllowUserWithCorrectRightToManagePcmt() {
     when(securityContext.getAuthentication()).thenReturn(userAuthentication);
 
     when(authenticationHelper.getCurrentUser()).thenReturn(userDto);
-    when(authenticationHelper.getRight(eq(DHIS_2_MANAGEMENT))).thenReturn(rightDto);
+    when(authenticationHelper.getRight(eq(PCMT_MANAGEMENT))).thenReturn(rightDto);
 
     when(userReferenceDataService.hasRight(userDto.getId(), rightDto.getId(), null, null, null))
         .thenReturn(new ResultDto<>(true));
 
-    permissionService.canManageDhis2();
+    permissionService.canManagePcmt();
   }
 
   @Test
-  public void shouldNotAllowUserWithoutCorrectRightToManageDhis2() {
+  public void shouldNotAllowUserWithoutCorrectRightToManagePcmt() {
     when(securityContext.getAuthentication()).thenReturn(userAuthentication);
 
     when(authenticationHelper.getCurrentUser()).thenReturn(userDto);
-    when(authenticationHelper.getRight(eq(DHIS_2_MANAGEMENT))).thenReturn(rightDto);
+    when(authenticationHelper.getRight(eq(PCMT_MANAGEMENT))).thenReturn(rightDto);
 
     when(userReferenceDataService.hasRight(userDto.getId(), rightDto.getId(), null, null, null))
         .thenReturn(new ResultDto<>(false));
 
     expectException();
 
-    permissionService.canManageDhis2();
+    permissionService.canManagePcmt();
   }
 
   private void expectException() {
