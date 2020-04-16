@@ -74,7 +74,7 @@ public class ConfigurationController extends BaseController {
   @ResponseBody
   public ConfigurationDto createNewConfiguration(
       @RequestBody ConfigurationDto configurationDto) {
-    permissionService.canManageDhis2();
+    permissionService.canManagePcmt();
 
     ConfigurationAuthenticationDetailsDto confAuthDetailsDto =
         configurationDto.getAuthenticationDetails();
@@ -116,7 +116,7 @@ public class ConfigurationController extends BaseController {
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public Page<ConfigurationDto> getAllConfigurations(Pageable pageable) {
-    permissionService.canManageDhis2();
+    permissionService.canManagePcmt();
 
     Page<Configuration> page = configurationRepository.findAll(pageable);
     List<ConfigurationDto> content = page
@@ -134,7 +134,7 @@ public class ConfigurationController extends BaseController {
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public ConfigurationDto getSpecifiedConfiguration(@PathVariable("id") UUID id) {
-    permissionService.canManageDhis2();
+    permissionService.canManagePcmt();
 
     Configuration configuration = configurationRepository.findOne(id);
 
@@ -154,7 +154,7 @@ public class ConfigurationController extends BaseController {
   @ResponseBody
   public ConfigurationDto updateExistingConfiguration(@PathVariable("id") UUID id,
       @RequestBody ConfigurationDto configurationDto) {
-    permissionService.canManageDhis2();
+    permissionService.canManagePcmt();
 
     if (null != configurationDto.getId() && !Objects.equals(configurationDto.getId(), id)) {
       throw new ValidationMessageException(MessageKeys.ERROR_CONFIGURATION_ID_MISMATCH);
@@ -180,7 +180,7 @@ public class ConfigurationController extends BaseController {
   @DeleteMapping(value = ID_URL)
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteConfiguration(@PathVariable("id") UUID id) {
-    permissionService.canManageDhis2();
+    permissionService.canManagePcmt();
 
     if (!configurationRepository.exists(id)) {
       throw new NotFoundException(MessageKeys.ERROR_CONFIGURATION_NOT_FOUND);

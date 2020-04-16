@@ -45,7 +45,7 @@ public class ExecutionQueueController extends BaseController {
    */
   @GetMapping
   public Set<PostPayloadTaskDto> getExecutionsInQueue() {
-    permissionService.canManageDhis2();
+    permissionService.canManagePcmt();
     return postPayloadTaskExecutor
         .getQueueItems()
         .stream()

@@ -69,7 +69,7 @@ public class IntegrationController extends BaseController {
    */
   @GetMapping
   public Page<IntegrationDto> getAllIntegrations(Pageable pageable) {
-    permissionService.canManageDhis2();
+    permissionService.canManagePcmt();
 
     Page<Integration> page = integrationRepository.findAll(pageable);
     List<IntegrationDto> content = page
@@ -87,7 +87,7 @@ public class IntegrationController extends BaseController {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public IntegrationDto createIntegration(@RequestBody IntegrationDto dto) {
-    permissionService.canManageDhis2();
+    permissionService.canManagePcmt();
 
     Configuration configuration = configurationRepository.findOne(dto.getConfigurationId());
 
@@ -111,7 +111,7 @@ public class IntegrationController extends BaseController {
    */
   @GetMapping(ID_URL)
   public IntegrationDto getIntegration(@PathVariable("id") UUID id) {
-    permissionService.canManageDhis2();
+    permissionService.canManagePcmt();
 
     Integration integration = integrationRepository.findOne(id);
 
@@ -129,7 +129,7 @@ public class IntegrationController extends BaseController {
   @PutMapping(ID_URL)
   public IntegrationDto updateOrCreateIntegration(@PathVariable("id") UUID id,
       @RequestBody IntegrationDto dto) {
-    permissionService.canManageDhis2();
+    permissionService.canManagePcmt();
 
     if (null != dto.getId() && !Objects.equals(dto.getId(), id)) {
       throw new ValidationMessageException(MessageKeys.ERROR_INTEGRATION_ID_MISMATCH);
@@ -166,7 +166,7 @@ public class IntegrationController extends BaseController {
   @DeleteMapping(value = ID_URL)
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteIntegration(@PathVariable("id") UUID id) {
-    permissionService.canManageDhis2();
+    permissionService.canManagePcmt();
 
     if (!integrationRepository.exists(id)) {
       throw new NotFoundException(MessageKeys.ERROR_INTEGRATION_NOT_FOUND);

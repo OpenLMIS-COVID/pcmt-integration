@@ -79,7 +79,7 @@ public class ExecutionController extends BaseController {
   @PostMapping
   @ResponseStatus(HttpStatus.ACCEPTED)
   public void runManualIntegration(@RequestBody ManualIntegrationDto manualIntegrationDto) {
-    permissionService.canManageDhis2();
+    permissionService.canManagePcmt();
 
     Integration integration = integrationRepository
         .findOne(manualIntegrationDto.getIntegrationId());
@@ -110,7 +110,7 @@ public class ExecutionController extends BaseController {
    */
   @GetMapping
   public Page<ExecutionDto> getAllHistoricalExecutions(Pageable pageable) {
-    permissionService.canManageDhis2();
+    permissionService.canManagePcmt();
 
     Page<Execution> page = executionRepository.findAll(pageable);
     List<ExecutionDto> content = page
@@ -126,7 +126,7 @@ public class ExecutionController extends BaseController {
    */
   @GetMapping(ID_URL)
   public ExecutionDto getSpecifiedHistoricalExecution(@PathVariable("id") UUID id) {
-    permissionService.canManageDhis2();
+    permissionService.canManagePcmt();
 
     Execution execution = executionRepository.findOne(id);
     if (execution == null) {
@@ -140,7 +140,7 @@ public class ExecutionController extends BaseController {
    */
   @GetMapping(value = REQUEST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
   public String getExecutionRequest(@PathVariable("id") UUID id) {
-    permissionService.canManageDhis2();
+    permissionService.canManagePcmt();
 
     Execution execution = executionRepository.findOne(id);
     if (execution == null) {
