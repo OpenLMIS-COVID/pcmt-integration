@@ -1,0 +1,71 @@
+{
+    "type": "object",
+    "$schema": "http://json-schema.org/draft-04/schema",
+    "title": "Execution",
+    "description": "Single execution instance",
+    "properties": {
+      "manualExecution": {
+        "type": "boolean",
+        "title": "manualExecution"
+      },
+      "programId": {
+        "type": "string",
+        "title": "programId"
+      },
+      "facilityId": {
+        "type": ["string", "null"],
+        "title": "facilityId"
+      },
+      "processingPeriodId": {
+        "type": "string",
+        "title": "processingPeriodId"
+      },
+      "description": {
+        "type": "string",
+        "title": "description"
+      },
+      "targetUrl": {
+        "type": "string",
+        "title": "targetUrl"
+      },
+      "startDate": {
+        "type": "string",
+        "title": "startDate"
+      },
+      "endDate": {
+        "type": "string",
+        "title": "endDate"
+      },
+      "response": {
+        "type": "object",
+        "name": "response",
+        "items":{
+          "responseDate": {
+            "type": "string",
+            "title": "responseDate"
+          },
+          "statusCode": {
+            "type": "number",
+            "title": "statusCode"
+          },
+          "body": {
+            "type": "string",
+            "title": "body"
+          }
+        }
+      },
+      "id": {
+        "type": "string",
+        "title": "id"
+      }
+    },
+    "required": [
+      "manualExecution",
+      "programId",
+      "processingPeriodId",
+      "targetUrl",
+      "startDate",
+      "endDate",
+      "response"
+    ]
+  }
