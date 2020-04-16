@@ -167,11 +167,11 @@ public abstract class BaseCommunicationServiceTest<T> {
   }
 
   private void mockAuth() {
-    when(authService.obtainAccessToken()).thenReturn(TOKEN);
+    when(authService.obtainAccessToken("OLMIS")).thenReturn(TOKEN);
   }
 
   private void checkAuth() {
-    verify(authService, atLeastOnce()).obtainAccessToken();
+    verify(authService, atLeastOnce()).obtainAccessToken("OLMIS");
   }
 
   protected T mockResponseEntityAndGetDto() {

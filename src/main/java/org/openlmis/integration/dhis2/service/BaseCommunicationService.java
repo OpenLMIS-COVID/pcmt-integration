@@ -141,7 +141,7 @@ public abstract class BaseCommunicationService<T> {
   private <E> ResponseEntity<E[]> doListRequest(String url, RequestParameters parameters,
       Class<E[]> type) {
     HttpEntity<Object> entity = RequestHelper
-        .createEntity(RequestHeaders.init().setAuth(authService.obtainAccessToken()));
+        .createEntity(RequestHeaders.init().setAuth(authService.obtainAccessToken("OLMIS")));
     List<E[]> arrays = new ArrayList<>();
 
     for (URI uri : splitRequest(url, parameters, maxUrlLength)) {
@@ -184,6 +184,6 @@ public abstract class BaseCommunicationService<T> {
   }
 
   private RequestHeaders createHeadersWithAuth() {
-    return RequestHeaders.init().setAuth(authService.obtainAccessToken());
+    return RequestHeaders.init().setAuth(authService.obtainAccessToken("OLMIS"));
   }
 }

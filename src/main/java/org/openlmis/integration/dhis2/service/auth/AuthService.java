@@ -20,7 +20,8 @@ import static org.openlmis.integration.dhis2.service.RequestHelper.createUri;
 import java.util.Map;
 import org.apache.commons.codec.binary.Base64;
 import org.openlmis.integration.dhis2.service.RequestParameters;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -34,13 +35,13 @@ public class AuthService {
 
   static final String ACCESS_TOKEN = "access_token";
 
-  @Value("${auth.server.clientId}")
+  @Autowired
+  private Environment env;
+
   private String clientId;
 
-  @Value("${auth.server.clientSecret}")
   private String clientSecret;
 
-  @Value("${auth.server.authorizationUrl}")
   private String authorizationUrl;
 
   private RestOperations restTemplate = new RestTemplate();
@@ -50,7 +51,9 @@ public class AuthService {
    *
    * @return token.
    */
-  public String obtainAccessToken() {
+  public String obtainAccessToken(String whereToRequest) {
+    setVariables(whereToRequest);
+
     String plainCreds = clientId + ":" + clientSecret;
     byte[] plainCredsBytes = plainCreds.getBytes();
     byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
@@ -70,6 +73,18 @@ public class AuthService {
     );
 
     return ((Map<String, String>) response.getBody()).get(ACCESS_TOKEN);
+  }
+
+  void setVariables(String whereToRequest) {
+    if (whereToRequest.equals("OLMIS")) {
+      clientId = env.getProperty("auth.server.olmisClientId");
+      clientSecret = env.getProperty("auth.server.olmisClientSecret");
+      authorizationUrl = env.getProperty("auth.server.olmisAuthorizationUrl");
+    } else if (whereToRequest.equals("PCMT")) {
+      clientId = env.getProperty("auth.server.pcmtClientId");
+      clientSecret = env.getProperty("auth.server.pcmtClientSecret");
+      authorizationUrl = env.getProperty("auth.server.pcmtAuthorizationUrl");
+    }
   }
 
   void setRestTemplate(RestOperations restTemplate) {

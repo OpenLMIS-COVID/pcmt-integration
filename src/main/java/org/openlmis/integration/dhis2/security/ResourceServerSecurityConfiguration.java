@@ -51,7 +51,7 @@ public class ResourceServerSecurityConfiguration implements ResourceServerConfig
 
   private TokenExtractor tokenExtractor = new BearerTokenExtractor();
 
-  @Value("${auth.resourceId}")
+  @Value("${auth.olmisResourceId}")
   private String resourceId;
 
   @Value("${cors.allowedOrigins}")
@@ -113,9 +113,10 @@ public class ResourceServerSecurityConfiguration implements ResourceServerConfig
    */
   @Bean
   @Autowired
-  public RemoteTokenServices remoteTokenServices(@Value("${auth.server.url}") String checkTokenUrl,
-      @Value("${auth.server.clientId}") String clientId,
-      @Value("${auth.server.clientSecret}")
+  public RemoteTokenServices remoteTokenServices(
+      @Value("${auth.server.olmisUrl}") String checkTokenUrl,
+      @Value("${auth.server.olmisClientId}") String clientId,
+      @Value("${auth.server.olmisClientSecret}")
           String clientSecret) {
     final RemoteTokenServices remoteTokenServices = new RemoteTokenServices();
     remoteTokenServices.setCheckTokenEndpointUrl(checkTokenUrl);

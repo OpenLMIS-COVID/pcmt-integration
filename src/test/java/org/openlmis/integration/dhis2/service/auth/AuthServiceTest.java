@@ -34,8 +34,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -52,20 +55,27 @@ public class AuthServiceTest {
   );
 
   @Mock
+  private Environment env;
+
+  @Mock
   private RestTemplate restTemplate;
 
   @Captor
   private ArgumentCaptor<HttpEntity<String>> entityStringCaptor;
 
+  @InjectMocks
   private AuthService authService;
 
   @Before
   public void setUp() throws Exception {
     authService = new AuthService();
+    MockitoAnnotations.initMocks(this);
+
     ReflectionTestUtils.setField(authService, "restTemplate", restTemplate);
-    ReflectionTestUtils.setField(authService, "clientId", "trusted-client");
-    ReflectionTestUtils.setField(authService, "clientSecret", "secret");
-    ReflectionTestUtils.setField(authService, "authorizationUrl", AUTHORIZATION_URL);
+    when(env.getProperty("auth.server.olmisClientId")).thenReturn("trusted-client");
+    when(env.getProperty("auth.server.olmisClientSecret")).thenReturn("secret");
+    when(env.getProperty("auth.server.olmisAuthorizationUrl")).thenReturn(AUTHORIZATION_URL);
+
   }
 
   @Test
@@ -78,8 +88,7 @@ public class AuthServiceTest {
     )).thenReturn(response);
 
     when(response.getBody()).thenReturn(body);
-
-    String token = authService.obtainAccessToken();
+    String token = authService.obtainAccessToken("OLMIS");
     assertThat(token, is(equalTo(TOKEN)));
 
     verify(restTemplate).exchange(

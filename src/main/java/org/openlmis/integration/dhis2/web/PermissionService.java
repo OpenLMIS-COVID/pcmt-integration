@@ -38,7 +38,7 @@ class PermissionService {
   @Autowired
   private UserReferenceDataService userReferenceDataService;
 
-  @Value("${auth.server.clientId}")
+  @Value("${auth.server.olmisClientId}")
   private String serviceTokenClientId;
 
   void canManageDhis2() {
