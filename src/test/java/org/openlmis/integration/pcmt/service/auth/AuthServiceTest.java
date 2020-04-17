@@ -88,7 +88,7 @@ public class AuthServiceTest {
     )).thenReturn(response);
 
     when(response.getBody()).thenReturn(body);
-    String token = authService.obtainAccessToken("OLMIS");
+    String token = authService.obtainAccessToken();
     assertThat(token, is(equalTo(TOKEN)));
 
     verify(restTemplate).exchange(

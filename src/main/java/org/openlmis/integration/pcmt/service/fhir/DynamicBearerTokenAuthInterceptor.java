@@ -27,7 +27,7 @@ final class DynamicBearerTokenAuthInterceptor extends BearerTokenAuthInterceptor
 
   @Override
   public void interceptRequest(IHttpRequest theRequest) {
-    String token = authService.obtainAccessToken("OLMIS");
+    String token = authService.obtainAccessToken();
     theRequest.addHeader(
         Constants.HEADER_AUTHORIZATION,
         Constants.HEADER_AUTHORIZATION_VALPREFIX_BEARER + token);

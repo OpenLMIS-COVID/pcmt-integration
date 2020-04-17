@@ -32,7 +32,7 @@ public final class RequestHeaders {
     return new RequestHeaders();
   }
 
-  RequestHeaders setAuth(String token) {
+  public RequestHeaders setAuth(String token) {
     return isNotBlank(token) ? set(HttpHeaders.AUTHORIZATION, "Bearer " + token) : this;
   }
 

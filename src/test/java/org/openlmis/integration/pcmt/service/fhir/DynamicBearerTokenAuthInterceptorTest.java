@@ -46,11 +46,11 @@ public class DynamicBearerTokenAuthInterceptorTest {
 
   @Test
   public void shouldAddGeneratedTokenToRequestHeader() {
-    when(authService.obtainAccessToken("OLMIS")).thenReturn(TOKEN);
+    when(authService.obtainAccessToken()).thenReturn(TOKEN);
 
     authInterceptor.interceptRequest(request);
 
-    verify(authService).obtainAccessToken("OLMIS");
+    verify(authService).obtainAccessToken();
     verify(request).addHeader(
         Constants.HEADER_AUTHORIZATION,
         Constants.HEADER_AUTHORIZATION_VALPREFIX_BEARER + TOKEN);

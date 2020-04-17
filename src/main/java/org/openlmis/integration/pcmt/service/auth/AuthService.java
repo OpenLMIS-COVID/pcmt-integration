@@ -30,43 +30,49 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Service
 public class AuthService {
 
   static final String ACCESS_TOKEN = "access_token";
 
   @Autowired
-  private Environment env;
+  protected Environment env;
 
+  @Setter
+  @Getter
   private String clientId;
 
+  @Setter
+  @Getter
   private String clientSecret;
 
+  @Setter
   private String authorizationUrl;
 
-  private RestOperations restTemplate = new RestTemplate();
+  @Setter
+  @Getter
+  private String base64Creds;
 
+  @Setter
+  private HttpEntity<String> request;
+
+  @Setter
+  private RequestParameters params;
+
+  private RestOperations restTemplate = new RestTemplate();
   /**
    * Retrieves access token from the auth service.
    *
    * @return token.
    */
-  public String obtainAccessToken(String whereToRequest) {
-    setVariables(whereToRequest);
-
-    String plainCreds = clientId + ":" + clientSecret;
-    byte[] plainCredsBytes = plainCreds.getBytes();
-    byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
-    String base64Creds = new String(base64CredsBytes);
-
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", "Basic " + base64Creds);
-
-    HttpEntity<String> request = new HttpEntity<>(headers);
-
-    RequestParameters params = RequestParameters
-        .init()
-        .set("grant_type", "client_credentials");
+  public String obtainAccessToken() {
+    setClientCreds();
+    setPlainCreds();
+    setHttpEntity();
+    setParams();
 
     ResponseEntity<?> response = restTemplate.exchange(
         createUri(authorizationUrl, params), HttpMethod.POST, request, Object.class
@@ -75,16 +81,29 @@ public class AuthService {
     return ((Map<String, String>) response.getBody()).get(ACCESS_TOKEN);
   }
 
-  void setVariables(String whereToRequest) {
-    if (whereToRequest.equals("OLMIS")) {
-      clientId = env.getProperty("auth.server.olmisClientId");
-      clientSecret = env.getProperty("auth.server.olmisClientSecret");
-      authorizationUrl = env.getProperty("auth.server.olmisAuthorizationUrl");
-    } else if (whereToRequest.equals("PCMT")) {
-      clientId = env.getProperty("auth.server.pcmtClientId");
-      clientSecret = env.getProperty("auth.server.pcmtClientSecret");
-      authorizationUrl = env.getProperty("auth.server.pcmtAuthorizationUrl");
-    }
+  protected void setClientCreds() {
+    clientId = env.getProperty("auth.server.olmisClientId");
+    clientSecret = env.getProperty("auth.server.olmisClientSecret");
+    authorizationUrl = env.getProperty("auth.server.olmisAuthorizationUrl");
+  }
+
+  protected void setPlainCreds() {
+    String plainCreds = clientId + ":" + clientSecret;
+    byte[] plainCredsBytes = plainCreds.getBytes();
+    byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
+    base64Creds = new String(base64CredsBytes);
+  }
+
+  protected void setHttpEntity() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Authorization", "Basic " + base64Creds);
+    request = new HttpEntity<>(headers);
+  }
+
+  protected void setParams(){
+     params = RequestParameters
+        .init()
+        .set("grant_type", "client_credentials");
   }
 
   void setRestTemplate(RestOperations restTemplate) {

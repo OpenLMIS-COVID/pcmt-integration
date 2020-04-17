@@ -56,7 +56,7 @@ public final class RequestHelper {
   /**
    * Creates an {@link HttpEntity} with the given headers.
    */
-  static <E> HttpEntity<E> createEntity(RequestHeaders headers) {
+  public static <E> HttpEntity<E> createEntity(RequestHeaders headers) {
     return createEntity(headers, null);
   }
 
@@ -67,7 +67,7 @@ public final class RequestHelper {
   /**
    * Split the given {@link RequestParameters} into smaller chunks.
    */
-  static URI[] splitRequest(String url, RequestParameters queryParams, int maxUrlLength) {
+  public static URI[] splitRequest(String url, RequestParameters queryParams, int maxUrlLength) {
     RequestParameters safeQueryParams = RequestParameters.init().setAll(queryParams);
     URI uri = createUri(url, safeQueryParams);
 

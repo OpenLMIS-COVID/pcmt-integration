@@ -50,10 +50,10 @@ public abstract class BaseCommunicationService<T> {
   private AuthService authService;
 
   @Value("${request.maxUrlLength}")
-  private int maxUrlLength;
+  protected int maxUrlLength;
 
   @Setter
-  private RestOperations restTemplate = new RestTemplate();
+  protected RestOperations restTemplate = new RestTemplate();
 
   protected abstract String getServiceUrl();
 
@@ -138,10 +138,10 @@ public abstract class BaseCommunicationService<T> {
     }
   }
 
-  private <E> ResponseEntity<E[]> doListRequest(String url, RequestParameters parameters,
+  private  <E> ResponseEntity<E[]> doListRequest(String url, RequestParameters parameters,
       Class<E[]> type) {
     HttpEntity<Object> entity = RequestHelper
-        .createEntity(RequestHeaders.init().setAuth(authService.obtainAccessToken("OLMIS")));
+        .createEntity(RequestHeaders.init().setAuth(authService.obtainAccessToken()));
     List<E[]> arrays = new ArrayList<>();
 
     for (URI uri : splitRequest(url, parameters, maxUrlLength)) {
@@ -183,7 +183,8 @@ public abstract class BaseCommunicationService<T> {
     return RequestHelper.createEntity(createHeadersWithAuth());
   }
 
-  private RequestHeaders createHeadersWithAuth() {
-    return RequestHeaders.init().setAuth(authService.obtainAccessToken("OLMIS"));
+  protected RequestHeaders createHeadersWithAuth() {
+    return RequestHeaders.init().setAuth(authService.obtainAccessToken());
   }
+
 }
