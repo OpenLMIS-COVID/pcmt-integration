@@ -12,3 +12,6 @@ gradlew*
 .tx/
 node_modules/
 demo-data/*.sql
+bin/
+settings/
+.project
