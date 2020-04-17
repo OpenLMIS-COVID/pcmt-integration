@@ -18,6 +18,8 @@ package org.openlmis.integration.pcmt.service.auth;
 import static org.openlmis.integration.pcmt.service.RequestHelper.createUri;
 
 import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.codec.binary.Base64;
 import org.openlmis.integration.pcmt.service.RequestParameters;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +31,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Service
 public class AuthService {
@@ -63,11 +62,13 @@ public class AuthService {
   private RequestParameters params;
 
   private RestOperations restTemplate = new RestTemplate();
+
   /**
    * Retrieves access token from the auth service.
    *
    * @return token.
    */
+
   public String obtainAccessToken() {
     setClientCreds();
     setPlainCreds();
@@ -100,8 +101,8 @@ public class AuthService {
     request = new HttpEntity<>(headers);
   }
 
-  protected void setParams(){
-     params = RequestParameters
+  protected void setParams() {
+    params = RequestParameters
         .init()
         .set("grant_type", "client_credentials");
   }
