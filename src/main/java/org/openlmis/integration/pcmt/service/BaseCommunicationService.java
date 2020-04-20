@@ -175,7 +175,7 @@ public abstract class BaseCommunicationService<T> {
     return new ResponseEntity<>(body, HttpStatus.OK);
   }
 
-  private DataRetrievalException buildDataRetrievalException(HttpStatusCodeException ex) {
+  protected DataRetrievalException buildDataRetrievalException(HttpStatusCodeException ex) {
     return new DataRetrievalException(getResultClass().getSimpleName(), ex);
   }
 

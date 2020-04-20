@@ -10,7 +10,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Affero General Public License for more details. You should have received a copy of
  * the GNU Affero General Public License along with this program. If not, see
- * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
+ * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
  */
 
 package org.openlmis.integration.pcmt.service;
@@ -40,7 +40,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
-import org.slf4j.profiler.Profiler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -69,47 +68,8 @@ public class PayloadBuilder {
   @Value("${service.url}")
   private String serviceUrl;
 
-  /**
-   * Builds a payload which will be persisted with the execution entity.
-   *
-   * @param startDate start date of the period
-   * @param endDate end date of the period
-   * @param programName name of the program
-   * @param facilityId id of the facility
-   */
-  public Payload build(LocalDate startDate, LocalDate endDate, String programName,
-      UUID facilityId) {
-    X_LOGGER.entry(startDate, endDate, programName, facilityId);
-
-    Profiler profiler = new Profiler("BUILD_PAYLOAD");
-    profiler.setLogger(X_LOGGER);
-
-    profiler.start("GET_MEASURES");
-    Map<String, Measure> measures = getMeasures();
-
-    profiler.start("GET_MEASURE_REPORTS");
-    Set<MeasureReport> measureReports = getMeasureReports(
-        measures.values(), startDate, endDate, facilityId, programName);
-
-    profiler.start("GET_FACILITIES");
-    Map<String, FacilityDto> facilities = getFacilities(measureReports);
-
-    profiler.start("GROUP_REPORTS_BY_REPORTER");
-    Map<String, List<MeasureReport>> reportsPerFacility = measureReports
-        .stream()
-        .collect(Collectors.groupingBy(report -> report.getReporter().getReference()));
-
-    profiler.start("CREATE_PAYLOAD_PER_FACILITY");
-    Set<PayloadFacility> payloadFacilities = createPayloadPerFacility(
-        measures, reportsPerFacility, facilities);
-
-    profiler.start("INIT_PAYLOAD");
-    Payload payload = new Payload(payloadFacilities, startDate);
-
-    profiler.stop().log();
-    X_LOGGER.exit(payload);
-
-    return payload;
+  public Payload build(Object o) {
+    return null;
   }
 
   private Map<String, Measure> getMeasures() {
@@ -120,7 +80,7 @@ public class PayloadBuilder {
   }
 
   private Set<MeasureReport> getMeasureReports(Collection<Measure> measures, LocalDate startDate,
-      LocalDate endDate, UUID facilityId, String programName) {
+                                               LocalDate endDate, UUID facilityId, String programName) {
     String locationId = null;
 
     if (null != facilityId) {
@@ -203,7 +163,7 @@ public class PayloadBuilder {
   }
 
   private Set<PayloadFacility> createPayloadPerFacility(Map<String, Measure> measures,
-      Map<String, List<MeasureReport>> reportsPerFacility, Map<String, FacilityDto> facilities) {
+                                                        Map<String, List<MeasureReport>> reportsPerFacility, Map<String, FacilityDto> facilities) {
     Set<PayloadFacility> payloadFacilities = Sets.newHashSet();
 
     for (Entry<String, List<MeasureReport>> entry : reportsPerFacility.entrySet()) {
@@ -219,7 +179,7 @@ public class PayloadBuilder {
   }
 
   private Set<PayloadFacilityValue> createValues(List<MeasureReport> reports,
-      Map<String, Measure> measures) {
+                                                 Map<String, Measure> measures) {
     Set<PayloadFacilityValue> values = Sets.newHashSet();
 
     for (MeasureReport report : reports) {

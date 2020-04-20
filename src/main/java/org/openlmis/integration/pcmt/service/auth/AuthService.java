@@ -17,6 +17,8 @@ package org.openlmis.integration.pcmt.service.auth;
 
 import static org.openlmis.integration.pcmt.service.RequestHelper.createUri;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
+
 import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,7 +37,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class AuthService {
 
-  static final String ACCESS_TOKEN = "access_token";
+  protected static final String ACCESS_TOKEN = "access_token";
 
   @Autowired
   protected Environment env;
@@ -49,6 +51,7 @@ public class AuthService {
   private String clientSecret;
 
   @Setter
+  @Getter
   private String authorizationUrl;
 
   @Setter
@@ -56,7 +59,7 @@ public class AuthService {
   private String base64Creds;
 
   @Setter
-  private HttpEntity<String> request;
+  private HttpEntity<?> request;
 
   @Setter
   private RequestParameters params;
@@ -74,9 +77,14 @@ public class AuthService {
     setPlainCreds();
     setHttpEntity();
     setParams();
-
+    System.out.println(createUri(authorizationUrl, params));
+    System.out.println(request.getBody());
+    System.out.println(request.getHeaders());
     ResponseEntity<?> response = restTemplate.exchange(
-        createUri(authorizationUrl, params), HttpMethod.POST, request, Object.class
+        createUri(authorizationUrl, params),
+        HttpMethod.POST,
+        request,
+        Object.class
     );
 
     return ((Map<String, String>) response.getBody()).get(ACCESS_TOKEN);

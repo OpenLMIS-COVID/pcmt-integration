@@ -22,19 +22,38 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+
+import org.openlmis.integration.pcmt.service.BaseCommunicationService;
+import org.openlmis.integration.pcmt.service.RequestParameters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
+
+import lombok.Setter;
+
+@Component
 public class PcmtDataService extends BaseCommunicationService {
+
+  @Setter
+  @Autowired
+  protected PcmtAuth pcmtAuth;
 
   @Override
   protected String getServiceUrl() {
-    return null;
+    return referenceDataUrl;
   }
 
   @Value("${pcmt.url}")
   private String referenceDataUrl;
 
   @Override
-  public String getUrl() {
-    return referenceDataUrl + "/api/rest/v1/product-models";
+  protected String getUrl() {
+    return "/api/rest/v1/product-models";
   }
 
   @Override
@@ -47,6 +66,10 @@ public class PcmtDataService extends BaseCommunicationService {
     return Object[].class;
   }
 
+  protected String getToken() {
+    return pcmtAuth.obtainAccessToken();
+  }
+
   /**
    * This method retrieves Products for given ids.
    *
@@ -57,4 +80,24 @@ public class PcmtDataService extends BaseCommunicationService {
     return new ArrayList<>();
   }
 
+  public Object downloadData() {
+    return getPages(RequestParameters.init());
+  }
+
+  protected JsonNode getPages(RequestParameters parameters) {
+    
+    String url = getServiceUrl() + getUrl() + "";
+    try {
+      HttpResponse<JsonNode> response = Unirest.get(url)
+          .header("Content-Type", "application/json")
+          .header("Authorization", "Bearer " + getToken())
+          .header("Cookie", "")
+          .asJson();
+      System.out.println(response.getBody());
+      return response.getBody();
+
+    } catch (HttpStatusCodeException | UnirestException ex) {
+      throw buildDataRetrievalException((HttpStatusCodeException) ex);
+    }
+  }
 }

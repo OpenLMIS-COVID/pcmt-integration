@@ -60,6 +60,8 @@ dependencies {
 
     compile 'org.webjars.npm:api-console:3.0.17'
 
+    compile 'com.mashape.unirest:unirest-java:1.4.9'
+
     compile 'ca.uhn.hapi.fhir:hapi-fhir-client:3.7.0'
     compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:3.7.0'
 

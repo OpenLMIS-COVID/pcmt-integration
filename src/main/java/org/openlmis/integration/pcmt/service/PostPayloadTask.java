@@ -177,7 +177,7 @@ public class PostPayloadTask implements Runnable, Comparable<PostPayloadTask> {
     ProcessingPeriodDto period = request.getPeriod();
 
     return payloadBuilder
-        .build(period.getStartDate(), period.getEndDate(), programName, request.getFacilityId());
+        .build(null);
   }
 
   private String getProgramName(PayloadRequest request) {
