@@ -15,22 +15,25 @@
 
 package org.openlmis.integration.pcmt.service.pcmt;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.openlmis.integration.pcmt.service.BaseCommunicationService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
-@Service
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
-import org.openlmis.integration.pcmt.service.BaseCommunicationService;
 import org.openlmis.integration.pcmt.service.RequestParameters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 
@@ -52,7 +55,7 @@ public class PcmtDataService extends BaseCommunicationService {
   private String referenceDataUrl;
 
   @Override
-  protected String getUrl() {
+  public String getUrl() {
     return "/api/rest/v1/product-models";
   }
 
@@ -84,20 +87,35 @@ public class PcmtDataService extends BaseCommunicationService {
     return getPages(RequestParameters.init());
   }
 
-  protected JsonNode getPages(RequestParameters parameters) {
-    
+  protected String getPages(RequestParameters parameters) {
+
     String url = getServiceUrl() + getUrl() + "";
+    PcmtResponseBody pcmtResponseBody = new PcmtResponseBody();
     try {
-      HttpResponse<JsonNode> response = Unirest.get(url)
+      HttpResponse<String> response = Unirest.get(url)
           .header("Content-Type", "application/json")
           .header("Authorization", "Bearer " + getToken())
           .header("Cookie", "")
-          .asJson();
-      System.out.println(response.getBody());
-      return response.getBody();
+          .asString();
 
+      ObjectMapper objectMapper = new ObjectMapper();
+      objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+      objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+
+      pcmtResponseBody = objectMapper.readValue(response.getBody(),
+          PcmtResponseBody.class);
+
+      System.out.println(pcmtResponseBody.toString());
     } catch (HttpStatusCodeException | UnirestException ex) {
       throw buildDataRetrievalException((HttpStatusCodeException) ex);
+    } catch (JsonParseException e) {
+      e.printStackTrace();
+    } catch (JsonMappingException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+
+    return pcmtResponseBody.toString();
   }
 }

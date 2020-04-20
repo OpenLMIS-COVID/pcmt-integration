@@ -76,7 +76,7 @@ public abstract class IntegrationTask<T> implements Runnable, Comparable<Integra
   protected void addRequestToExecution() {
     try {
       // TODO COV-29: create new PayloadBuilder build(getEntity());
-      Payload payload = getPayloadBuilder().build(null, null, null, null);
+      Payload payload = getPayloadBuilder().build(null);
       String requestBody = getObjectMapper().writeValueAsString(payload);
       getExecution().setRequestBody(requestBody);
     } catch (Exception exp) {
