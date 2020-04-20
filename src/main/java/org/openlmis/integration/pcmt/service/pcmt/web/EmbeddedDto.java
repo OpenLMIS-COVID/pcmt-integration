@@ -13,27 +13,16 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
  */
 
-package org.openlmis.integration.pcmt.service.referencedata;
+package org.openlmis.integration.pcmt.service.pcmt.web;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import org.openlmis.integration.pcmt.web.BaseDto;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
+import lombok.Data;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
-public final class GeographicLevelDto extends BaseDto {
+@Data
+public class EmbeddedDto {
 
-  private String code;
-  private String name;
-  private Integer levelNumber;
+  @JsonProperty("items")
+  public List<ItemDto> items = null;
 
 }
-

@@ -13,28 +13,22 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
  */
 
-package org.openlmis.integration.pcmt.service.referencedata;
+package org.openlmis.integration.pcmt.service.pcmt.web;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
-import org.junit.Test;
-import org.openlmis.integration.pcmt.ToStringTestUtils;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class FacilityOperatorDtoTest {
+import lombok.Data;
 
-  @Test
-  public void equalsContract() {
-    EqualsVerifier
-        .forClass(FacilityOperatorDto.class)
-        .withRedefinedSuperclass()
-        .suppress(Warning.NONFINAL_FIELDS)
-        .verify();
-  }
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Data
+public class PcmtResponseBody {
 
-  @Test
-  public void shouldImplementToString() {
-    FacilityOperatorDto dto = new FacilityOperatorDto();
-    ToStringTestUtils.verify(FacilityOperatorDto.class, dto);
-  }
-
+  //  @JsonProperty("_links")
+  //  public LinksDto links;
+  @JsonProperty("current_page")
+  public Integer currentPage;
+  @JsonProperty("_embedded")
+  public EmbeddedDto embedded;
 }
+

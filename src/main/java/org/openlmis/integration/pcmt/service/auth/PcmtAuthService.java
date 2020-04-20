@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
  */
 
-package org.openlmis.integration.pcmt.service.pcmt;
+package org.openlmis.integration.pcmt.service.auth;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
@@ -21,29 +21,46 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
 import org.apache.commons.codec.binary.Base64;
-import org.openlmis.integration.pcmt.service.auth.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PcmtAuth extends AuthService {
+public class PcmtAuthService {
 
+  @Autowired
+  protected Environment env;
+
+  private String clientId;
+
+  private String clientSecret;
 
   private String clientUsername;
+
   private String clientPassword;
 
-  @Override
+  private String authorizationUrl;
+
+  private String base64Creds;
+
+  /**
+   * This method get authentication token.
+   *
+   * @return bearer token.
+   */
+
   public String obtainAccessToken() {
     setClientCreds();
     setPlainCreds();
 
     HttpResponse<JsonNode> response = null;
     try {
-      response = Unirest.post(getAuthorizationUrl())
+      response = Unirest.post(authorizationUrl)
           .header("Content-Type", "application/json")
-          .header("Authorization", "Basic " + getBase64Creds())
-          .body("{\n    \"username\" : \"" + clientUsername + "\",\n    " +
-              "\"password\" : \"" + clientPassword + "\",\n    " +
-              "\"grant_type\": \"password\"\n}")
+          .header("Authorization", "Basic " + base64Creds)
+          .body("{\n    \"username\" : \"" + clientUsername + "\",\n"
+              + "\"password\" : \"" + clientPassword + "\",\n"
+              + "\"grant_type\": \"password\"\n}")
           .asJson();
     } catch (UnirestException e) {
       e.printStackTrace();
@@ -52,21 +69,19 @@ public class PcmtAuth extends AuthService {
     return response.getBody().getObject().get(AuthService.ACCESS_TOKEN).toString();
   }
 
-  @Override
-  protected void setClientCreds() {
-    setClientId(env.getProperty("auth.server.pcmtClientId"));
-    setClientSecret(env.getProperty("auth.server.pcmtClientSecret"));
-    setAuthorizationUrl(env.getProperty("auth.server.pcmtAuthorizationUrl"));
+  private void setClientCreds() {
+    clientId = env.getProperty("auth.server.pcmtClientId");
+    clientSecret = env.getProperty("auth.server.pcmtClientSecret");
+    authorizationUrl = env.getProperty("auth.server.pcmtAuthorizationUrl");
     clientUsername = env.getProperty("auth.server.pcmtClientUsername");
     clientPassword = env.getProperty("auth.server.pcmtClientPassword");
   }
 
-  @Override
-  protected void setPlainCreds() {
-    String plainCreds = getClientId() + ":" + getClientSecret();
+  private void setPlainCreds() {
+    String plainCreds = clientId + ":" + clientSecret;
     byte[] plainCredsBytes = plainCreds.getBytes();
     byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
-    setBase64Creds(new String(base64CredsBytes));
+    base64Creds = new String(base64CredsBytes);
   }
 
 }

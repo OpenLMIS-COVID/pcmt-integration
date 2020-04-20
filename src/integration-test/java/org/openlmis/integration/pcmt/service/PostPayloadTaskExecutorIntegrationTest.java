@@ -78,7 +78,7 @@ public class PostPayloadTaskExecutorIntegrationTest {
     private boolean executed;
 
     TestTask() {
-      super(null, null, null, null, Clock.fixed(Instant.now(), ZoneOffset.UTC), null, null);
+      super(null, null, null, Clock.fixed(Instant.now(), ZoneOffset.UTC), null, null);
     }
 
     @Override

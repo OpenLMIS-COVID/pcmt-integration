@@ -15,14 +15,6 @@
 
 package org.openlmis.integration.pcmt.service.pcmt;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.openlmis.integration.pcmt.service.BaseCommunicationService;
-import org.springframework.beans.factory.annotation.Value;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -32,45 +24,39 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import lombok.Getter;
+
 import org.openlmis.integration.pcmt.service.RequestParameters;
+import org.openlmis.integration.pcmt.service.auth.PcmtAuthService;
+import org.openlmis.integration.pcmt.service.pcmt.web.PcmtResponseBody;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 
-import lombok.Setter;
+
 
 @Component
-public class PcmtDataService extends BaseCommunicationService {
+public class PcmtDataService {
 
-  @Setter
   @Autowired
-  protected PcmtAuth pcmtAuth;
-
-  @Override
-  protected String getServiceUrl() {
-    return referenceDataUrl;
-  }
+  private PcmtAuthService pcmtAuthService;
 
   @Value("${pcmt.url}")
-  private String referenceDataUrl;
+  @Getter
+  private String domainUrl;
 
-  @Override
   public String getUrl() {
-    return "/api/rest/v1/product-models";
+    return domainUrl + "/api/rest/v1/product-models";
   }
 
-  @Override
-  protected Class getResultClass() {
-    return Object.class;
-  }
-
-  @Override
-  protected Class getArrayResultClass() {
-    return Object[].class;
-  }
-
-  protected String getToken() {
-    return pcmtAuth.obtainAccessToken();
+  private String getToken() {
+    return pcmtAuthService.obtainAccessToken();
   }
 
   /**
@@ -83,13 +69,13 @@ public class PcmtDataService extends BaseCommunicationService {
     return new ArrayList<>();
   }
 
-  public Object downloadData() {
+  public PcmtResponseBody downloadData() {
     return getPages(RequestParameters.init());
   }
 
-  protected String getPages(RequestParameters parameters) {
+  protected PcmtResponseBody getPages(RequestParameters parameters) {
 
-    String url = getServiceUrl() + getUrl() + "";
+    String url = getUrl() + "";
     PcmtResponseBody pcmtResponseBody = new PcmtResponseBody();
     try {
       HttpResponse<String> response = Unirest.get(url)
@@ -107,7 +93,7 @@ public class PcmtDataService extends BaseCommunicationService {
 
       System.out.println(pcmtResponseBody.toString());
     } catch (HttpStatusCodeException | UnirestException ex) {
-      throw buildDataRetrievalException((HttpStatusCodeException) ex);
+      throw ((HttpStatusCodeException) ex);
     } catch (JsonParseException e) {
       e.printStackTrace();
     } catch (JsonMappingException e) {
@@ -116,6 +102,6 @@ public class PcmtDataService extends BaseCommunicationService {
       e.printStackTrace();
     }
 
-    return pcmtResponseBody.toString();
+    return pcmtResponseBody;
   }
 }

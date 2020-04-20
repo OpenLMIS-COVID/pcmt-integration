@@ -13,28 +13,36 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
  */
 
-package org.openlmis.integration.pcmt.service.referencedata;
+package org.openlmis.integration.pcmt.service.pcmt.web;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
-import org.junit.Test;
-import org.openlmis.integration.pcmt.ToStringTestUtils;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
+import lombok.Data;
 
-public class FacilityTypeDtoTest {
+@Data
+public class ItemDto {
 
-  @Test
-  public void equalsContract() {
-    EqualsVerifier
-        .forClass(FacilityTypeDto.class)
-        .withRedefinedSuperclass()
-        .suppress(Warning.NONFINAL_FIELDS)
-        .verify();
-  }
-
-  @Test
-  public void shouldImplementToString() {
-    FacilityTypeDto dto = new FacilityTypeDto();
-    ToStringTestUtils.verify(FacilityTypeDto.class, dto);
-  }
+  //  @JsonProperty("_links")
+  //  public Links_ links;
+  @JsonProperty("identifier")
+  public String identifier;
+  @JsonProperty("enabled")
+  public Boolean enabled;
+  @JsonProperty("family")
+  public String family;
+  @JsonProperty("categories")
+  public List<String> categories = null;
+  @JsonProperty("groups")
+  public List<Object> groups = null;
+  @JsonProperty("parent")
+  public String parent;
+  //  @JsonProperty("values")
+  //  public Values values;
+  @JsonProperty("created")
+  public String created;
+  @JsonProperty("updated")
+  public String updated;
+  //  @JsonProperty("associations")
+  //  public Associations associations;
 
 }

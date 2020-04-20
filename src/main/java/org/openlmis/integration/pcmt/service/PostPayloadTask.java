@@ -29,7 +29,6 @@ import org.openlmis.integration.pcmt.domain.Execution;
 import org.openlmis.integration.pcmt.domain.ExecutionResponse;
 import org.openlmis.integration.pcmt.repository.ExecutionRepository;
 import org.openlmis.integration.pcmt.service.referencedata.ProcessingPeriodDto;
-import org.openlmis.integration.pcmt.service.referencedata.ProgramReferenceDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.profiler.Profiler;
@@ -46,7 +45,6 @@ public class PostPayloadTask implements Runnable, Comparable<PostPayloadTask> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PostPayloadTask.class);
 
-  private final ProgramReferenceDataService programReferenceDataService;
   private final ExecutionRepository executionRepository;
   private final PayloadBuilder payloadBuilder;
   private final ObjectMapper objectMapper;
@@ -59,11 +57,9 @@ public class PostPayloadTask implements Runnable, Comparable<PostPayloadTask> {
   /**
    * Creates a new instance.
    */
-  public PostPayloadTask(ProgramReferenceDataService programReferenceDataService,
-      ExecutionRepository executionRepository, PayloadBuilder payloadBuilder,
+  public PostPayloadTask(ExecutionRepository executionRepository, PayloadBuilder payloadBuilder,
       ObjectMapper objectMapper, Clock clock, RestTemplate restTemplate,
       PayloadRequest payloadRequest) {
-    this.programReferenceDataService = programReferenceDataService;
     this.executionRepository = executionRepository;
     this.payloadBuilder = payloadBuilder;
     this.objectMapper = objectMapper;
@@ -173,21 +169,10 @@ public class PostPayloadTask implements Runnable, Comparable<PostPayloadTask> {
   }
 
   private Payload createPayload(PayloadRequest request) {
-    String programName = getProgramName(request);
     ProcessingPeriodDto period = request.getPeriod();
 
     return payloadBuilder
         .build(null);
-  }
-
-  private String getProgramName(PayloadRequest request) {
-    if (null == request.getProgramId()) {
-      return null;
-    }
-
-    return programReferenceDataService
-        .findOne(request.getProgramId())
-        .getName();
   }
 
   private void sendRequestBody(PayloadRequest payloadRequest, Execution execution,

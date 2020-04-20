@@ -18,7 +18,6 @@ package org.openlmis.integration.pcmt.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Clock;
 import org.openlmis.integration.pcmt.repository.ExecutionRepository;
-import org.openlmis.integration.pcmt.service.referencedata.ProgramReferenceDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +31,6 @@ public class PayloadService {
 
   @Autowired
   private ExecutionRepository executionRepository;
-
-  @Autowired
-  private ProgramReferenceDataService programReferenceDataService;
 
   @Autowired
   private PayloadBuilder payloadBuilder;
@@ -55,7 +51,7 @@ public class PayloadService {
   public void postPayload(PayloadRequest payloadRequest) {
     LOGGER.info("Post payload for request: {}", payloadRequest);
 
-    postPayloadTaskExecutor.execute(new PostPayloadTask(programReferenceDataService,
+    postPayloadTaskExecutor.execute(new PostPayloadTask(
         executionRepository, payloadBuilder, objectMapper, clock, new RestTemplate(),
         payloadRequest));
   }

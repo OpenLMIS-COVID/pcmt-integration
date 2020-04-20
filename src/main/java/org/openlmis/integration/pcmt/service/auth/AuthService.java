@@ -17,8 +17,6 @@ package org.openlmis.integration.pcmt.service.auth;
 
 import static org.openlmis.integration.pcmt.service.RequestHelper.createUri;
 
-import com.mashape.unirest.http.exceptions.UnirestException;
-
 import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
@@ -42,26 +40,16 @@ public class AuthService {
   @Autowired
   protected Environment env;
 
-  @Setter
-  @Getter
   private String clientId;
 
-  @Setter
-  @Getter
   private String clientSecret;
 
-  @Setter
-  @Getter
   private String authorizationUrl;
 
-  @Setter
-  @Getter
   private String base64Creds;
 
-  @Setter
   private HttpEntity<?> request;
 
-  @Setter
   private RequestParameters params;
 
   private RestOperations restTemplate = new RestTemplate();
@@ -77,9 +65,7 @@ public class AuthService {
     setPlainCreds();
     setHttpEntity();
     setParams();
-    System.out.println(createUri(authorizationUrl, params));
-    System.out.println(request.getBody());
-    System.out.println(request.getHeaders());
+
     ResponseEntity<?> response = restTemplate.exchange(
         createUri(authorizationUrl, params),
         HttpMethod.POST,

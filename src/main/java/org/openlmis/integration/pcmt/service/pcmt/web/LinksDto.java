@@ -13,28 +13,18 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
  */
 
-package org.openlmis.integration.pcmt.service.referencedata;
+package org.openlmis.integration.pcmt.service.pcmt.web;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
-import org.junit.Test;
-import org.openlmis.integration.pcmt.ToStringTestUtils;
+import lombok.Data;
 
-public class GeographicLevelDtoTest {
+@Data
+public class LinksDto {
 
-  @Test
-  public void equalsContract() {
-    EqualsVerifier
-        .forClass(GeographicLevelDto.class)
-        .withRedefinedSuperclass()
-        .suppress(Warning.NONFINAL_FIELDS)
-        .verify();
-  }
-
-  @Test
-  public void shouldImplementToString() {
-    GeographicLevelDto dto = new GeographicLevelDto();
-    ToStringTestUtils.verify(GeographicLevelDto.class, dto);
-  }
+  //  @JsonProperty("self")
+  public String self;
+  //  @JsonProperty("first")
+  public String first;
+  //  @JsonProperty("next")
+  public String next;
 
 }
