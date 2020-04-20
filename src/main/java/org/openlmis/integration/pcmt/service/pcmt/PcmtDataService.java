@@ -15,10 +15,13 @@
 
 package org.openlmis.integration.pcmt.service.pcmt;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.openlmis.integration.pcmt.service.BaseCommunicationService;
-import org.openlmis.integration.pcmt.service.RequestParameters;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
+@Service
 public class PcmtDataService extends BaseCommunicationService {
 
   @Override
@@ -30,7 +33,7 @@ public class PcmtDataService extends BaseCommunicationService {
   private String referenceDataUrl;
 
   @Override
-  protected String getUrl() {
+  public String getUrl() {
     return referenceDataUrl + "/api/rest/v1/product-models";
   }
 
@@ -49,10 +52,9 @@ public class PcmtDataService extends BaseCommunicationService {
    *
    * @return List of Products.
    */
-  public Object search() {
-    return getPage(RequestParameters.init()).getContent();
+  public List<Object> search() {
+    // TODO COV-29: define types – getPage(RequestParameters.init()).getContent() or List
+    return new ArrayList<>();
   }
-
-
 
 }

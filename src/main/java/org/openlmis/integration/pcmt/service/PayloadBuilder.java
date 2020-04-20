@@ -46,7 +46,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-class PayloadBuilder {
+public class PayloadBuilder {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PayloadBuilder.class);
   private static final XLogger X_LOGGER = XLoggerFactory.getXLogger(PayloadBuilder.class);
@@ -69,7 +69,16 @@ class PayloadBuilder {
   @Value("${service.url}")
   private String serviceUrl;
 
-  Payload build(LocalDate startDate, LocalDate endDate, String programName, UUID facilityId) {
+  /**
+   * Builds a payload which will be persisted with the execution entity.
+   *
+   * @param startDate start date of the period
+   * @param endDate end date of the period
+   * @param programName name of the program
+   * @param facilityId id of the facility
+   */
+  public Payload build(LocalDate startDate, LocalDate endDate, String programName,
+      UUID facilityId) {
     X_LOGGER.entry(startDate, endDate, programName, facilityId);
 
     Profiler profiler = new Profiler("BUILD_PAYLOAD");

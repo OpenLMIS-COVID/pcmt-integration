@@ -28,6 +28,8 @@ import org.openlmis.integration.pcmt.repository.ExecutionRepository;
 import org.openlmis.integration.pcmt.repository.IntegrationRepository;
 import org.openlmis.integration.pcmt.service.PayloadRequest;
 import org.openlmis.integration.pcmt.service.PayloadService;
+import org.openlmis.integration.pcmt.service.payload.ExecutableRequest;
+import org.openlmis.integration.pcmt.service.payload.IntegrationExecutionService;
 import org.openlmis.integration.pcmt.service.referencedata.PeriodReferenceDataService;
 import org.openlmis.integration.pcmt.service.referencedata.ProcessingPeriodDto;
 import org.openlmis.integration.pcmt.util.Pagination;
@@ -60,6 +62,9 @@ public class ExecutionController extends BaseController {
 
   @Autowired
   private PayloadService payloadService;
+
+  @Autowired
+  private IntegrationExecutionService integrationService;
 
   @Autowired
   private IntegrationRepository integrationRepository;
@@ -100,6 +105,26 @@ public class ExecutionController extends BaseController {
 
     payloadService.postPayload(payloadRequest);
 
+  }
+
+
+  /**
+   * This method is used to manual trigger Integration.
+   */
+  @PostMapping
+  @RequestMapping("/v2")
+  @ResponseStatus(HttpStatus.ACCEPTED)
+  public void runManualIntegrationV2(@RequestBody ManualIntegrationDto manualIntegrationDto) {
+    permissionService.canManagePcmt();
+    UUID userId = authenticationHelper.getCurrentUser().getId();
+
+    Integration integration = integrationRepository
+        .findOne(manualIntegrationDto.getIntegrationId());
+    if (null == integration) {
+      throw new NotFoundException(MessageKeys.ERROR_INTEGRATION_NOT_FOUND);
+    }
+
+    integrationService.integrate(userId, integration, true);
   }
 
   /**

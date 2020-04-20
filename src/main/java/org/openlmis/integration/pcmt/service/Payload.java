@@ -34,7 +34,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @Getter
 @EqualsAndHashCode
 @JsonIgnoreProperties(ignoreUnknown = true)
-final class Payload {
+public final class Payload {
   private static final DateTimeFormatter DESCRIPTION_FORMATTER = DateTimeFormatter
       .ofPattern("MMMM yyyy");
   private static final DateTimeFormatter REPORTING_PERIOD_FORMATTER = DateTimeFormatter
