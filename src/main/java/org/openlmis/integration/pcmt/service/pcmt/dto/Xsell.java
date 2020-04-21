@@ -16,17 +16,27 @@
 package org.openlmis.integration.pcmt.service.pcmt.dto;
 
 import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 public class Xsell {
 
-    @JsonProperty("products")
-    public List<String> products;
-    @JsonProperty("product_models")
-    public List<String> productModels;
-    @JsonProperty("groups")
-    public List<String> groups;
+  @JsonProperty("products")
+  public List<String> products;
+  @JsonProperty("product_models")
+  public List<String> productModels;
+  @JsonProperty("groups")
+  public List<String> groups;
 
 }

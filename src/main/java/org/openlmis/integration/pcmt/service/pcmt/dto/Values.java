@@ -16,23 +16,33 @@
 package org.openlmis.integration.pcmt.service.pcmt.dto;
 
 import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 public class Values {
 
-    @JsonProperty("supplier")
-    public List<Supplier> supplier;
-    @JsonProperty("wash_temperature")
-    public List<WashTemperature> washTemperature;
-    @JsonProperty("collection")
-    public List<Collection> collection;
-    @JsonProperty("name")
-    public List<Name> name;
-    @JsonProperty("erp_name")
-    public List<ErpName> erpName;
-    @JsonProperty("description")
-    public List<Description> description;
+  @JsonProperty("supplier")
+  public List<Supplier> supplier;
+  @JsonProperty("wash_temperature")
+  public List<WashTemperature> washTemperature;
+  @JsonProperty("collection")
+  public List<Collection> collection;
+  @JsonProperty("name")
+  public List<Name> name;
+  @JsonProperty("erp_name")
+  public List<ErpName> erpName;
+  @JsonProperty("description")
+  public List<Description> description;
 
 }

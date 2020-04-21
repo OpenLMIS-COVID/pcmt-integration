@@ -31,7 +31,7 @@ import org.openlmis.integration.pcmt.domain.ExecutionResponse;
 import org.openlmis.integration.pcmt.domain.Integration;
 import org.openlmis.integration.pcmt.repository.ExecutionRepository;
 import org.openlmis.integration.pcmt.service.PayloadBuilder;
-import org.openlmis.integration.pcmt.service.referencedata.OrderableDto;
+import org.openlmis.integration.pcmt.service.referencedata.orderable.OrderableDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;

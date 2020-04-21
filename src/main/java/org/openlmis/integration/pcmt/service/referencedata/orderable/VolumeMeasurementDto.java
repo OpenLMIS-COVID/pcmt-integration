@@ -13,52 +13,29 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
  */
 
-package org.openlmis.integration.pcmt.service.referencedata;
+package org.openlmis.integration.pcmt.service.referencedata.orderable;
 
-import java.util.Map;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.openlmis.integration.pcmt.web.BaseDto;
+import lombok.ToString;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-// TODO COV-29: extend orderable using commented out field or replace the DTO with PCMT's
-public final class OrderableDto extends BaseDto {
+@EqualsAndHashCode
+@ToString
+public class VolumeMeasurementDto {
 
-  private String productCode;
+  private Double value;
 
-  //  private DispensableDto dispensable;
+  private String measurementUnitCode;
 
-  private String fullProductName;
-
-  private String description;
-
-  private Long netContent;
-
-  private Long packRoundingThreshold;
-
-  private Boolean roundToZero;
-
-  //  private Set<ProgramOrderableDto> programs;
-
-  //  private Set<OrderableChildDto> children;
-
-  private Map<String, String> identifiers;
-
-  private Map<String, Object> extraData;
-
-  //  private MetadataDto meta = new MetadataDto();
-
-  //  private TemperatureMeasurementDto minimumTemperature;
-
-  //  private TemperatureMeasurementDto maximumTemperature;
-
-  //  private VolumeMeasurementDto inBoxCubeDimension;
+  private List<String> codeListVersion;
 
 }

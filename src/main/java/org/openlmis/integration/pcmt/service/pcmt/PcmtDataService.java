@@ -84,7 +84,8 @@ public class PcmtDataService {
       pcmtResponseBody = objectMapper.readValue(response.getBody(),
           PcmtResponseBody.class);
 
-      System.out.println(pcmtResponseBody);
+      System.out.println(pcmtResponseBody.getLinks().getFirst().toString());
+      System.out.println(pcmtResponseBody.getLinks().getSelf());
 
     } catch (HttpStatusCodeException | UnirestException ex) {
       throw ((HttpStatusCodeException) ex);

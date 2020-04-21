@@ -18,16 +18,25 @@ package org.openlmis.integration.pcmt.service.pcmt.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 public class Links {
 
-    @JsonProperty("self")
-    public Self self;
+  @JsonProperty("self")
+  public Self self;
 
-    @JsonProperty("first")
-    public First first;
+  @JsonProperty("first")
+  public First first;
 
-    @JsonProperty("previous")
-    public Previous previous;
+  @JsonProperty("previous")
+  public Previous previous;
 
 }

@@ -21,13 +21,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Associations {
 
-    @JsonProperty("Pack")
-    public Pack pack;
-    @JsonProperty("Substitution")
-    public Substitution substitution;
-    @JsonProperty("Upsell")
-    public Upsell upsell;
-    @JsonProperty("X_SELL")
-    public Xsell xsell;
+  @JsonProperty("Pack")
+  public Pack pack;
+  @JsonProperty("Substitution")
+  public Substitution substitution;
+  @JsonProperty("Upsell")
+  public Upsell upsell;
+  @JsonProperty("X_SELL")
+  public Xsell xsell;
 
 }

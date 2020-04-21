@@ -13,24 +13,24 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
  */
 
-package org.openlmis.integration.pcmt.service.pcmt.dto;
+package org.openlmis.integration.pcmt.service.referencedata.orderable;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.openlmis.integration.pcmt.web.BaseDto;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
-@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @ToString
-public class Previous {
+public class ObjectReferenceDto extends BaseDto {
 
-  @JsonProperty("href")
-  public String href;
+  private String href;
 
 }

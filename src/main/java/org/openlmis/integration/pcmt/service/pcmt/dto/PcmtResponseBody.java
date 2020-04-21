@@ -18,10 +18,16 @@ package org.openlmis.integration.pcmt.service.pcmt.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 public class PcmtResponseBody {
 
   @JsonProperty("_links")

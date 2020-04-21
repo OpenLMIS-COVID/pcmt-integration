@@ -18,14 +18,23 @@ package org.openlmis.integration.pcmt.service.pcmt.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 public class WashTemperature {
 
-    @JsonProperty("locale")
-    public String locale;
-    @JsonProperty("scope")
-    public String scope;
-    @JsonProperty("data")
-    public String data;
+  @JsonProperty("locale")
+  public String locale;
+  @JsonProperty("scope")
+  public String scope;
+  @JsonProperty("data")
+  public String data;
 
 }

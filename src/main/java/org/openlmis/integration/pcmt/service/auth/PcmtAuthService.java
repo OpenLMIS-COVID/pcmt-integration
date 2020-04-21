@@ -29,6 +29,8 @@ import org.springframework.stereotype.Service;
 @SuppressWarnings("PMD.AvoidPrintStackTrace")
 public class PcmtAuthService {
 
+  protected static final String ACCESS_TOKEN = "access_token";
+
   @Autowired
   protected Environment env;
 
@@ -67,7 +69,7 @@ public class PcmtAuthService {
       e.printStackTrace();
     }
 
-    return response.getBody().getObject().get(AuthService.ACCESS_TOKEN).toString();
+    return response.getBody().getObject().get(ACCESS_TOKEN).toString();
   }
 
   private void setClientCreds() {

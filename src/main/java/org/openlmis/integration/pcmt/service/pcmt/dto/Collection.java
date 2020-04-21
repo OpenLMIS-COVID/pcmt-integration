@@ -1,7 +1,7 @@
-
 package org.openlmis.integration.pcmt.service.pcmt.dto;
 
 import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -14,11 +14,11 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 })
 public class Collection {
 
-    @JsonProperty("locale")
-    public Object locale;
-    @JsonProperty("scope")
-    public Object scope;
-    @JsonProperty("data")
-    public List<String> data = null;
+  @JsonProperty("locale")
+  public Object locale;
+  @JsonProperty("scope")
+  public Object scope;
+  @JsonProperty("data")
+  public List<String> data = null;
 
 }
