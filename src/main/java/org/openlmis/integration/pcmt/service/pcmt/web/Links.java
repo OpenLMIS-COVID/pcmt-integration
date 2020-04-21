@@ -15,34 +15,20 @@
 
 package org.openlmis.integration.pcmt.service.pcmt.web;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.List;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@Data
-public class ItemDto {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Links {
 
-  //  @JsonProperty("_links")
-  //  public Links_ links;
-  @JsonProperty("identifier")
-  public String identifier;
-  @JsonProperty("enabled")
-  public Boolean enabled;
-  @JsonProperty("family")
-  public String family;
-  @JsonProperty("categories")
-  public List<String> categories = null;
-  @JsonProperty("groups")
-  public List<Object> groups = null;
-  @JsonProperty("parent")
-  public String parent;
-  //  @JsonProperty("values")
-  //  public Values values;
-  @JsonProperty("created")
-  public String created;
-  @JsonProperty("updated")
-  public String updated;
-  //  @JsonProperty("associations")
-  //  public Associations associations;
+    @JsonProperty("self")
+    public Self self;
+
+    @JsonProperty("first")
+    public First first;
+
+    @JsonProperty("previous")
+    public Previous previous;
 
 }

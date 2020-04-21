@@ -25,12 +25,9 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import lombok.Getter;
 
-import org.openlmis.integration.pcmt.service.RequestParameters;
 import org.openlmis.integration.pcmt.service.auth.PcmtAuthService;
 import org.openlmis.integration.pcmt.service.pcmt.web.PcmtResponseBody;
 
@@ -64,21 +61,18 @@ public class PcmtDataService {
    *
    * @return List of Products.
    */
-  public List<Object> search() {
-    // TODO COV-29: define types – getPage(RequestParameters.init()).getContent() or List
-    return new ArrayList<>();
+
+  public PcmtResponseBody downloadData(int pageNumber) {
+    return getPage(pageNumber);
   }
 
-  public PcmtResponseBody downloadData() {
-    return getPages(RequestParameters.init());
-  }
-
-  protected PcmtResponseBody getPages(RequestParameters parameters) {
+  private PcmtResponseBody getPage(int pageNumber) {
 
     String url = getUrl() + "";
     PcmtResponseBody pcmtResponseBody = new PcmtResponseBody();
     try {
-      HttpResponse<String> response = Unirest.get(url)
+      HttpResponse<String> response =
+          Unirest.get(url + "?with_count=true&page=" + pageNumber + "&limit=50")
           .header("Content-Type", "application/json")
           .header("Authorization", "Bearer " + getToken())
           .header("Cookie", "")
@@ -87,11 +81,11 @@ public class PcmtDataService {
       ObjectMapper objectMapper = new ObjectMapper();
       objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
       objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-
       pcmtResponseBody = objectMapper.readValue(response.getBody(),
           PcmtResponseBody.class);
 
-      System.out.println(pcmtResponseBody.toString());
+      System.out.println(pcmtResponseBody);
+
     } catch (HttpStatusCodeException | UnirestException ex) {
       throw ((HttpStatusCodeException) ex);
     } catch (JsonParseException e) {

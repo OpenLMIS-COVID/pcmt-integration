@@ -15,22 +15,18 @@
 
 package org.openlmis.integration.pcmt.service.pcmt.web;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Data;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Upsell {
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@Data
-public class PcmtResponseBody {
+    @JsonProperty("products")
+    public List<String> products;
+    @JsonProperty("product_models")
+    public List<String> productModels;
+    @JsonProperty("groups")
+    public List<String> groups;
 
-  @JsonProperty("_links")
-  private Links links;
-  @JsonProperty("current_page")
-  private Integer currentPage;
-  @JsonProperty("_embedded")
-  private Embedded embedded;
-  @JsonProperty("items_count")
-  private Integer itemsCount;
 }
-

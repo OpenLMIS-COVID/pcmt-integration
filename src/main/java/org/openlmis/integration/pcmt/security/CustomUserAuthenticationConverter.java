@@ -61,6 +61,6 @@ public class CustomUserAuthenticationConverter implements UserAuthenticationConv
       return AuthorityUtils.commaSeparatedStringToAuthorityList(StringUtils
           .collectionToCommaDelimitedString((Collection<?>) authorities));
     }
-    throw new IllegalArgumentException("Authorities must be either a String or a Collection");
+    throw new IllegalArgumentException("Authorities must be either a String or a CollectionDto");
   }
 }

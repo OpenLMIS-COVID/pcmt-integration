@@ -38,7 +38,7 @@ public class Message {
    * localized.
    *
    * @param messageKey        the key of the message
-   * @param messageParameters the ordered parameters for substitution in a localized message.
+   * @param messageParameters the ordered parameters for substitutionDto in a localized message.
    */
   public Message(String messageKey, Object... messageParameters) {
     Validate.notBlank(messageKey);

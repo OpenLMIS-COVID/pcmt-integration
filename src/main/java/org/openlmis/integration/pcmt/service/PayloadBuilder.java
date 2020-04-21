@@ -25,7 +25,30 @@ public class PayloadBuilder {
    *
    */
   //TODO Change method to private and return Void
-  public Payload build(Object o) {
+  public Payload build() {
+
+    PcmtResponseBody payload = getPayloadFromPcmt();
+    int xx = payload.getItemsCount()/100;
+    System.out.println(payload.getItemsCount());
+    for(int i = 0; i < xx; i++){
+      System.out.println(i);
+    }
+
+//    //Sample object adding to queue
+//    OrderableDto orderableDto = new OrderableDto();
+//    addOjbectsToQueue(orderableDto);
+
     return null;
   }
+
+  private PcmtResponseBody getPayloadFromPcmt() {
+    return pcmtDataService.downloadData(1);
+  }
+
+  // this method is only for debug
+  @EventListener(ApplicationReadyEvent.class)
+  private void doSomethingAfterStartup() {
+    build();
+  }
+
 }

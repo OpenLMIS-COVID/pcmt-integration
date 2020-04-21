@@ -15,14 +15,24 @@
 
 package org.openlmis.integration.pcmt.service.pcmt.web;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Data
-public class EmbeddedDto {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Values {
 
-  @JsonProperty("items")
-  public List<ItemDto> items = null;
+    @JsonProperty("supplier")
+    public List<Supplier> supplier;
+    @JsonProperty("wash_temperature")
+    public List<WashTemperature> washTemperature;
+    @JsonProperty("collection")
+    public List<Collection> collection;
+    @JsonProperty("name")
+    public List<Name> name;
+    @JsonProperty("erp_name")
+    public List<ErpName> erpName;
+    @JsonProperty("description")
+    public List<Description> description;
 
 }

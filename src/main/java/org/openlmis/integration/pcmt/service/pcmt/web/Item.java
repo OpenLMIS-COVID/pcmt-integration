@@ -15,22 +15,32 @@
 
 package org.openlmis.integration.pcmt.service.pcmt.web;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Data;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Item {
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@Data
-public class PcmtResponseBody {
+    @JsonProperty("_links")
+    public Links links;
+    @JsonProperty("code")
+    public String code;
+    @JsonProperty("family")
+    public String family;
+    @JsonProperty("family_variant")
+    public String familyVariant;
+    @JsonProperty("parent")
+    public Object parent;
+    @JsonProperty("categories")
+    public List<String> categories = null;
+    @JsonProperty("values")
+    public Values values;
+    @JsonProperty("created")
+    public String created;
+    @JsonProperty("updated")
+    public String updated;
+    @JsonProperty("associations")
+    public Associations associations;
 
-  @JsonProperty("_links")
-  private Links links;
-  @JsonProperty("current_page")
-  private Integer currentPage;
-  @JsonProperty("_embedded")
-  private Embedded embedded;
-  @JsonProperty("items_count")
-  private Integer itemsCount;
 }
-

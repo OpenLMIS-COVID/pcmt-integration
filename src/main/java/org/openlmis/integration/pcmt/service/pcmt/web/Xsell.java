@@ -15,16 +15,18 @@
 
 package org.openlmis.integration.pcmt.service.pcmt.web;
 
-import lombok.Data;
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Data
-public class LinksDto {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Xsell {
 
-  //  @JsonProperty("self")
-  public String self;
-  //  @JsonProperty("first")
-  public String first;
-  //  @JsonProperty("next")
-  public String next;
+    @JsonProperty("products")
+    public List<String> products;
+    @JsonProperty("product_models")
+    public List<String> productModels;
+    @JsonProperty("groups")
+    public List<String> groups;
 
 }
