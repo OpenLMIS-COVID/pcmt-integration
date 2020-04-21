@@ -1,5 +1,5 @@
 
-package org.openlmis.integration.pcmt.service.pcmt.web;
+package org.openlmis.integration.pcmt.service.pcmt.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

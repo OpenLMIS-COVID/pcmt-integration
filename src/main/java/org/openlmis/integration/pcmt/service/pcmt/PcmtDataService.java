@@ -29,7 +29,7 @@ import java.io.IOException;
 import lombok.Getter;
 
 import org.openlmis.integration.pcmt.service.auth.PcmtAuthService;
-import org.openlmis.integration.pcmt.service.pcmt.web.PcmtResponseBody;
+import org.openlmis.integration.pcmt.service.pcmt.dto.PcmtResponseBody;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -72,7 +72,7 @@ public class PcmtDataService {
     PcmtResponseBody pcmtResponseBody = new PcmtResponseBody();
     try {
       HttpResponse<String> response =
-          Unirest.get(url + "?with_count=true&page=" + pageNumber + "&limit=50")
+          Unirest.get(url + "?with_count=true&page=" + pageNumber + "&limit=100")
           .header("Content-Type", "application/json")
           .header("Authorization", "Bearer " + getToken())
           .header("Cookie", "")

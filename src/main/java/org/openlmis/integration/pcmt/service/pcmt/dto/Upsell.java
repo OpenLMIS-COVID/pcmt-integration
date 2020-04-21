@@ -13,21 +13,20 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
  */
 
-package org.openlmis.integration.pcmt.service.pcmt.web;
+package org.openlmis.integration.pcmt.service.pcmt.dto;
 
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Associations {
+public class Upsell {
 
-    @JsonProperty("Pack")
-    public Pack pack;
-    @JsonProperty("Substitution")
-    public Substitution substitution;
-    @JsonProperty("Upsell")
-    public Upsell upsell;
-    @JsonProperty("X_SELL")
-    public Xsell xsell;
+    @JsonProperty("products")
+    public List<String> products;
+    @JsonProperty("product_models")
+    public List<String> productModels;
+    @JsonProperty("groups")
+    public List<String> groups;
 
 }

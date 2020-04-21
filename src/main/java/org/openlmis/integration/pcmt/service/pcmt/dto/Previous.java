@@ -13,19 +13,15 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
  */
 
-package org.openlmis.integration.pcmt.service.pcmt.web;
+package org.openlmis.integration.pcmt.service.pcmt.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+    import com.fasterxml.jackson.annotation.JsonInclude;
+    import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class WashTemperature {
+public class Previous {
 
-    @JsonProperty("locale")
-    public String locale;
-    @JsonProperty("scope")
-    public String scope;
-    @JsonProperty("data")
-    public String data;
+  @JsonProperty("href")
+  public String href;
 
 }

@@ -13,16 +13,34 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
  */
 
-package org.openlmis.integration.pcmt.service.pcmt.web;
+package org.openlmis.integration.pcmt.service.pcmt.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Data
-public class Embedded {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Item {
 
-  @JsonProperty("items")
-  private List<Item> items;
+    @JsonProperty("_links")
+    public Links links;
+    @JsonProperty("code")
+    public String code;
+    @JsonProperty("family")
+    public String family;
+    @JsonProperty("family_variant")
+    public String familyVariant;
+    @JsonProperty("parent")
+    public Object parent;
+    @JsonProperty("categories")
+    public List<String> categories = null;
+    @JsonProperty("values")
+    public Values values;
+    @JsonProperty("created")
+    public String created;
+    @JsonProperty("updated")
+    public String updated;
+    @JsonProperty("associations")
+    public Associations associations;
 
 }

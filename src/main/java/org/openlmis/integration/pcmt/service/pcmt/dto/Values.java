@@ -13,16 +13,26 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
  */
 
-package org.openlmis.integration.pcmt.service.pcmt.web;
+package org.openlmis.integration.pcmt.service.pcmt.dto;
 
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Self {
+public class Values {
 
-    @JsonProperty("href")
-    public String href;
+    @JsonProperty("supplier")
+    public List<Supplier> supplier;
+    @JsonProperty("wash_temperature")
+    public List<WashTemperature> washTemperature;
+    @JsonProperty("collection")
+    public List<Collection> collection;
+    @JsonProperty("name")
+    public List<Name> name;
+    @JsonProperty("erp_name")
+    public List<ErpName> erpName;
+    @JsonProperty("description")
+    public List<Description> description;
 
 }

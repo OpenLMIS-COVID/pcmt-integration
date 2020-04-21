@@ -1,7 +1,6 @@
 
-package org.openlmis.integration.pcmt.service.pcmt.web;
+package org.openlmis.integration.pcmt.service.pcmt.dto;
 
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -12,13 +11,13 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "scope",
     "data"
 })
-public class Collection {
+public class ErpName {
 
     @JsonProperty("locale")
-    public Object locale;
+    public String locale;
     @JsonProperty("scope")
     public Object scope;
     @JsonProperty("data")
-    public List<String> data = null;
+    public String data;
 
 }
