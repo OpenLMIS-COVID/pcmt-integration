@@ -15,8 +15,11 @@
 
 package org.openlmis.integration.pcmt.service;
 
+import java.util.concurrent.LinkedTransferQueue;
+
 import org.openlmis.integration.pcmt.service.pcmt.PcmtDataService;
 import org.openlmis.integration.pcmt.service.pcmt.web.PcmtResponseBody;
+import org.openlmis.integration.pcmt.service.referencedata.OrderableDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.ext.XLogger;
@@ -35,16 +38,41 @@ public class PayloadBuilder {
   @Autowired
   private PcmtDataService pcmtDataService;
 
+  private LinkedTransferQueue<OrderableDto> queueOfOrderables;
+
   /**
-   * This method retrieves Payload from PCTM.
+   * This method will take and remove head element of queue.
    *
-   * @return List of Products.
+   * @return orderableDto.
    */
 
+  OrderableDto getHeadElementOfQueue() throws InterruptedException {
+    return queueOfOrderables.take();
+  }
+
+  /**
+   * This method will add element to the tail of queue.
+   *
+   */
+  private void addOjbectsToQueue(OrderableDto orderableDto) {
+    this.queueOfOrderables.add(orderableDto);
+  }
+
+  /**
+   * This docs will be deleted.
+   *
+   */
+  //TODO Change method to private and return Void
   public Payload build(Object o) {
 
     Object unMappedPayload = getPayloadFromPcmt();
-    //TODO map responseBody to payload.
+    //TODO here will be a loop which will be map response items to orderableDto and add them to
+    // queueu
+
+    //Sample object adding to queue
+    OrderableDto orderableDto = new OrderableDto();
+    addOjbectsToQueue(orderableDto);
+
     return null;
   }
 
@@ -57,6 +85,5 @@ public class PayloadBuilder {
   private void doSomethingAfterStartup() {
     getPayloadFromPcmt();
   }
-
 
 }
