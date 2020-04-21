@@ -32,6 +32,7 @@ import java.util.UUID;
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openlmis.integration.pcmt.ConfigurationDataBuilder;
 import org.openlmis.integration.pcmt.domain.Configuration;
@@ -42,6 +43,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 @SuppressWarnings("PMD.TooManyMethods")
+@Ignore
 public class ConfigurationControllerIntegrationTest extends BaseWebIntegrationTest {
 
   private static final String RESOURCE_URL = ConfigurationController.RESOURCE_PATH;

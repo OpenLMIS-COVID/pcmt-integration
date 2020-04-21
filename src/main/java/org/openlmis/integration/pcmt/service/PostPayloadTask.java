@@ -28,7 +28,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.openlmis.integration.pcmt.domain.Execution;
 import org.openlmis.integration.pcmt.domain.ExecutionResponse;
 import org.openlmis.integration.pcmt.repository.ExecutionRepository;
-import org.openlmis.integration.pcmt.service.referencedata.ProcessingPeriodDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.profiler.Profiler;
@@ -169,10 +168,7 @@ public class PostPayloadTask implements Runnable, Comparable<PostPayloadTask> {
   }
 
   private Payload createPayload(PayloadRequest request) {
-    ProcessingPeriodDto period = request.getPeriod();
-
-    return payloadBuilder
-        .build(null);
+    return payloadBuilder.build(null);
   }
 
   private void sendRequestBody(PayloadRequest payloadRequest, Execution execution,

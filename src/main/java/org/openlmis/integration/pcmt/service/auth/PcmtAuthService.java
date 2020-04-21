@@ -26,6 +26,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 @Service
+@SuppressWarnings("PMD.AvoidPrintStackTrace")
 public class PcmtAuthService {
 
   @Autowired

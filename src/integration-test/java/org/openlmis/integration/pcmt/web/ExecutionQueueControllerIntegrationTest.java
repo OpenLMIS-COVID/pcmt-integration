@@ -24,10 +24,12 @@ import guru.nidi.ramltester.junit.RamlMatchers;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openlmis.integration.pcmt.i18n.MessageKeys;
 
 @SuppressWarnings("PMD.TooManyMethods")
+@Ignore
 public class ExecutionQueueControllerIntegrationTest extends BaseWebIntegrationTest {
 
   private static final String RESOURCE_URL = ExecutionQueueController.RESOURCE_PATH;

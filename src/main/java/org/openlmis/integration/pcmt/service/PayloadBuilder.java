@@ -15,48 +15,10 @@
 
 package org.openlmis.integration.pcmt.service;
 
-import java.util.concurrent.LinkedTransferQueue;
-
-import org.openlmis.integration.pcmt.service.pcmt.PcmtDataService;
-import org.openlmis.integration.pcmt.service.pcmt.web.PcmtResponseBody;
-import org.openlmis.integration.pcmt.service.referencedata.OrderableDto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.ext.XLogger;
-import org.slf4j.ext.XLoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PayloadBuilder {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(PayloadBuilder.class);
-  private static final XLogger X_LOGGER = XLoggerFactory.getXLogger(PayloadBuilder.class);
-
-  @Autowired
-  private PcmtDataService pcmtDataService;
-
-  private LinkedTransferQueue<OrderableDto> queueOfOrderables;
-
-  /**
-   * This method will take and remove head element of queue.
-   *
-   * @return orderableDto.
-   */
-
-  OrderableDto getHeadElementOfQueue() throws InterruptedException {
-    return queueOfOrderables.take();
-  }
-
-  /**
-   * This method will add element to the tail of queue.
-   *
-   */
-  private void addOjbectsToQueue(OrderableDto orderableDto) {
-    this.queueOfOrderables.add(orderableDto);
-  }
 
   /**
    * This docs will be deleted.
@@ -64,26 +26,6 @@ public class PayloadBuilder {
    */
   //TODO Change method to private and return Void
   public Payload build(Object o) {
-
-    Object unMappedPayload = getPayloadFromPcmt();
-    //TODO here will be a loop which will be map response items to orderableDto and add them to
-    // queueu
-
-    //Sample object adding to queue
-    OrderableDto orderableDto = new OrderableDto();
-    addOjbectsToQueue(orderableDto);
-
     return null;
   }
-
-  private PcmtResponseBody getPayloadFromPcmt() {
-    return pcmtDataService.downloadData();
-  }
-
-  // this method is only for debug
-  @EventListener(ApplicationReadyEvent.class)
-  private void doSomethingAfterStartup() {
-    getPayloadFromPcmt();
-  }
-
 }

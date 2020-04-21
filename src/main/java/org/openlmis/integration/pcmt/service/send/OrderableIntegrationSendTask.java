@@ -39,6 +39,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
+@SuppressWarnings({"PMD.PreserveStackTrace"})
 public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableDto> {
 
   @Value("${service.url}")

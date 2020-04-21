@@ -40,8 +40,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 
 
-
 @Component
+@SuppressWarnings({"PMD.AvoidPrintStackTrace", "PMD.PreserveStackTrace"})
 public class PcmtDataService {
 
   @Autowired

@@ -16,6 +16,7 @@
 package org.openlmis.integration.pcmt.repository;
 
 import java.util.UUID;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openlmis.integration.pcmt.ConfigurationDataBuilder;
 import org.openlmis.integration.pcmt.IntegrationDataBuilder;
@@ -25,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.repository.CrudRepository;
 
+@Ignore
 public class IntegrationRepositoryIntegrationTest
     extends BaseCrudRepositoryIntegrationTest<Integration> {
 

@@ -18,8 +18,6 @@ package org.openlmis.integration.pcmt.service.auth;
 import static org.openlmis.integration.pcmt.service.RequestHelper.createUri;
 
 import java.util.Map;
-import lombok.Getter;
-import lombok.Setter;
 import org.apache.commons.codec.binary.Base64;
 import org.openlmis.integration.pcmt.service.RequestParameters;
 import org.springframework.beans.factory.annotation.Autowired;

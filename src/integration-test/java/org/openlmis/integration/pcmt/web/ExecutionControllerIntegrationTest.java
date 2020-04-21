@@ -30,6 +30,7 @@ import java.util.UUID;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openlmis.integration.pcmt.ExecutionDataBuilder;
 import org.openlmis.integration.pcmt.IntegrationDataBuilder;
@@ -43,6 +44,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 
 @SuppressWarnings("PMD.TooManyMethods")
+@Ignore
 public class ExecutionControllerIntegrationTest extends BaseWebIntegrationTest {
 
   private static final String RESOURCE_URL = ExecutionController.RESOURCE_PATH;

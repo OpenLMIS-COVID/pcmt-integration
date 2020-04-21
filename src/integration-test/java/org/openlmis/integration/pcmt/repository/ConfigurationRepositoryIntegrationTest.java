@@ -22,6 +22,7 @@ import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openlmis.integration.pcmt.ConfigurationDataBuilder;
 import org.openlmis.integration.pcmt.domain.Configuration;
@@ -29,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.repository.CrudRepository;
 
+@Ignore
 public class ConfigurationRepositoryIntegrationTest
     extends BaseCrudRepositoryIntegrationTest<Configuration> {
 
