@@ -13,21 +13,21 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
  */
 
-package org.openlmis.integration.pcmt.service.payload;
+package org.openlmis.integration.pcmt.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.Clock;
-import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 import org.openlmis.integration.pcmt.domain.Integration;
 import org.openlmis.integration.pcmt.repository.ExecutionRepository;
 import org.openlmis.integration.pcmt.service.PayloadBuilder;
-import org.openlmis.integration.pcmt.service.pcmt.PcmtDataService;
 import org.openlmis.integration.pcmt.service.referencedata.OrderableDto;
+import org.openlmis.integration.pcmt.service.send.IntegrationSendExecutor;
+import org.openlmis.integration.pcmt.service.send.IntegrationSendTask;
+import org.openlmis.integration.pcmt.service.send.OrderableIntegrationSendTask;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -46,36 +46,19 @@ public class IntegrationExecutionService {
   private ExecutionRepository executionRepository;
 
   @Autowired
-  private IntegrationExecutor integrationExecutor;
-
-  @Autowired
-  private PcmtDataService pcmtDataService;
+  private IntegrationSendExecutor integrationExecutor;
 
   /**
    * Method is responsible for sending payload to Interop layer. Response is a status (202, 500 or
    * 503), message and notificationsChannel.
    */
   public void integrate(UUID userId, Integration integration, boolean manualExecution) {
-    List<Object> items = pcmtDataService.search();
-
-    for (Object item : items) {
-      integrationExecutor.execute(getTask(
-          integration, manualExecution, (OrderableDto) item, userId));
-    }
-  }
-
-  private IntegrationTask<OrderableDto> getTask(Integration integration, boolean manualExecution,
-      OrderableDto entity, UUID userId) {
-
-    try {
-      ExecutableRequest<OrderableDto> request = new ExecutableRequest<>(manualExecution);
-      request.setRequestEntity(entity, HttpMethod.PUT, new URI(pcmtDataService.getUrl()));
-
-      return new OrderableIntegrationTask(entity, request, integration, userId, executionRepository,
-          clock, payloadBuilder,  objectMapper);
-    } catch (URISyntaxException e) {
-      return null; // TODO COV-29: add error handling inside task
-    }
+    BlockingQueue<OrderableDto> queue = new LinkedBlockingDeque<>();
+    // TODO: add producer task
+    IntegrationSendTask<OrderableDto> consumer = new OrderableIntegrationSendTask(queue,
+        integration, userId, executionRepository,
+        manualExecution, clock, payloadBuilder,  objectMapper);
+    integrationExecutor.execute(consumer);
   }
 
 }

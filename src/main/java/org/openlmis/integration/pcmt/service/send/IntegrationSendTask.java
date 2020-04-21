@@ -13,41 +13,37 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
  */
 
-package org.openlmis.integration.pcmt.service.payload;
+package org.openlmis.integration.pcmt.service.send;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.URISyntaxException;
 import java.time.Clock;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
+import java.util.concurrent.BlockingQueue;
 import org.openlmis.integration.pcmt.domain.Execution;
 import org.openlmis.integration.pcmt.domain.ExecutionResponse;
 import org.openlmis.integration.pcmt.domain.Integration;
 import org.openlmis.integration.pcmt.repository.ExecutionRepository;
 import org.openlmis.integration.pcmt.service.Payload;
 import org.openlmis.integration.pcmt.service.PayloadBuilder;
+import org.springframework.http.RequestEntity;
 
-public abstract class IntegrationTask<T> implements Runnable, Comparable<IntegrationTask<T>> {
+public abstract class IntegrationSendTask<T> implements Runnable,
+    Comparable<IntegrationSendTask<T>> {
 
-  protected abstract T getEntity();
-
-  protected abstract void setEntity(T entity);
-
-  protected abstract ExecutableRequest<T> getRequest();
-
-  protected abstract void setRequest(ExecutableRequest<T> request);
+  protected abstract BlockingQueue<T> getQueue();
 
   protected abstract Integration getIntegration();
 
-  protected abstract void setIntegration(Integration integration);
-
   protected abstract UUID getUserId();
 
-  protected abstract Execution getExecution();
-
-  protected abstract void setExecution(Execution execution);
-
   protected abstract ExecutionRepository getExecutionRepository();
+
+  protected abstract ZonedDateTime getExecutionTime();
+
+  protected abstract boolean isManualExecution();
 
   protected abstract Clock getClock();
 
@@ -55,47 +51,54 @@ public abstract class IntegrationTask<T> implements Runnable, Comparable<Integra
 
   protected abstract ObjectMapper getObjectMapper();
 
-  protected abstract ZonedDateTime getExecutionTime();
-
-  protected abstract ExecutionResponse send();
-
   public abstract boolean equals(Object o);
 
   public abstract int hashCode();
 
-  protected void initExecution() {
-    if (getRequest().isManualExecution()) {
-      setExecution(Execution.forManualExecutionV2(getIntegration(), getUserId(), getClock()));
+  protected abstract RequestEntity<T> initRequest(T entity) throws URISyntaxException;
+
+  protected abstract ExecutionResponse send(T entity) throws InterruptedException;
+
+  protected Execution initExecution() {
+    Execution execution;
+    if (isManualExecution()) {
+      execution = Execution.forManualExecutionV2(getIntegration(), getUserId(), getClock());
     } else {
-      setExecution(Execution.forAutomaticExecutionV2(getIntegration(), getClock()));
+      execution = Execution.forAutomaticExecutionV2(getIntegration(), getClock());
     }
 
-    setExecution(getExecutionRepository().saveAndFlush(getExecution()));
+    return getExecutionRepository().saveAndFlush(execution);
   }
 
-  protected void addRequestToExecution() {
+  protected Execution addRequestToExecution(T entity, Execution execution) {
     try {
-      // TODO COV-29: create new PayloadBuilder build(getEntity());
-      Payload payload = getPayloadBuilder().build(null);
+      Payload payload = getPayloadBuilder().build(entity);
       String requestBody = getObjectMapper().writeValueAsString(payload);
-      getExecution().setRequestBody(requestBody);
+      execution.setRequestBody(requestBody);
     } catch (Exception exp) {
       throw new IllegalStateException(exp);
     }
 
-    setExecution(getExecutionRepository().saveAndFlush(getExecution()));
+    return getExecutionRepository().saveAndFlush(execution);
   }
 
-  protected void addResponseToExecution(ExecutionResponse response) {
-    getExecution().markAsDone(response, getClock());
-    setExecution(getExecutionRepository().saveAndFlush(getExecution()));
+  protected Execution addResponseToExecution(ExecutionResponse response, Execution execution) {
+    execution.markAsDone(response, getClock());
+    return getExecutionRepository().saveAndFlush(execution);
   }
 
   @Override
   public void run() {
-    initExecution();
-    addRequestToExecution();
-    ExecutionResponse response = send();
-    addResponseToExecution(response);
+    try {
+      while (true) {
+        T entity = getQueue().take();
+        Execution execution = initExecution();
+        execution = addRequestToExecution(entity, execution);
+        ExecutionResponse response = send(entity);
+        addResponseToExecution(response, execution);
+      }
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
   }
 }

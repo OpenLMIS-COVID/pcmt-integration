@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
  */
 
-package org.openlmis.integration.pcmt.service.payload;
+package org.openlmis.integration.pcmt.service.send;
 
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix = "pcmt.integrationExecutor")
-public class IntegrationExecutor extends ThreadPoolTaskExecutor {
+public class IntegrationSendExecutor extends ThreadPoolTaskExecutor {
 
   @Override
   protected BlockingQueue<Runnable> createQueue(int queueCapacity) {
@@ -35,12 +35,12 @@ public class IntegrationExecutor extends ThreadPoolTaskExecutor {
   /**
    * Get the execution queue items.
    */
-  public synchronized Set<OrderableIntegrationTask> getQueueItems() {
+  public synchronized Set<IntegrationSendTask> getQueueItems() {
     return getThreadPoolExecutor()
         .getQueue()
         .stream()
-        .filter(runnable -> runnable instanceof OrderableIntegrationTask)
-        .map(runnable -> (OrderableIntegrationTask) runnable)
+        .filter(runnable -> runnable instanceof IntegrationSendTask)
+        .map(runnable -> (IntegrationSendTask) runnable)
         .collect(Collectors.toSet());
   }
 }
