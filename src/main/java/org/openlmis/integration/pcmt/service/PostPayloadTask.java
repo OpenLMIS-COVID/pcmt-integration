@@ -168,14 +168,7 @@ public class PostPayloadTask implements Runnable, Comparable<PostPayloadTask> {
   }
 
   private Payload createPayload(PayloadRequest request) {
-<<<<<<< HEAD
     return payloadBuilder.build(null);
-=======
-    ProcessingPeriodDto period = request.getPeriod();
-
-    return payloadBuilder
-        .build(null);
->>>>>>> Add orderables DtoModel
   }
 
   private void sendRequestBody(PayloadRequest payloadRequest, Execution execution,
