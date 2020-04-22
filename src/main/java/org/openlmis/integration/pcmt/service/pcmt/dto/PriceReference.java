@@ -34,7 +34,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class PriceReference extends BaseValue {
+public class PriceReference {
 
   @JsonProperty("locale")
   public String locale;
