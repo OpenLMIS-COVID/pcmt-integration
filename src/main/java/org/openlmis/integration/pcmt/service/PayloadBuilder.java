@@ -58,14 +58,23 @@ public class PayloadBuilder {
     return null;
   }
 
-  private OrderableDto mapItemToDto(Item n) {
+  private OrderableDto mapItemToDto(Item item) {
     OrderableDto orderableDto = new OrderableDto();
+
+    //orderableDto.setId(UUID.fromString(item.getValues().getLmisUuid().get(0).getData()));
+    //orderableDto.setFullProductName(item.getValues().getProductDescription().get(0).getData());
+    //orderableDto.setProductCode(item.getValues().getLmisCode().get(0).getData());
+    //    orderableDto.setNetContent(
+    //        Long.parseLong(
+    //            item.getValues().getUomQtyFactor().get(0).getData()));
+    //orderableDto.setDescription(item.getValues().getProductDescription().get(0).getData());
+
     return orderableDto;
   }
 
-  //  @EventListener(ApplicationReadyEvent.class)
-  //  private void doSomethingAfterStartup() {
-  //    build(null);
-  //  }
+  //    @EventListener(ApplicationReadyEvent.class)
+  //    private void doSomethingAfterStartup() {
+  //      build(null);
+  //    }
 
 }
