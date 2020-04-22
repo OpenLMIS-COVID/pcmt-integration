@@ -51,7 +51,7 @@ public class PayloadBuilder {
       }
 
       items.forEach((n) ->
-          integrationExecutionService.addOjbectsToQueue(mapItemToDto(n))
+          integrationExecutionService.addObjectsToQueue(mapItemToDto(n))
       );
     }
 

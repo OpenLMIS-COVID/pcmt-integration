@@ -22,6 +22,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import org.openlmis.integration.pcmt.domain.Integration;
 import org.openlmis.integration.pcmt.repository.ExecutionRepository;
+import org.openlmis.integration.pcmt.service.auth.AuthService;
 import org.openlmis.integration.pcmt.service.referencedata.orderable.OrderableDto;
 import org.openlmis.integration.pcmt.service.send.IntegrationSendExecutor;
 import org.openlmis.integration.pcmt.service.send.IntegrationSendTask;
@@ -47,8 +48,10 @@ public class IntegrationExecutionService {
   @Autowired
   private IntegrationSendExecutor integrationExecutor;
 
-  private BlockingQueue<OrderableDto> queue = new LinkedBlockingDeque<>();
+  @Autowired
+  private AuthService authService;
 
+  private BlockingQueue<OrderableDto> queue = new LinkedBlockingDeque<>();
 
   /**
    * Method is responsible for sending payload to Interop layer. Response is a status (202, 500 or
@@ -58,16 +61,15 @@ public class IntegrationExecutionService {
 
     // TODO: add producer task
     IntegrationSendTask<OrderableDto> consumer = new OrderableIntegrationSendTask(queue,
-        integration, userId, executionRepository,
-        manualExecution, clock, payloadBuilder,  objectMapper);
+        integration, userId, manualExecution, executionRepository, clock, payloadBuilder,
+        objectMapper, authService);
     integrationExecutor.execute(consumer);
   }
 
   /**
    * This method will add element to the tail of queue.
-   *
    */
-  public void addOjbectsToQueue(OrderableDto orderableDto) {
+  public void addObjectsToQueue(OrderableDto orderableDto) {
     this.queue.add(orderableDto);
   }
 }

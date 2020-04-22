@@ -35,12 +35,12 @@ public class IntegrationSendExecutor extends ThreadPoolTaskExecutor {
   /**
    * Get the execution queue items.
    */
-  public synchronized Set<IntegrationSendTask> getQueueItems() {
+  public synchronized Set<IntegrationSendTask<?>> getQueueItems() {
     return getThreadPoolExecutor()
         .getQueue()
         .stream()
-        .filter(runnable -> runnable instanceof IntegrationSendTask)
-        .map(runnable -> (IntegrationSendTask) runnable)
+        .filter(runnable -> runnable instanceof IntegrationSendTask<?>)
+        .map(runnable -> (IntegrationSendTask<?>) runnable)
         .collect(Collectors.toSet());
   }
 }

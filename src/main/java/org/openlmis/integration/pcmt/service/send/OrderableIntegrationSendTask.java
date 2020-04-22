@@ -15,7 +15,7 @@
 
 package org.openlmis.integration.pcmt.service.send;
 
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
@@ -24,37 +24,36 @@ import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
-import lombok.Getter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.openlmis.integration.pcmt.domain.ExecutionResponse;
 import org.openlmis.integration.pcmt.domain.Integration;
 import org.openlmis.integration.pcmt.repository.ExecutionRepository;
 import org.openlmis.integration.pcmt.service.PayloadBuilder;
+import org.openlmis.integration.pcmt.service.auth.AuthService;
 import org.openlmis.integration.pcmt.service.referencedata.orderable.OrderableDto;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
-@SuppressWarnings({"PMD.PreserveStackTrace"})
 public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableDto> {
 
-  @Value("${service.url}")
-  @Getter
-  private String serviceUrl;
   private final BlockingQueue<OrderableDto> queue;
   private final Integration integration;
   private final UUID userId;
-  private final ExecutionRepository executionRepository;
   private final boolean manualExecution;
   private final ZonedDateTime executionTime;
+
+  private final ExecutionRepository executionRepository;
   private final Clock clock;
   private final PayloadBuilder payloadBuilder;
   private final ObjectMapper objectMapper;
   private final RestTemplate restTemplate;
+  private final AuthService authService;
 
   @Override
   protected BlockingQueue<OrderableDto> getQueue() {
@@ -72,11 +71,6 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
   }
 
   @Override
-  protected ExecutionRepository getExecutionRepository() {
-    return executionRepository;
-  }
-
-  @Override
   protected boolean isManualExecution() {
     return manualExecution;
   }
@@ -84,6 +78,11 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
   @Override
   protected ZonedDateTime getExecutionTime() {
     return executionTime;
+  }
+
+  @Override
+  protected ExecutionRepository getExecutionRepository() {
+    return executionRepository;
   }
 
   @Override
@@ -104,31 +103,27 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
 
   @Override
   protected RequestEntity<OrderableDto> initRequest(OrderableDto entity) throws URISyntaxException {
-    return new RequestEntity<>(entity, HttpMethod.PUT,
-        new URI(serviceUrl + "/api/orderables/" + entity.getId()));
+    final String uri = getIntegration().getTargetUrl() + "/api/orderables/" + entity.getId();
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + getToken());
+
+    return new RequestEntity<>(entity, headers, HttpMethod.PUT, new URI(uri));
   }
 
-  /**
-   * Sends entity to the system in order to integrate it.
-   *
-   * @return execution response
-   */
   @Override
-  protected ExecutionResponse send(OrderableDto entity) throws InterruptedException {
+  protected ExecutionResponse send(OrderableDto entity) {
     try {
       RequestEntity<OrderableDto> request = initRequest(entity);
       ResponseEntity<OrderableDto> response = getRestTemplate().exchange(request,
           OrderableDto.class);
-
       return new ExecutionResponse(ZonedDateTime.now(getClock()), response.getStatusCodeValue(),
           response.getBody().toString());
-    } catch (URISyntaxException e) {
-      throw new InterruptedException(e.getMessage());
     } catch (RestClientResponseException e) {
       return new ExecutionResponse(ZonedDateTime.now(getClock()), e.getRawStatusCode(),
           e.getResponseBodyAsString());
-    } catch (Exception e) {
-      return new ExecutionResponse(ZonedDateTime.now(getClock()), INTERNAL_SERVER_ERROR.value(),
+    } catch (URISyntaxException e) {
+      return new ExecutionResponse(ZonedDateTime.now(getClock()), NOT_FOUND.value(),
           e.getMessage());
     }
   }
@@ -137,22 +132,26 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
     return restTemplate;
   }
 
+  protected String getToken() {
+    return authService.obtainAccessToken();
+  }
+
   /**
    * Constructor of OrderableIntegrationTask.
    */
-  public OrderableIntegrationSendTask(
-      BlockingQueue<OrderableDto> queue,
-      Integration integration, UUID userId,
-      ExecutionRepository executionRepository, boolean manualExecution,
-      Clock clock, PayloadBuilder payloadBuilder, ObjectMapper objectMapper) {
+  public OrderableIntegrationSendTask(BlockingQueue<OrderableDto> queue,
+      Integration integration, UUID userId, boolean manualExecution,
+      ExecutionRepository executionRepository, Clock clock,
+      PayloadBuilder payloadBuilder, ObjectMapper objectMapper, AuthService authService) {
     this.queue = queue;
     this.integration = integration;
     this.userId = userId;
-    this.executionRepository = executionRepository;
     this.manualExecution = manualExecution;
+    this.executionRepository = executionRepository;
     this.clock = clock;
     this.payloadBuilder = payloadBuilder;
     this.objectMapper = objectMapper;
+    this.authService = authService;
     this.restTemplate = new RestTemplate();
     this.executionTime = ZonedDateTime.now(getClock());
   }
@@ -177,7 +176,7 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(17, 37)
+    return new HashCodeBuilder(11, 47)
         .append(getExecutionTime())
         .append(isManualExecution())
         .toHashCode();

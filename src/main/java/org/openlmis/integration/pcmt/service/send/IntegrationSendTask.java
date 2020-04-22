@@ -57,7 +57,7 @@ public abstract class IntegrationSendTask<T> implements Runnable,
 
   protected abstract RequestEntity<T> initRequest(T entity) throws URISyntaxException;
 
-  protected abstract ExecutionResponse send(T entity) throws InterruptedException;
+  protected abstract ExecutionResponse send(T entity);
 
   protected Execution initExecution() {
     Execution execution;
