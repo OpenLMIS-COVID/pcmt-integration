@@ -29,7 +29,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.openlmis.integration.pcmt.domain.ExecutionResponse;
 import org.openlmis.integration.pcmt.domain.Integration;
 import org.openlmis.integration.pcmt.repository.ExecutionRepository;
-import org.openlmis.integration.pcmt.service.PayloadBuilder;
 import org.openlmis.integration.pcmt.service.auth.AuthService;
 import org.openlmis.integration.pcmt.service.referencedata.orderable.OrderableDto;
 import org.springframework.http.HttpHeaders;
@@ -50,7 +49,6 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
 
   private final ExecutionRepository executionRepository;
   private final Clock clock;
-  private final PayloadBuilder payloadBuilder;
   private final ObjectMapper objectMapper;
   private final RestTemplate restTemplate;
   private final AuthService authService;
@@ -88,11 +86,6 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
   @Override
   protected Clock getClock() {
     return clock;
-  }
-
-  @Override
-  protected PayloadBuilder getPayloadBuilder() {
-    return payloadBuilder;
   }
 
   @Override
@@ -142,14 +135,13 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
   public OrderableIntegrationSendTask(BlockingQueue<OrderableDto> queue,
       Integration integration, UUID userId, boolean manualExecution,
       ExecutionRepository executionRepository, Clock clock,
-      PayloadBuilder payloadBuilder, ObjectMapper objectMapper, AuthService authService) {
+      ObjectMapper objectMapper, AuthService authService) {
     this.queue = queue;
     this.integration = integration;
     this.userId = userId;
     this.manualExecution = manualExecution;
     this.executionRepository = executionRepository;
     this.clock = clock;
-    this.payloadBuilder = payloadBuilder;
     this.objectMapper = objectMapper;
     this.authService = authService;
     this.restTemplate = new RestTemplate();

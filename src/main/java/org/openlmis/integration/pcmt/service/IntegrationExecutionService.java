@@ -37,9 +37,6 @@ public class IntegrationExecutionService {
   private Clock clock;
 
   @Autowired
-  private PayloadBuilder payloadBuilder;
-
-  @Autowired
   private ObjectMapper objectMapper;
 
   @Autowired
@@ -60,9 +57,9 @@ public class IntegrationExecutionService {
   public void integrate(UUID userId, Integration integration, boolean manualExecution) {
 
     // TODO: add producer task
-    IntegrationSendTask<OrderableDto> consumer = new OrderableIntegrationSendTask(queue,
-        integration, userId, manualExecution, executionRepository, clock, payloadBuilder,
-        objectMapper, authService);
+    IntegrationSendTask<OrderableDto> consumer = new OrderableIntegrationSendTask(
+        queue, integration, userId, manualExecution,
+        executionRepository, clock, objectMapper, authService);
     integrationExecutor.execute(consumer);
   }
 

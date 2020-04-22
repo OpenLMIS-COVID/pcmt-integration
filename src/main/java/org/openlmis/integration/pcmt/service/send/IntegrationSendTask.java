@@ -26,8 +26,6 @@ import org.openlmis.integration.pcmt.domain.Execution;
 import org.openlmis.integration.pcmt.domain.ExecutionResponse;
 import org.openlmis.integration.pcmt.domain.Integration;
 import org.openlmis.integration.pcmt.repository.ExecutionRepository;
-import org.openlmis.integration.pcmt.service.Payload;
-import org.openlmis.integration.pcmt.service.PayloadBuilder;
 import org.springframework.http.RequestEntity;
 
 public abstract class IntegrationSendTask<T> implements Runnable,
@@ -46,8 +44,6 @@ public abstract class IntegrationSendTask<T> implements Runnable,
   protected abstract boolean isManualExecution();
 
   protected abstract Clock getClock();
-
-  protected abstract PayloadBuilder getPayloadBuilder();
 
   protected abstract ObjectMapper getObjectMapper();
 
@@ -72,8 +68,7 @@ public abstract class IntegrationSendTask<T> implements Runnable,
 
   protected Execution addRequestToExecution(T entity, Execution execution) {
     try {
-      Payload payload = getPayloadBuilder().build(entity);
-      String requestBody = getObjectMapper().writeValueAsString(payload);
+      String requestBody = getObjectMapper().writeValueAsString(entity);
       execution.setRequestBody(requestBody);
     } catch (Exception exp) {
       throw new IllegalStateException(exp);
