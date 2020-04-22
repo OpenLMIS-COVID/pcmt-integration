@@ -32,7 +32,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class WashTemperature {
+public class BaseValue {
 
   @JsonProperty("locale")
   public String locale;

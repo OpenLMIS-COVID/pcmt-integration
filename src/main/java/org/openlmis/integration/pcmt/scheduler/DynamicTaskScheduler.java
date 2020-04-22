@@ -146,7 +146,7 @@ public class DynamicTaskScheduler implements SchedulingConfigurer {
 
     LOGGER.debug("Current date: {}", now);
     LOGGER.trace("Previous date: {}", nowMinusMonth);
-    LOGGER.trace("First day of month: {}", startDate);
+    LOGGER.trace("Href day of month: {}", startDate);
     LOGGER.trace("Last day of month: {}", endDate);
 
     ProcessingPeriodDto period = periodReferenceDataService.search(startDate, endDate).get(0);

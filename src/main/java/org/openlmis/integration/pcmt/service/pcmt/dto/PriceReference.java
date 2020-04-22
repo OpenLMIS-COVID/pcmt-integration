@@ -18,6 +18,8 @@ package org.openlmis.integration.pcmt.service.pcmt.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -32,13 +34,13 @@ import lombok.ToString;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class ErpName {
+public class PriceReference extends BaseValue {
 
   @JsonProperty("locale")
   public String locale;
   @JsonProperty("scope")
-  public Object scope;
+  public String scope;
   @JsonProperty("data")
-  public String data;
+  public List<Price> data;
 
 }

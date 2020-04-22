@@ -49,7 +49,7 @@ public class PcmtDataService {
   private String domainUrl;
 
   public String getUrl() {
-    return domainUrl + "/api/rest/v1/product-models";
+    return domainUrl + "/api/rest/v1/products";
   }
 
   private String getToken() {
@@ -84,7 +84,6 @@ public class PcmtDataService {
       pcmtResponseBody = objectMapper.readValue(response.getBody(),
           PcmtResponseBody.class);
 
-      System.out.println(pcmtResponseBody.getLinks().getFirst().toString());
       System.out.println(pcmtResponseBody.getLinks().getSelf());
 
     } catch (HttpStatusCodeException | UnirestException ex) {

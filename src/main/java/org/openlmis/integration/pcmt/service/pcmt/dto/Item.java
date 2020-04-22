@@ -38,16 +38,14 @@ public class Item {
 
   @JsonProperty("_links")
   public Links links;
-  @JsonProperty("code")
-  public String code;
+  @JsonProperty("identifier")
+  public String identifier;
   @JsonProperty("family")
   public String family;
-  @JsonProperty("family_variant")
-  public String familyVariant;
   @JsonProperty("parent")
   public Object parent;
   @JsonProperty("categories")
-  public List<String> categories = null;
+  public List<String> categories;
   @JsonProperty("values")
   public Values values;
   @JsonProperty("created")

@@ -36,17 +36,19 @@ import lombok.ToString;
 @ToString
 public class Values {
 
-  @JsonProperty("supplier")
-  public List<Supplier> supplier;
-  @JsonProperty("wash_temperature")
-  public List<WashTemperature> washTemperature;
-  @JsonProperty("collection")
-  public List<Collection> collection;
-  @JsonProperty("name")
-  public List<Name> name;
-  @JsonProperty("erp_name")
-  public List<ErpName> erpName;
-  @JsonProperty("description")
-  public List<Description> description;
+  @JsonProperty("PACK_SIZE")
+  public List<BaseValue> packSize;
+  @JsonProperty("price_reference")
+  public List<PriceReference> priceReferences;
+  @JsonProperty("BASE_UOM")
+  public List<BaseValue> baseUom;
+  @JsonProperty("LMIS_CODE")
+  public List<BaseValue> lmisCode;
+  @JsonProperty("LMIS_UUID")
+  public List<BaseValue> lmisUuid;
+  @JsonProperty("PRODUCT_DESCRIPTION")
+  public List<BaseValue> productDescription;
+  @JsonProperty("UOM_QTY_FACTOR")
+  public List<BaseValue> uomQtyFactor;
 
 }

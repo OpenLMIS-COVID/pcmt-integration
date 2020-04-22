@@ -32,9 +32,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class Self {
+public class Price {
 
-  @JsonProperty("href")
-  public String href;
+  @JsonProperty("amount")
+  public String amount;
+  @JsonProperty("currency")
+  public String currency;
 
 }

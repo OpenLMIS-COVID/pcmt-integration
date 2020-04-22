@@ -18,8 +18,6 @@ package org.openlmis.integration.pcmt.service.pcmt.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -34,13 +32,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class Pack {
+public class Href {
 
-  @JsonProperty("products")
-  public List<String> products;
-  @JsonProperty("product_models")
-  public List<String> productModels;
-  @JsonProperty("groups")
-  public List<String> groups;
+  @JsonProperty("href")
+  public String href;
 
 }

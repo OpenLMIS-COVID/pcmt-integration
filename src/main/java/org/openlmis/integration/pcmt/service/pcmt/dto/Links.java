@@ -35,12 +35,12 @@ import lombok.ToString;
 public class Links {
 
   @JsonProperty("self")
-  public Self self;
+  public Href self;
 
   @JsonProperty("first")
-  public First first;
+  public Href first;
 
   @JsonProperty("previous")
-  public Previous previous;
+  public Href previous;
 
 }

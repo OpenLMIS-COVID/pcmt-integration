@@ -34,13 +34,7 @@ import lombok.ToString;
 @ToString
 public class Associations {
 
-  @JsonProperty("Pack")
-  public Pack pack;
-  @JsonProperty("Substitution")
+  @JsonProperty("SUBSTITUTION")
   public Substitution substitution;
-  @JsonProperty("Upsell")
-  public Upsell upsell;
-  @JsonProperty("X_SELL")
-  public Xsell xsell;
 
 }
