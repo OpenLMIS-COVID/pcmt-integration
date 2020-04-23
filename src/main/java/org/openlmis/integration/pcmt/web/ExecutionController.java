@@ -27,10 +27,6 @@ import org.openlmis.integration.pcmt.i18n.MessageKeys;
 import org.openlmis.integration.pcmt.repository.ExecutionRepository;
 import org.openlmis.integration.pcmt.repository.IntegrationRepository;
 import org.openlmis.integration.pcmt.service.IntegrationExecutionService;
-import org.openlmis.integration.pcmt.service.PayloadRequest;
-import org.openlmis.integration.pcmt.service.PayloadService;
-import org.openlmis.integration.pcmt.service.referencedata.PeriodReferenceDataService;
-import org.openlmis.integration.pcmt.service.referencedata.ProcessingPeriodDto;
 import org.openlmis.integration.pcmt.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -60,16 +56,10 @@ public class ExecutionController extends BaseController {
   private PermissionService permissionService;
 
   @Autowired
-  private PayloadService payloadService;
-
-  @Autowired
   private IntegrationExecutionService integrationService;
 
   @Autowired
   private IntegrationRepository integrationRepository;
-
-  @Autowired
-  private PeriodReferenceDataService periodReferenceDataService;
 
   @Autowired
   private ExecutionRepository executionRepository;
@@ -83,37 +73,6 @@ public class ExecutionController extends BaseController {
   @PostMapping
   @ResponseStatus(HttpStatus.ACCEPTED)
   public void runManualIntegration(@RequestBody ManualIntegrationDto manualIntegrationDto) {
-    permissionService.canManagePcmt();
-
-    Integration integration = integrationRepository
-        .findOne(manualIntegrationDto.getIntegrationId());
-    if (null == integration) {
-      throw new NotFoundException(MessageKeys.ERROR_INTEGRATION_NOT_FOUND);
-    }
-
-    ProcessingPeriodDto period = periodReferenceDataService
-        .findOne(manualIntegrationDto.getPeriodId());
-    if (null == period) {
-      throw new NotFoundException(MessageKeys.ERROR_PERIOD_NOT_FOUND);
-    }
-    UUID userId = authenticationHelper.getCurrentUser().getId();
-
-    PayloadRequest payloadRequest = PayloadRequest.forManualExecution(integration,
-        manualIntegrationDto.getFacilityId(), period,
-        manualIntegrationDto.getDescription(), userId);
-
-    payloadService.postPayload(payloadRequest);
-
-  }
-
-
-  /**
-   * This method is used to manual trigger Integration.
-   */
-  @PostMapping
-  @RequestMapping("/v2")
-  @ResponseStatus(HttpStatus.ACCEPTED)
-  public void runManualIntegrationV2(@RequestBody ManualIntegrationDto manualIntegrationDto) {
     permissionService.canManagePcmt();
     UUID userId = authenticationHelper.getCurrentUser().getId();
 
