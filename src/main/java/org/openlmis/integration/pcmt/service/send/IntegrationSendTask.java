@@ -96,4 +96,13 @@ public abstract class IntegrationSendTask<T> implements Runnable,
       Thread.currentThread().interrupt();
     }
   }
+
+  @Override
+  public int compareTo(IntegrationSendTask<T> other) {
+    if (this.isManualExecution() == other.isManualExecution()) {
+      return this.getExecutionTime().compareTo(other.getExecutionTime());
+    }
+
+    return isManualExecution() ? 1 : -1;
+  }
 }

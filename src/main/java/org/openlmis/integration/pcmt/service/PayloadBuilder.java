@@ -15,23 +15,13 @@
 
 package org.openlmis.integration.pcmt.service;
 
-import java.util.List;
-
-import org.openlmis.integration.pcmt.service.pcmt.PcmtDataService;
 import org.openlmis.integration.pcmt.service.pcmt.dto.Item;
-import org.openlmis.integration.pcmt.service.pcmt.dto.PcmtResponseBody;
 import org.openlmis.integration.pcmt.service.referencedata.orderable.OrderableDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+// ToDo: to be removed
 public class PayloadBuilder {
-
-  @Autowired
-  private PcmtDataService pcmtDataService;
-
-  @Autowired
-  private IntegrationExecutionService integrationExecutionService;
 
   /**
    * This docs will be deleted.
@@ -39,21 +29,21 @@ public class PayloadBuilder {
    */
   public Payload build(Object o) {
 
-    PcmtResponseBody responseBody = pcmtDataService.downloadData(1);
-    List<Item> items = responseBody.getEmbedded().getItems();
+    //    PcmtResponseBody responseBody = pcmtDataService.downloadData(1);
+    //    List<Item> items = responseBody.getEmbedded().getItems();
+    //
+    //    int xx = responseBody.getItemsCount() / 100;
 
-    int xx = responseBody.getItemsCount() / 100;
-
-    for (int i = 0; i <= xx; i++) {
-      if (i > 0) {
-        responseBody = pcmtDataService.downloadData(i + 1);
-        items = responseBody.getEmbedded().getItems();
-      }
-
-      items.forEach((n) ->
-          integrationExecutionService.addObjectsToQueue(mapItemToDto(n))
-      );
-    }
+    //    for (int i = 0; i <= xx; i++) {
+    //      if (i > 0) {
+    //        responseBody = pcmtDataService.downloadData(i + 1);
+    //        items = responseBody.getEmbedded().getItems();
+    //      }
+    //
+    //      items.forEach((n) ->
+    //          integrationExecutionService.addObjectsToQueue(mapItemToDto(n))
+    //      );
+    //    }
 
     return null;
   }

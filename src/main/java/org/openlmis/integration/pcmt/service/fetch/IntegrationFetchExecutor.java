@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
  */
 
-package org.openlmis.integration.pcmt.service.send;
+package org.openlmis.integration.pcmt.service.fetch;
 
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
@@ -24,8 +24,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "pcmt.integrationSendExecutor")
-public class IntegrationSendExecutor extends ThreadPoolTaskExecutor {
+@ConfigurationProperties(prefix = "pcmt.integrationFetchExecutor")
+public class IntegrationFetchExecutor extends ThreadPoolTaskExecutor {
 
   @Override
   protected BlockingQueue<Runnable> createQueue(int queueCapacity) {
@@ -35,12 +35,13 @@ public class IntegrationSendExecutor extends ThreadPoolTaskExecutor {
   /**
    * Get the execution queue items.
    */
-  public synchronized Set<IntegrationSendTask<?>> getQueueItems() {
+  public synchronized Set<IntegrationFetchTask<?>> getQueueItems() {
     return getThreadPoolExecutor()
         .getQueue()
         .stream()
-        .filter(runnable -> runnable instanceof IntegrationSendTask<?>)
-        .map(runnable -> (IntegrationSendTask<?>) runnable)
+        .filter(runnable -> runnable instanceof IntegrationFetchTask<?>)
+        .map(runnable -> (IntegrationFetchTask<?>) runnable)
         .collect(Collectors.toSet());
   }
+
 }

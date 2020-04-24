@@ -23,6 +23,9 @@ import java.util.concurrent.LinkedBlockingDeque;
 import org.openlmis.integration.pcmt.domain.Integration;
 import org.openlmis.integration.pcmt.repository.ExecutionRepository;
 import org.openlmis.integration.pcmt.service.auth.AuthService;
+import org.openlmis.integration.pcmt.service.fetch.IntegrationFetchExecutor;
+import org.openlmis.integration.pcmt.service.fetch.OrderableIntegrationFetchTask;
+import org.openlmis.integration.pcmt.service.pcmt.PcmtDataService;
 import org.openlmis.integration.pcmt.service.referencedata.orderable.OrderableDto;
 import org.openlmis.integration.pcmt.service.send.IntegrationSendExecutor;
 import org.openlmis.integration.pcmt.service.send.IntegrationSendTask;
@@ -43,30 +46,32 @@ public class IntegrationExecutionService {
   private ExecutionRepository executionRepository;
 
   @Autowired
-  private IntegrationSendExecutor integrationExecutor;
+  private IntegrationSendExecutor integrationSendExecutor;
+
+  @Autowired
+  private IntegrationFetchExecutor integrationFetchExecutor;
 
   @Autowired
   private AuthService authService;
 
-  private BlockingQueue<OrderableDto> queue = new LinkedBlockingDeque<>();
+  @Autowired
+  private PcmtDataService pcmtDataService;
+
+  private final BlockingQueue<OrderableDto> queue = new LinkedBlockingDeque<>();
 
   /**
    * Method is responsible for sending payload to Interop layer. Response is a status (202, 500 or
    * 503), message and notificationsChannel.
    */
   public void integrate(UUID userId, Integration integration, boolean manualExecution) {
-
-    // TODO: add producer task
+    OrderableIntegrationFetchTask producer = new OrderableIntegrationFetchTask(pcmtDataService,
+        queue, clock);
     IntegrationSendTask<OrderableDto> consumer = new OrderableIntegrationSendTask(
         queue, integration, userId, manualExecution,
         executionRepository, clock, objectMapper, authService);
-    integrationExecutor.execute(consumer);
+
+    integrationFetchExecutor.execute(producer);
+    integrationSendExecutor.execute(consumer);
   }
 
-  /**
-   * This method will add element to the tail of queue.
-   */
-  public void addObjectsToQueue(OrderableDto orderableDto) {
-    this.queue.add(orderableDto);
-  }
 }

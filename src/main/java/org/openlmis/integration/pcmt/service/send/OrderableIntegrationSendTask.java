@@ -173,13 +173,4 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
         .append(isManualExecution())
         .toHashCode();
   }
-
-  @Override
-  public int compareTo(IntegrationSendTask<OrderableDto> other) {
-    if (this.isManualExecution() == other.isManualExecution()) {
-      return this.getExecutionTime().compareTo(other.getExecutionTime());
-    }
-
-    return isManualExecution() ? 1 : -1;
-  }
 }
