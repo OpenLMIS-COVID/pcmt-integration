@@ -13,20 +13,34 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
  */
 
-package org.openlmis.integration.pcmt.service;
+package org.openlmis.integration.pcmt.testbuilder;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.openlmis.integration.pcmt.service.pcmt.dto.BaseValue;
 
-@Component
-public final class PcmtLongBuilder {
+public class BaseValueDataBuilder {
 
-  @Value("${pcmt.groupingSeparator}")
-  private String groupingSeparator;
+  private String locale;
+  private String scope;
+  private String data;
 
-  public Long build(String number) {
-    String formatted = number.replace(groupingSeparator, "");
-    return Long.valueOf(formatted);
+  /**
+   * Returns instance of {@link BaseValueDataBuilder} with sample data.
+   */
+  public BaseValueDataBuilder() {
+    locale = null;
+    scope = null;
+    data = null;
   }
 
+  /**
+   * Builds instance of {@link BaseValue}.
+   */
+  public BaseValue build() {
+    return new BaseValue(locale, scope, data);
+  }
+
+  public BaseValueDataBuilder withData(String data) {
+    this.data = data;
+    return this;
+  }
 }
