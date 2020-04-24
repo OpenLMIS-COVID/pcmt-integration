@@ -16,18 +16,13 @@
 package org.openlmis.integration.pcmt.scheduler;
 
 import java.time.Clock;
-import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 import org.openlmis.integration.pcmt.domain.Integration;
 import org.openlmis.integration.pcmt.repository.IntegrationRepository;
-import org.openlmis.integration.pcmt.service.PayloadRequest;
-import org.openlmis.integration.pcmt.service.PayloadService;
-import org.openlmis.integration.pcmt.service.referencedata.PeriodReferenceDataService;
-import org.openlmis.integration.pcmt.service.referencedata.ProcessingPeriodDto;
+import org.openlmis.integration.pcmt.service.IntegrationExecutionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,17 +44,20 @@ public class DynamicTaskScheduler implements SchedulingConfigurer {
   private boolean enableAutoSend;
 
   @Autowired
-  private PayloadService payloadService;
-
-  @Autowired
   private IntegrationRepository integrationRepository;
 
   @Autowired
-  private PeriodReferenceDataService periodReferenceDataService;
+  private IntegrationExecutionService integrationService;
 
   private ScheduledTaskRegistrar taskRegistrar;
   private Clock clock;
   private TimeZone timeZone;
+
+  @Autowired
+  public void setClock(Clock clock) {
+    this.clock = clock;
+    this.timeZone = TimeZone.getTimeZone(this.clock.getZone());
+  }
 
   /**
    * Creates new task by cron expressions from DB.
@@ -118,12 +116,6 @@ public class DynamicTaskScheduler implements SchedulingConfigurer {
     return new CronTask(task, trigger);
   }
 
-  @Autowired
-  public void setClock(Clock clock) {
-    this.clock = clock;
-    this.timeZone = TimeZone.getTimeZone(clock.getZone());
-  }
-
   private TaskScheduler poolScheduler() {
     ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
     scheduler.setThreadNamePrefix("ThreadPoolTaskScheduler");
@@ -133,44 +125,19 @@ public class DynamicTaskScheduler implements SchedulingConfigurer {
     return scheduler;
   }
 
-  /**
-   * Place for init tasks.
-   */
   private void sendData(List<Integration> integrations) {
     LOGGER.debug("Send data for {} integrations", integrations.size());
 
-    LocalDate now = LocalDate.now(clock);
-    LocalDate nowMinusMonth = now.minusMonths(1);
-    LocalDate startDate = nowMinusMonth.with(TemporalAdjusters.firstDayOfMonth());
-    LocalDate endDate = nowMinusMonth.with(TemporalAdjusters.lastDayOfMonth());
-
-    LOGGER.debug("Current date: {}", now);
-    LOGGER.trace("Previous date: {}", nowMinusMonth);
-    LOGGER.trace("Href day of month: {}", startDate);
-    LOGGER.trace("Last day of month: {}", endDate);
-
-    ProcessingPeriodDto period = periodReferenceDataService.search(startDate, endDate).get(0);
-    LOGGER.info("Retrieved period: {}", period.getName());
-
     for (Integration integration : integrations) {
-      sendData(integration, period);
+      sendData(integration);
     }
 
     LOGGER.debug("Sent data for {} integrations", integrations.size());
   }
 
-  private void sendData(Integration integration, ProcessingPeriodDto period) {
-    if (null == integration.getProgramId()) {
-      LOGGER.info("Send data for all programs for {} period", period.getName());
-    } else {
-      LOGGER.info(
-          "Send data for program {} for {} period",
-          integration.getProgramId(), period.getName()
-      );
-    }
-
-    PayloadRequest request = PayloadRequest.forAutomaticExecution(integration, period);
-    payloadService.postPayload(request);
+  private void sendData(Integration integration) {
+    LOGGER.info("Send data for integration {}", integration.getId());
+    integrationService.integrate(integration);
   }
 
 }

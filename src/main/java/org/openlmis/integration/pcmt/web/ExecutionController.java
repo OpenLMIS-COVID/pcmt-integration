@@ -82,7 +82,7 @@ public class ExecutionController extends BaseController {
       throw new NotFoundException(MessageKeys.ERROR_INTEGRATION_NOT_FOUND);
     }
 
-    integrationService.integrate(userId, integration, true);
+    integrationService.integrate(userId, integration);
   }
 
   /**

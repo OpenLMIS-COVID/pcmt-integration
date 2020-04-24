@@ -30,11 +30,15 @@ import org.openlmis.integration.pcmt.service.referencedata.orderable.OrderableDt
 import org.openlmis.integration.pcmt.service.send.IntegrationSendExecutor;
 import org.openlmis.integration.pcmt.service.send.IntegrationSendTask;
 import org.openlmis.integration.pcmt.service.send.OrderableIntegrationSendTask;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class IntegrationExecutionService {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(IntegrationExecutionService.class);
 
   @Autowired
   private Clock clock;
@@ -63,18 +67,37 @@ public class IntegrationExecutionService {
   private final BlockingQueue<OrderableDto> queue = new LinkedBlockingDeque<>();
 
   /**
-   * Method is responsible for sending payload to Interop layer. Response is a status (202, 500 or
-   * 503), message and notificationsChannel.
+   * Integrates the PCMT with the OpenLMIS system. Designed for scheduled executions.
+   *
+   * @param integration configuration
    */
-  public void integrate(UUID userId, Integration integration, boolean manualExecution) {
+  public void integrate(Integration integration) {
+    LOGGER.info("Scheduled Integration {} was started by a scheduler", integration.getId());
+    integrate(null, integration,false);
+  }
+
+  /**
+   * Integrates the PCMT with the OpenLMIS system. Designed for manual executions.
+   *
+   * @param userId of a user who started integration manually
+   * @param integration configuration
+   */
+  public void integrate(UUID userId, Integration integration) {
+    LOGGER.info("Manual integration with id: {} was started by a user with id: {}",
+        integration.getId(), userId);
+    integrate(userId, integration,true);
+  }
+
+  private void integrate(UUID userId, Integration integration, boolean manualExecution) {
     OrderableIntegrationFetchTask producer = new OrderableIntegrationFetchTask(pcmtDataService,
         pcmtLongBuilder, queue, clock);
     IntegrationSendTask<OrderableDto> consumer = new OrderableIntegrationSendTask(
         queue, integration, userId, manualExecution,
         executionRepository, clock, objectMapper, authService);
 
+    LOGGER.info("Integration {} was started by a user with id: {}", integration.getId(), userId);
+
     integrationFetchExecutor.execute(producer);
     integrationSendExecutor.execute(consumer);
   }
-
 }

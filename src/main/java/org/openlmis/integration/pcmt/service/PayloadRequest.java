@@ -49,18 +49,6 @@ public class PayloadRequest {
   @Getter
   private final UUID userId;
 
-  public static PayloadRequest forAutomaticExecution(Integration integration,
-      ProcessingPeriodDto period) {
-    return new PayloadRequest(integration, null, period, null, false,
-        null);
-  }
-
-  public static PayloadRequest forManualExecution(Integration integration, UUID facilityId,
-      ProcessingPeriodDto period, String description, UUID userId) {
-    return new PayloadRequest(integration, facilityId, period, description, true,
-        userId);
-  }
-
   public UUID getProgramId() {
     return integration.getProgramId();
   }
