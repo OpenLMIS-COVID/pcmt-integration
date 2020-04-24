@@ -31,6 +31,8 @@ import org.openlmis.integration.pcmt.domain.Integration;
 import org.openlmis.integration.pcmt.repository.ExecutionRepository;
 import org.openlmis.integration.pcmt.service.auth.AuthService;
 import org.openlmis.integration.pcmt.service.referencedata.orderable.OrderableDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -41,6 +43,7 @@ import org.springframework.web.client.RestTemplate;
 
 public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableDto> {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(OrderableIntegrationSendTask.class);
   private final BlockingQueue<OrderableDto> queue;
   private final Integration integration;
   private final UUID userId;
@@ -52,6 +55,11 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
   private final ObjectMapper objectMapper;
   private final RestTemplate restTemplate;
   private final AuthService authService;
+
+  @Override
+  protected Logger getLogger() {
+    return LOGGER;
+  }
 
   @Override
   protected BlockingQueue<OrderableDto> getQueue() {
@@ -93,7 +101,6 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
     return objectMapper;
   }
 
-
   @Override
   protected RequestEntity<OrderableDto> initRequest(OrderableDto entity) throws URISyntaxException {
     final String uri = getIntegration().getTargetUrl() + "/api/orderables/" + entity.getId();
@@ -110,6 +117,7 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
       RequestEntity<OrderableDto> request = initRequest(entity);
       ResponseEntity<OrderableDto> response = getRestTemplate().exchange(request,
           OrderableDto.class);
+      getLogger().debug("Updated Orderable with result code: {}", response.getStatusCode());
       return new ExecutionResponse(ZonedDateTime.now(getClock()), response.getStatusCodeValue(),
           response.getBody().toString());
     } catch (RestClientResponseException e) {

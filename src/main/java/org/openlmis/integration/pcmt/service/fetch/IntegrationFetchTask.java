@@ -21,9 +21,13 @@ import java.util.concurrent.BlockingQueue;
 import org.apache.commons.collections4.CollectionUtils;
 import org.openlmis.integration.pcmt.service.pcmt.PcmtDataService;
 import org.openlmis.integration.pcmt.service.pcmt.dto.Item;
+import org.openlmis.integration.pcmt.web.BaseDto;
+import org.slf4j.Logger;
 
-public abstract class IntegrationFetchTask<T> implements Runnable,
+public abstract class IntegrationFetchTask<T extends BaseDto> implements Runnable,
     Comparable<IntegrationFetchTask<T>> {
+
+  protected abstract Logger getLogger();
 
   protected abstract PcmtDataService getPcmtDataService();
 
@@ -37,11 +41,17 @@ public abstract class IntegrationFetchTask<T> implements Runnable,
 
   protected void addToQueue(T entity) {
     getQueue().add(entity);
+    getLogger().debug("Added fetched entity with id {} to queue.", entity.getId());
   }
 
   protected boolean nextPage(List<Item> items) {
-    incPage();
-    return CollectionUtils.isNotEmpty(items);
+    if (CollectionUtils.isNotEmpty(items)) {
+      getLogger().debug("Fetched {} with {} items", getPageNumber(), items.size());
+      incPage();
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @Override

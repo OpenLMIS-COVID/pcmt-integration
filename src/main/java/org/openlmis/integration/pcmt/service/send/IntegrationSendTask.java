@@ -26,10 +26,14 @@ import org.openlmis.integration.pcmt.domain.Execution;
 import org.openlmis.integration.pcmt.domain.ExecutionResponse;
 import org.openlmis.integration.pcmt.domain.Integration;
 import org.openlmis.integration.pcmt.repository.ExecutionRepository;
+import org.openlmis.integration.pcmt.web.BaseDto;
+import org.slf4j.Logger;
 import org.springframework.http.RequestEntity;
 
-public abstract class IntegrationSendTask<T> implements Runnable,
+public abstract class IntegrationSendTask<T extends BaseDto> implements Runnable,
     Comparable<IntegrationSendTask<T>> {
+
+  protected abstract Logger getLogger();
 
   protected abstract BlockingQueue<T> getQueue();
 
@@ -84,9 +88,12 @@ public abstract class IntegrationSendTask<T> implements Runnable,
 
   @Override
   public void run() {
+    getLogger().info("Started send task with execution time {}", getExecutionTime());
     try {
       while (true) {
         T entity = getQueue().take();
+        getLogger().debug("Taken entity with id {} from the queue.", entity.getId());
+
         Execution execution = initExecution();
         execution = addRequestToExecution(entity, execution);
         ExecutionResponse response = send(entity);
@@ -95,6 +102,7 @@ public abstract class IntegrationSendTask<T> implements Runnable,
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
     }
+    getLogger().info("Started send task with execution time {}", getExecutionTime());
   }
 
   @Override

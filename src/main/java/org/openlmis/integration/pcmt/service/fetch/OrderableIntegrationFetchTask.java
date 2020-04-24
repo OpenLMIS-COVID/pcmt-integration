@@ -27,14 +27,22 @@ import org.openlmis.integration.pcmt.service.pcmt.PcmtDataService;
 import org.openlmis.integration.pcmt.service.pcmt.dto.Item;
 import org.openlmis.integration.pcmt.service.pcmt.dto.PcmtResponseBody;
 import org.openlmis.integration.pcmt.service.referencedata.orderable.OrderableDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OrderableIntegrationFetchTask extends IntegrationFetchTask<OrderableDto> {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(OrderableIntegrationFetchTask.class);
   private final PcmtDataService pcmtDataService;
   private final PcmtLongBuilder pcmtLongBuilder;
   private final BlockingQueue<OrderableDto> queue;
   private final ZonedDateTime executionTime;
   private int page;
+
+  @Override
+  protected Logger getLogger() {
+    return LOGGER;
+  }
 
   protected PcmtDataService getPcmtDataService() {
     return pcmtDataService;
@@ -82,6 +90,7 @@ public class OrderableIntegrationFetchTask extends IntegrationFetchTask<Orderabl
 
   @Override
   public void run() {
+    getLogger().info("Started fetch task with execution time {}", getExecutionTime());
     List<Item> items;
     do {
       PcmtResponseBody responseBody = getPcmtDataService().downloadData(getPageNumber());
@@ -95,6 +104,7 @@ public class OrderableIntegrationFetchTask extends IntegrationFetchTask<Orderabl
       }
 
     } while (nextPage(items));
+    getLogger().info("Finished fetch task with execution time {}", getExecutionTime());
   }
 
   @Override
