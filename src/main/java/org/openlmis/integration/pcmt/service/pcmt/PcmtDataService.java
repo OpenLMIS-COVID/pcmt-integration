@@ -72,7 +72,10 @@ public class PcmtDataService {
     PcmtResponseBody pcmtResponseBody = new PcmtResponseBody();
     try {
       HttpResponse<String> response =
-          Unirest.get(url + "?with_count=true&page=" + pageNumber + "&limit=100")
+          Unirest.get(url + "?with_count=true&page=" + pageNumber + "&limit=100"
+              + "&search=%7B%22categories%22%3A%5B%7B%22operator%22%3A%22IN%22%2C%22"
+              + "value%22%3A%5B%22LMIS%22%5D%7D%5D%7D"
+          )
           .header("Content-Type", "application/json")
           .header("Authorization", "Bearer " + getToken())
           .header("Cookie", "")

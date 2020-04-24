@@ -15,26 +15,18 @@
 
 package org.openlmis.integration.pcmt.service;
 
-import java.util.UUID;
-import org.openlmis.integration.pcmt.service.pcmt.dto.Item;
-import org.openlmis.integration.pcmt.service.referencedata.orderable.OrderableDto;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-public final class OrderableBuilder {
+@Component
+public final class PcmtLongBuilder {
 
-  /**
-   * Maps Item to OrderableDto.
-   *
-   */
-  public static OrderableDto build(Item item, Long uomQtyFactor) {
-    OrderableDto orderableDto = new OrderableDto();
-    orderableDto.setId(UUID.fromString(item.getValues().getLmisUuid().get(0).getData()));
-    orderableDto.setFullProductName(item.getValues().getProductDescription().get(0).getData());
-    orderableDto.setProductCode(item.getValues().getLmisCode().get(0).getData());
-    orderableDto.setNetContent(uomQtyFactor);
-    orderableDto.setDescription(item.getValues().getProductDescription().get(0).getData());
-    return orderableDto;
+  @Value("${pcmt.decimalSeparator}")
+  private String decimalSeparator;
+
+  public Long build(String number) {
+    String formatted = number.replace(decimalSeparator, "");
+    return Long.valueOf(formatted);
   }
 
-  private OrderableBuilder() {
-  }
 }

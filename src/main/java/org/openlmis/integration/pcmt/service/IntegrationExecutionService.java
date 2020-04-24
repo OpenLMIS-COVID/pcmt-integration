@@ -20,6 +20,7 @@ import java.time.Clock;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
+import org.openlmis.integration.pcmt.domain.Configuration;
 import org.openlmis.integration.pcmt.domain.Integration;
 import org.openlmis.integration.pcmt.repository.ExecutionRepository;
 import org.openlmis.integration.pcmt.service.auth.AuthService;
@@ -31,6 +32,8 @@ import org.openlmis.integration.pcmt.service.send.IntegrationSendExecutor;
 import org.openlmis.integration.pcmt.service.send.IntegrationSendTask;
 import org.openlmis.integration.pcmt.service.send.OrderableIntegrationSendTask;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -57,6 +60,9 @@ public class IntegrationExecutionService {
   @Autowired
   private PcmtDataService pcmtDataService;
 
+  @Autowired
+  private PcmtLongBuilder pcmtLongBuilder;
+
   private final BlockingQueue<OrderableDto> queue = new LinkedBlockingDeque<>();
 
   /**
@@ -65,7 +71,7 @@ public class IntegrationExecutionService {
    */
   public void integrate(UUID userId, Integration integration, boolean manualExecution) {
     OrderableIntegrationFetchTask producer = new OrderableIntegrationFetchTask(pcmtDataService,
-        queue, clock);
+        pcmtLongBuilder, queue, clock);
     IntegrationSendTask<OrderableDto> consumer = new OrderableIntegrationSendTask(
         queue, integration, userId, manualExecution,
         executionRepository, clock, objectMapper, authService);

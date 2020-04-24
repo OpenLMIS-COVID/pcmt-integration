@@ -22,6 +22,7 @@ import java.util.concurrent.BlockingQueue;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.openlmis.integration.pcmt.service.OrderableBuilder;
+import org.openlmis.integration.pcmt.service.PcmtLongBuilder;
 import org.openlmis.integration.pcmt.service.pcmt.PcmtDataService;
 import org.openlmis.integration.pcmt.service.pcmt.dto.Item;
 import org.openlmis.integration.pcmt.service.pcmt.dto.PcmtResponseBody;
@@ -30,12 +31,17 @@ import org.openlmis.integration.pcmt.service.referencedata.orderable.OrderableDt
 public class OrderableIntegrationFetchTask extends IntegrationFetchTask<OrderableDto> {
 
   private final PcmtDataService pcmtDataService;
+  private final PcmtLongBuilder pcmtLongBuilder;
   private final BlockingQueue<OrderableDto> queue;
   private final ZonedDateTime executionTime;
   private int page;
 
   protected PcmtDataService getPcmtDataService() {
     return pcmtDataService;
+  }
+
+  protected  PcmtLongBuilder getPcmtLongBuilder() {
+    return pcmtLongBuilder;
   }
 
   @Override
@@ -64,9 +70,11 @@ public class OrderableIntegrationFetchTask extends IntegrationFetchTask<Orderabl
    */
   public OrderableIntegrationFetchTask(
       PcmtDataService pcmtDataService,
+      PcmtLongBuilder pcmtLongBuilder,
       BlockingQueue<OrderableDto> queue,
       Clock clock) {
     this.pcmtDataService = pcmtDataService;
+    this.pcmtLongBuilder = pcmtLongBuilder;
     this.queue = queue;
     this.executionTime = ZonedDateTime.now(clock);
     this.page = 1;
@@ -80,7 +88,9 @@ public class OrderableIntegrationFetchTask extends IntegrationFetchTask<Orderabl
       items = responseBody.getEmbedded().getItems();
 
       for (Item item : items) {
-        OrderableDto entity = OrderableBuilder.build(item);
+        Long uomQtyFactor = getPcmtLongBuilder().build(
+            item.getValues().getUomQtyFactor().get(0).getData());
+        OrderableDto entity = OrderableBuilder.build(item, uomQtyFactor);
         addToQueue(entity);
       }
 
