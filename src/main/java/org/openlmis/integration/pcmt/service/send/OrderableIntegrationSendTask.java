@@ -47,6 +47,7 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
   private final BlockingQueue<OrderableDto> queue;
   private final Integration integration;
   private final UUID userId;
+  private final String targetUrl;
   private final boolean manualExecution;
   private final ZonedDateTime executionTime;
 
@@ -77,6 +78,11 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
   }
 
   @Override
+  protected String getTargetUrl() {
+    return targetUrl;
+  }
+
+  @Override
   protected boolean isManualExecution() {
     return manualExecution;
   }
@@ -103,7 +109,7 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
 
   @Override
   protected RequestEntity<OrderableDto> initRequest(OrderableDto entity) throws URISyntaxException {
-    final String uri = getIntegration().getTargetUrl() + "/api/orderables/" + entity.getId();
+    final String uri = getTargetUrl() + "/api/orderables/" + entity.getId();
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + getToken());
@@ -141,12 +147,13 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
    * Constructor of OrderableIntegrationTask.
    */
   public OrderableIntegrationSendTask(BlockingQueue<OrderableDto> queue,
-      Integration integration, UUID userId, boolean manualExecution,
+      Integration integration, UUID userId, String targetUrl, boolean manualExecution,
       ExecutionRepository executionRepository, Clock clock,
       ObjectMapper objectMapper, AuthService authService) {
     this.queue = queue;
     this.integration = integration;
     this.userId = userId;
+    this.targetUrl = targetUrl;
     this.manualExecution = manualExecution;
     this.executionRepository = executionRepository;
     this.clock = clock;

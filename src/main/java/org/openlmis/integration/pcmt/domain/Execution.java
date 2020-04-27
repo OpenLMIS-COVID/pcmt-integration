@@ -97,33 +97,32 @@ public class Execution extends BaseEntity {
   }
 
   /**
+   * Creates a new automatic execution.
+   */
+  public static Execution forAutomaticExecution(Integration integration, Clock clock,
+      String targetUrl) {
+    return new Execution(false, null, null, null,
+        ExecutionStatus.STARTED, integration.getDescription(), targetUrl,
+        ZonedDateTime.now(clock), null, EMPTY_JSON, null, null);
+  }
+
+  /**
    * Creates a new manual execution.
    */
   public static Execution forManualExecution(Integration integration, UUID facilityId,
       UUID processingPeriodId, String description, UUID userId, Clock clock) {
-    return new Execution(true, integration.getProgramId(), facilityId, processingPeriodId,
-        ExecutionStatus.STARTED, description, integration.getTargetUrl(),
+    return new Execution(true, integration.getProgramId(), facilityId,
+        processingPeriodId, ExecutionStatus.STARTED, description, integration.getTargetUrl(),
         ZonedDateTime.now(clock), null, EMPTY_JSON, userId, null);
   }
 
-  // TODO COV-29: Remove unused and rename v2
-  /**
-   * Creates a new automatic execution.
-   */
-  public static Execution forAutomaticExecutionV2(Integration integration, Clock clock) {
-    return new Execution(false, null, null, null,
-        ExecutionStatus.STARTED, integration.getDescription(), integration.getTargetUrl(),
-        ZonedDateTime.now(clock), null, EMPTY_JSON, null, null);
-  }
-
-  // TODO COV-29: Remove unused and rename v2
   /**
    * Creates a new manual execution.
    */
-  public static Execution forManualExecutionV2(Integration integration, UUID userId,
-      Clock clock) {
+  public static Execution forManualExecution(Integration integration, UUID userId,
+      Clock clock, String targetUrl) {
     return new Execution(true, null, null, null,
-        ExecutionStatus.STARTED, integration.getDescription(), integration.getTargetUrl(),
+        ExecutionStatus.STARTED, integration.getDescription(), targetUrl,
         ZonedDateTime.now(clock), null, EMPTY_JSON, userId, null);
   }
 

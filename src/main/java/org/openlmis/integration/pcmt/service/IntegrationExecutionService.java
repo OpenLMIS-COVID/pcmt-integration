@@ -33,12 +33,16 @@ import org.openlmis.integration.pcmt.service.send.OrderableIntegrationSendTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class IntegrationExecutionService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(IntegrationExecutionService.class);
+
+  @Value("${referencedata.url}")
+  private String targetUrl;
 
   @Autowired
   private Clock clock;
@@ -92,7 +96,7 @@ public class IntegrationExecutionService {
     OrderableIntegrationFetchTask producer = new OrderableIntegrationFetchTask(pcmtDataService,
         pcmtLongBuilder, queue, clock);
     IntegrationSendTask<OrderableDto> consumer = new OrderableIntegrationSendTask(
-        queue, integration, userId, manualExecution,
+        queue, integration, userId, targetUrl, manualExecution,
         executionRepository, clock, objectMapper, authService);
 
     LOGGER.info("Integration {} was started by a user with id: {}", integration.getId(), userId);

@@ -41,6 +41,8 @@ public abstract class IntegrationSendTask<T extends BaseDto> implements Runnable
 
   protected abstract UUID getUserId();
 
+  protected abstract String getTargetUrl();
+
   protected abstract ExecutionRepository getExecutionRepository();
 
   protected abstract ZonedDateTime getExecutionTime();
@@ -62,9 +64,10 @@ public abstract class IntegrationSendTask<T extends BaseDto> implements Runnable
   protected Execution initExecution() {
     Execution execution;
     if (isManualExecution()) {
-      execution = Execution.forManualExecutionV2(getIntegration(), getUserId(), getClock());
+      execution = Execution.forManualExecution(getIntegration(), getUserId(), getClock(),
+          getTargetUrl());
     } else {
-      execution = Execution.forAutomaticExecutionV2(getIntegration(), getClock());
+      execution = Execution.forAutomaticExecution(getIntegration(), getClock(), getTargetUrl());
     }
 
     return getExecutionRepository().saveAndFlush(execution);
