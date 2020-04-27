@@ -64,4 +64,9 @@ public class ItemDataBuilder {
         associations
     );
   }
+
+  public ItemDataBuilder withValues(Values values) {
+    this.values = values;
+    return this;
+  }
 }

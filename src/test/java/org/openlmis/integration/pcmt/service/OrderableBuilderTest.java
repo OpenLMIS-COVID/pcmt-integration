@@ -16,6 +16,7 @@
 package org.openlmis.integration.pcmt.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.UUID;
 import org.junit.Before;
@@ -23,6 +24,7 @@ import org.junit.Test;
 import org.openlmis.integration.pcmt.service.pcmt.dto.Item;
 import org.openlmis.integration.pcmt.service.referencedata.orderable.OrderableDto;
 import org.openlmis.integration.pcmt.testbuilder.ItemDataBuilder;
+import org.openlmis.integration.pcmt.testbuilder.ValuesDataBuilder;
 
 public class OrderableBuilderTest {
 
@@ -41,6 +43,23 @@ public class OrderableBuilderTest {
 
     assertEquals(orderableDto.getId(),
         UUID.fromString(item.getValues().getLmisUuid().get(0).getData()));
+    assertEquals(orderableDto.getProductCode(),
+        item.getValues().getLmisCode().get(0).getData());
+    assertEquals(orderableDto.getFullProductName(),
+        item.getValues().getProductDescription().get(0).getData());
+    assertEquals(orderableDto.getDescription(),
+        item.getValues().getProductDescription().get(0).getData());
+    assertEquals(orderableDto.getNetContent(), UOM_QTY_FACTOR);
+  }
+
+  @Test
+  public void shouldBuildOrderableDtoFromItemWithoutLmisUuid() {
+    item = new ItemDataBuilder().withValues(
+        new ValuesDataBuilder().withoutLmisUuid().build()).build();
+
+    OrderableDto orderableDto = OrderableBuilder.build(item, UOM_QTY_FACTOR);
+
+    assertNull(orderableDto.getId());
     assertEquals(orderableDto.getProductCode(),
         item.getValues().getLmisCode().get(0).getData());
     assertEquals(orderableDto.getFullProductName(),

@@ -15,8 +15,11 @@
 
 package org.openlmis.integration.pcmt.service;
 
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
+
 import java.util.UUID;
 import org.openlmis.integration.pcmt.service.pcmt.dto.Item;
+import org.openlmis.integration.pcmt.service.pcmt.dto.Values;
 import org.openlmis.integration.pcmt.service.referencedata.orderable.OrderableDto;
 
 public final class OrderableBuilder {
@@ -27,7 +30,10 @@ public final class OrderableBuilder {
    */
   public static OrderableDto build(Item item, Long uomQtyFactor) {
     OrderableDto orderableDto = new OrderableDto();
-    orderableDto.setId(UUID.fromString(item.getValues().getLmisUuid().get(0).getData()));
+    Values values = item.getValues();
+    if (isNotEmpty(values.getLmisUuid())) {
+      orderableDto.setId(UUID.fromString(values.getLmisUuid().get(0).getData()));
+    }
     orderableDto.setFullProductName(item.getValues().getProductDescription().get(0).getData());
     orderableDto.setProductCode(item.getValues().getLmisCode().get(0).getData());
     orderableDto.setNetContent(uomQtyFactor);

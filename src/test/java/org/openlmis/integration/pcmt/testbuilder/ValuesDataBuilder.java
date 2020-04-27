@@ -69,4 +69,9 @@ public class ValuesDataBuilder {
         uomQtyFactor
     );
   }
+
+  public ValuesDataBuilder withoutLmisUuid() {
+    this.lmisUuid = null;
+    return this;
+  }
 }
