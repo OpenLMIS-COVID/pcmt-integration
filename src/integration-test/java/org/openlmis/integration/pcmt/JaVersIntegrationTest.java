@@ -71,7 +71,6 @@ public class JaVersIntegrationTest {
     javers.commit(COMMIT_AUTHOR, integration);
 
     DateTimeZone.setDefault(DateTimeZone.forID("Africa/Johannesburg"));
-    integration.setConfiguration(new ConfigurationDataBuilder().build());
     javers.commit(COMMIT_AUTHOR, integration);
 
     //then

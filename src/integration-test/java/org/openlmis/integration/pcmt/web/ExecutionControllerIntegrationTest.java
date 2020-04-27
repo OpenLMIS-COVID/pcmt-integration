@@ -37,7 +37,6 @@ import org.openlmis.integration.pcmt.IntegrationDataBuilder;
 import org.openlmis.integration.pcmt.domain.Execution;
 import org.openlmis.integration.pcmt.domain.Integration;
 import org.openlmis.integration.pcmt.i18n.MessageKeys;
-import org.openlmis.integration.pcmt.service.referencedata.ProcessingPeriodDto;
 import org.openlmis.integration.pcmt.service.referencedata.UserDto;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -58,8 +57,6 @@ public class ExecutionControllerIntegrationTest extends BaseWebIntegrationTest {
 
   private ManualIntegrationDto manualIntegrationDto = generateRequestBody();
 
-  private ProcessingPeriodDto period =  new ProcessingPeriodDto();
-
   private Integration integration = new IntegrationDataBuilder().build();
 
   private UserDto userDto = new UserDto();
@@ -77,10 +74,6 @@ public class ExecutionControllerIntegrationTest extends BaseWebIntegrationTest {
     given(integrationRepository
         .findOne(manualIntegrationDto.getIntegrationId()))
         .willReturn(integration);
-
-    given(periodReferenceDataService
-        .findOne(manualIntegrationDto.getPeriodId()))
-        .willReturn(period);
 
     given(authenticationHelper.getCurrentUser()).willReturn(userDto);
 

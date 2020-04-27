@@ -18,9 +18,7 @@ package org.openlmis.integration.pcmt.repository;
 import java.util.UUID;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.openlmis.integration.pcmt.ConfigurationDataBuilder;
 import org.openlmis.integration.pcmt.IntegrationDataBuilder;
-import org.openlmis.integration.pcmt.domain.Configuration;
 import org.openlmis.integration.pcmt.domain.Integration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -33,9 +31,6 @@ public class IntegrationRepositoryIntegrationTest
   @Autowired
   private IntegrationRepository repository;
 
-  @Autowired
-  private ConfigurationRepository configurationRepository;
-
   @Override
   CrudRepository<Integration, UUID> getRepository() {
     return repository;
@@ -43,24 +38,18 @@ public class IntegrationRepositoryIntegrationTest
 
   @Override
   Integration generateInstance() {
-    Configuration configuration = new ConfigurationDataBuilder().buildAsNew();
-    configurationRepository.save(configuration);
-
     return new IntegrationDataBuilder()
-        .withConfiguration(configuration)
         .buildAsNew();
   }
 
   @Test(expected = DataIntegrityViolationException.class)
   public void shouldNotAllowToHaveSeveralIntegrationsWithSameTargetUrl() {
-    UUID programId = UUID.randomUUID();
-
-    repository.save(new IntegrationDataBuilder().withProgramId(programId).buildAsNew());
-    repository.saveAndFlush(new IntegrationDataBuilder().withProgramId(programId).buildAsNew());
+    repository.save(new IntegrationDataBuilder().buildAsNew());
+    repository.saveAndFlush(new IntegrationDataBuilder().buildAsNew());
   }
 
   @Test(expected = DataIntegrityViolationException.class)
   public void shouldNotAllowToSaveIntegrationWithoutConfiguration() {
-    repository.saveAndFlush(new IntegrationDataBuilder().withConfiguration(null).buildAsNew());
+    repository.saveAndFlush(new IntegrationDataBuilder().buildAsNew());
   }
 }

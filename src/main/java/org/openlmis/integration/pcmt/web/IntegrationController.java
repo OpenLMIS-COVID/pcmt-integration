@@ -19,12 +19,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import org.openlmis.integration.pcmt.domain.Configuration;
 import org.openlmis.integration.pcmt.domain.Integration;
 import org.openlmis.integration.pcmt.exception.NotFoundException;
 import org.openlmis.integration.pcmt.exception.ValidationMessageException;
 import org.openlmis.integration.pcmt.i18n.MessageKeys;
-import org.openlmis.integration.pcmt.repository.ConfigurationRepository;
 import org.openlmis.integration.pcmt.repository.IntegrationRepository;
 import org.openlmis.integration.pcmt.scheduler.DynamicTaskScheduler;
 import org.openlmis.integration.pcmt.util.Pagination;
@@ -59,9 +57,6 @@ public class IntegrationController extends BaseController {
   @Autowired
   private IntegrationRepository integrationRepository;
 
-  @Autowired
-  private ConfigurationRepository configurationRepository;
-
   /**
    * Gets all integrations available in the system.
    *
@@ -89,16 +84,10 @@ public class IntegrationController extends BaseController {
   public IntegrationDto createIntegration(@RequestBody IntegrationDto dto) {
     permissionService.canManagePcmt();
 
-    Configuration configuration = configurationRepository.findOne(dto.getConfigurationId());
-
-    if (null == configuration) {
-      throw new ValidationMessageException(MessageKeys.ERROR_CONFIGURATION_NOT_FOUND);
-    }
     validateCronExpression(dto.getCronExpression());
 
     Integration integration = new Integration();
     integration.updateFrom(dto);
-    integration.setConfiguration(configuration);
 
     integrationRepository.saveAndFlush(integration);
     scheduler.refresh();
@@ -136,12 +125,6 @@ public class IntegrationController extends BaseController {
     }
     validateCronExpression(dto.getCronExpression());
 
-    Configuration configuration = configurationRepository.findOne(dto.getConfigurationId());
-
-    if (null == configuration) {
-      throw new ValidationMessageException(MessageKeys.ERROR_CONFIGURATION_NOT_FOUND);
-    }
-
     Integration integration = integrationRepository.findOne(id);
 
     if (null == integration) {
@@ -150,7 +133,6 @@ public class IntegrationController extends BaseController {
     }
 
     integration.updateFrom(dto);
-    integration.setConfiguration(configuration);
 
     integrationRepository.saveAndFlush(integration);
     scheduler.refresh();

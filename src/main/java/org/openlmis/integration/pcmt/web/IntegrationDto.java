@@ -15,11 +15,6 @@
 
 package org.openlmis.integration.pcmt.web;
 
-import static org.openlmis.integration.pcmt.i18n.MessageKeys.ERROR_INTEGRATION_CONFIGURATION_REQUIRED;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -27,11 +22,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.openlmis.integration.pcmt.domain.Configuration;
+
 import org.openlmis.integration.pcmt.domain.Integration;
 import org.openlmis.integration.pcmt.domain.Integration.Exporter;
 import org.openlmis.integration.pcmt.domain.Integration.Importer;
-import org.openlmis.integration.pcmt.exception.ValidationMessageException;
 
 /**
  * Model of IntegrationDto.
@@ -47,7 +41,6 @@ public final class IntegrationDto extends BaseDto implements Importer, Exporter 
   private UUID programId;
   private String cronExpression;
   private String description;
-  private ConfigurationDto configuration;
 
   /**
    * Creates new instance based on domain object.
@@ -57,25 +50,5 @@ public final class IntegrationDto extends BaseDto implements Importer, Exporter 
     IntegrationDto dto = new IntegrationDto();
     integration.export(dto);
     return dto;
-  }
-
-  @JsonSetter("configuration")
-  public void setConfiguration(ConfigurationDto configuration) {
-    this.configuration = configuration;
-  }
-
-  @JsonIgnore
-  @Override
-  public void setConfiguration(Configuration configuration) {
-    this.configuration = new ConfigurationDto();
-    configuration.export(this.configuration);
-  }
-
-  UUID getConfigurationId() {
-    return Optional
-        .ofNullable(configuration)
-        .map(BaseDto::getId)
-        .orElseThrow(() -> new ValidationMessageException(
-            ERROR_INTEGRATION_CONFIGURATION_REQUIRED));
   }
 }

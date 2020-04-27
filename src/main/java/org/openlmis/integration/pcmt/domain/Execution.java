@@ -49,9 +49,6 @@ public class Execution extends BaseEntity {
   private boolean manualExecution;
 
   @Type(type = UUID_TYPE)
-  private UUID programId;
-
-  @Type(type = UUID_TYPE)
   private UUID facilityId;
 
   @Type(type = UUID_TYPE)
@@ -63,9 +60,6 @@ public class Execution extends BaseEntity {
 
   @Column(columnDefinition = TEXT_COLUMN_DEFINITION)
   private String description;
-
-  @Column(nullable = false, columnDefinition = TEXT_COLUMN_DEFINITION)
-  private String targetUrl;
 
   @Column(nullable = false, columnDefinition = TIMESTAMP_COLUMN_DEFINITION)
   private ZonedDateTime startDate;
@@ -91,8 +85,8 @@ public class Execution extends BaseEntity {
    */
   public static Execution forAutomaticExecution(Integration integration, UUID processingPeriodId,
       Clock clock) {
-    return new Execution(false, integration.getProgramId(), null, processingPeriodId,
-        ExecutionStatus.STARTED, integration.getDescription(), integration.getTargetUrl(),
+    return new Execution(false, null, processingPeriodId,
+        ExecutionStatus.STARTED, integration.getDescription(),
         ZonedDateTime.now(clock), null, EMPTY_JSON, null, null);
   }
 
@@ -101,8 +95,8 @@ public class Execution extends BaseEntity {
    */
   public static Execution forAutomaticExecution(Integration integration, Clock clock,
       String targetUrl) {
-    return new Execution(false, null, null, null,
-        ExecutionStatus.STARTED, integration.getDescription(), targetUrl,
+    return new Execution(false, null, null,
+        ExecutionStatus.STARTED, integration.getDescription(),
         ZonedDateTime.now(clock), null, EMPTY_JSON, null, null);
   }
 
@@ -111,8 +105,8 @@ public class Execution extends BaseEntity {
    */
   public static Execution forManualExecution(Integration integration, UUID facilityId,
       UUID processingPeriodId, String description, UUID userId, Clock clock) {
-    return new Execution(true, integration.getProgramId(), facilityId,
-        processingPeriodId, ExecutionStatus.STARTED, description, integration.getTargetUrl(),
+    return new Execution(true, facilityId,
+        processingPeriodId, ExecutionStatus.STARTED, description,
         ZonedDateTime.now(clock), null, EMPTY_JSON, userId, null);
   }
 
@@ -121,8 +115,8 @@ public class Execution extends BaseEntity {
    */
   public static Execution forManualExecution(Integration integration, UUID userId,
       Clock clock, String targetUrl) {
-    return new Execution(true, null, null, null,
-        ExecutionStatus.STARTED, integration.getDescription(), targetUrl,
+    return new Execution(true, null, null,
+        ExecutionStatus.STARTED, integration.getDescription(),
         ZonedDateTime.now(clock), null, EMPTY_JSON, userId, null);
   }
 
@@ -148,12 +142,10 @@ public class Execution extends BaseEntity {
   public void export(Exporter exporter) {
     exporter.setId(getId());
     exporter.setManualExecution(manualExecution);
-    exporter.setProgramId(programId);
     exporter.setFacilityId(facilityId);
     exporter.setProcessingPeriodId(processingPeriodId);
     exporter.setStatus(status);
     exporter.setDescription(description);
-    exporter.setTargetUrl(targetUrl);
     exporter.setStartDate(startDate);
 
     if (null != endDate) {
@@ -173,8 +165,6 @@ public class Execution extends BaseEntity {
 
     void setManualExecution(boolean manualExecution);
 
-    void setProgramId(UUID programId);
-
     void setFacilityId(UUID facilityId);
 
     void setProcessingPeriodId(UUID processingPeriodId);
@@ -182,8 +172,6 @@ public class Execution extends BaseEntity {
     void setStatus(ExecutionStatus status);
 
     void setDescription(String description);
-
-    void setTargetUrl(String targetUrl);
 
     void setStartDate(ZonedDateTime startDate);
 

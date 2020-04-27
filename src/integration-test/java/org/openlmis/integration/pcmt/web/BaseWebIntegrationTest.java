@@ -37,12 +37,9 @@ import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openlmis.integration.pcmt.domain.BaseEntity;
-import org.openlmis.integration.pcmt.repository.ConfigurationRepository;
 import org.openlmis.integration.pcmt.repository.ExecutionRepository;
 import org.openlmis.integration.pcmt.repository.IntegrationRepository;
 import org.openlmis.integration.pcmt.scheduler.DynamicTaskScheduler;
-import org.openlmis.integration.pcmt.service.PayloadService;
-import org.openlmis.integration.pcmt.service.referencedata.PeriodReferenceDataService;
 import org.openlmis.integration.pcmt.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -118,25 +115,16 @@ public abstract class BaseWebIntegrationTest {
   Javers javers;
 
   @MockBean
-  ConfigurationRepository configurationRepository;
-
-  @MockBean
   ExecutionRepository executionRepository;
 
   @MockBean
   IntegrationRepository integrationRepository;
 
   @MockBean
-  PayloadService payloadService;
-
-  @MockBean
   PermissionService permissionService;
 
   @MockBean
   DynamicTaskScheduler scheduler;
-
-  @MockBean
-  PeriodReferenceDataService periodReferenceDataService;
 
   @MockBean
   AuthenticationHelper authenticationHelper;

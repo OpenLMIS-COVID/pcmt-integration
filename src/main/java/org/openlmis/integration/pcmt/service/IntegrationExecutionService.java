@@ -93,8 +93,10 @@ public class IntegrationExecutionService {
   }
 
   private void integrate(UUID userId, Integration integration, boolean manualExecution) {
+
     OrderableIntegrationFetchTask producer = new OrderableIntegrationFetchTask(pcmtDataService,
         pcmtLongBuilder, queue, clock);
+
     IntegrationSendTask<OrderableDto> consumer = new OrderableIntegrationSendTask(
         queue, integration, userId, targetUrl, manualExecution,
         executionRepository, clock, objectMapper, authService);

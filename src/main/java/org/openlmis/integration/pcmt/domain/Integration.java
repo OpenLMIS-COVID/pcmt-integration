@@ -15,19 +15,14 @@
 
 package org.openlmis.integration.pcmt.domain;
 
-import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
 import org.javers.core.metamodel.annotation.TypeName;
 
 @Entity
@@ -40,10 +35,6 @@ import org.javers.core.metamodel.annotation.TypeName;
 public class Integration extends BaseEntity {
 
   @Getter
-  @Type(type = UUID_TYPE)
-  private UUID programId;
-
-  @Getter
   @Column(nullable = false, columnDefinition = TEXT_COLUMN_DEFINITION)
   private String cronExpression;
 
@@ -51,21 +42,11 @@ public class Integration extends BaseEntity {
   @Column(columnDefinition = TEXT_COLUMN_DEFINITION)
   private String description;
 
-  @Getter
-  @Setter
-  @ManyToOne
-  @JoinColumn(name = "configurationId", nullable = false)
-  private Configuration configuration;
-
-  public String getTargetUrl() {
-    return configuration.getTargetUrl();
-  }
 
   /**
    * Update this from another.
    */
   public void updateFrom(Importer importer) {
-    this.programId = importer.getProgramId();
     this.cronExpression = importer.getCronExpression();
     this.description = importer.getDescription();
   }
@@ -75,15 +56,11 @@ public class Integration extends BaseEntity {
    */
   public void export(Exporter exporter) {
     exporter.setId(getId());
-    exporter.setProgramId(programId);
     exporter.setCronExpression(cronExpression);
     exporter.setDescription(description);
-    exporter.setConfiguration(configuration);
   }
 
   public interface Importer extends BaseImporter {
-
-    UUID getProgramId();
 
     String getCronExpression();
 
@@ -93,13 +70,10 @@ public class Integration extends BaseEntity {
 
   public interface Exporter extends BaseExporter {
 
-    void setProgramId(UUID programId);
-
     void setCronExpression(String cronExpression);
 
     void setDescription(String description);
 
-    void setConfiguration(Configuration configuration);
   }
 
 }

@@ -79,10 +79,8 @@ public class ExecutionTest {
 
     assertThat(exporter.getId()).isEqualTo(execution.getId());
     assertThat(exporter.isManualExecution()).isFalse();
-    assertThat(exporter.getProgramId()).isEqualTo(INTEGRATION.getProgramId());
     assertThat(exporter.getFacilityId()).isNull();
     assertThat(exporter.getProcessingPeriodId()).isEqualTo(PROCESSING_PERIOD_ID);
-    assertThat(exporter.getTargetUrl()).isEqualToIgnoringCase(INTEGRATION.getTargetUrl());
     assertThat(exporter.getStartDate()).isEqualTo(START_DATE);
     assertThat(exporter.getEndDate()).isNull();
     assertThat(exporter.getResponse()).isNull();
@@ -101,11 +99,9 @@ public class ExecutionTest {
 
     assertThat(exporter.getId()).isEqualTo(execution.getId());
     assertThat(exporter.isManualExecution()).isTrue();
-    assertThat(exporter.getProgramId()).isEqualTo(INTEGRATION.getProgramId());
     assertThat(exporter.getFacilityId()).isNull();
     assertThat(exporter.getProcessingPeriodId()).isEqualTo(PROCESSING_PERIOD_ID);
     assertThat(exporter.getStatus()).isEqualTo(ExecutionStatus.STARTED);
-    assertThat(exporter.getTargetUrl()).isEqualToIgnoringCase(INTEGRATION.getTargetUrl());
     assertThat(exporter.getStartDate()).isEqualTo(START_DATE);
     assertThat(exporter.getEndDate()).isNull();
     assertThat(exporter.getResponse()).isNull();
@@ -167,10 +163,8 @@ public class ExecutionTest {
     // then
     assertThat(exporter.getId()).isEqualTo(execution.getId());
     assertThat(exporter.isManualExecution()).isFalse();
-    assertThat(exporter.getProgramId()).isEqualTo(INTEGRATION.getProgramId());
     assertThat(exporter.getFacilityId()).isNull();
     assertThat(exporter.getProcessingPeriodId()).isEqualTo(PROCESSING_PERIOD_ID);
-    assertThat(exporter.getTargetUrl()).isEqualToIgnoringCase(INTEGRATION.getTargetUrl());
     assertThat(exporter.getStartDate()).isEqualTo(START_DATE);
     assertThat(exporter.getEndDate()).isNull();
     assertThat(exporter.getResponse()).isNull();
@@ -195,10 +189,8 @@ public class ExecutionTest {
     // then
     assertThat(exporter.getId()).isEqualTo(execution.getId());
     assertThat(exporter.isManualExecution()).isFalse();
-    assertThat(exporter.getProgramId()).isEqualTo(INTEGRATION.getProgramId());
     assertThat(exporter.getFacilityId()).isNull();
     assertThat(exporter.getProcessingPeriodId()).isEqualTo(PROCESSING_PERIOD_ID);
-    assertThat(exporter.getTargetUrl()).isEqualToIgnoringCase(INTEGRATION.getTargetUrl());
     assertThat(exporter.getStartDate()).isEqualTo(START_DATE);
     assertThat(exporter.getEndDate()).isEqualTo(END_DATE);
     assertThat(exporter.getResponse()).isEqualTo(expectedResponse);

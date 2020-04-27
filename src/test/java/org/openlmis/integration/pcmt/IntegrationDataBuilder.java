@@ -16,34 +16,23 @@
 package org.openlmis.integration.pcmt;
 
 import java.util.UUID;
-import org.openlmis.integration.pcmt.domain.Configuration;
+
 import org.openlmis.integration.pcmt.domain.Integration;
 
 public class IntegrationDataBuilder {
 
   private UUID id = UUID.randomUUID();
-  private UUID programId = UUID.randomUUID();
   private String cronExpression = "0/30 * * * * *";
   private String description = "test-description";
-  private Configuration configuration = new ConfigurationDataBuilder().build();
 
-  public IntegrationDataBuilder withProgramId(UUID programId) {
-    this.programId = programId;
-    return this;
-  }
 
   public IntegrationDataBuilder withCronExpression(String cronExpression) {
     this.cronExpression = cronExpression;
     return this;
   }
 
-  public IntegrationDataBuilder withConfiguration(Configuration configuration) {
-    this.configuration = configuration;
-    return this;
-  }
-
   public Integration buildAsNew() {
-    return new Integration(programId, cronExpression, description, configuration);
+    return new Integration(cronExpression, description);
   }
 
   /**

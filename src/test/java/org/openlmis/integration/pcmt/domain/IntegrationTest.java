@@ -25,7 +25,6 @@ import lombok.Setter;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.junit.Test;
-import org.openlmis.integration.pcmt.ConfigurationDataBuilder;
 import org.openlmis.integration.pcmt.ToStringTestUtils;
 
 public class IntegrationTest {
@@ -34,9 +33,6 @@ public class IntegrationTest {
   public void equalsContract() {
     EqualsVerifier
         .forClass(Integration.class)
-        .withPrefabValues(Configuration.class,
-            new Configuration(),
-            new ConfigurationDataBuilder().build())
         .withRedefinedSuperclass()
         .suppress(Warning.NONFINAL_FIELDS)
         .verify();
@@ -51,8 +47,8 @@ public class IntegrationTest {
   @Test
   public void shouldUpdateFromImporter() {
     // given
-    TestIntegration data = new TestIntegration(UUID.randomUUID(),
-        UUID.randomUUID(), "cron", "description", null);
+    TestIntegration data = new TestIntegration(
+        UUID.randomUUID(), "cron", "description");
     Integration integration = new Integration();
     integration.setId(UUID.randomUUID());
 
@@ -62,7 +58,6 @@ public class IntegrationTest {
     // then
     assertThat(integration)
         .hasFieldOrPropertyWithValue("id", integration.getId())
-        .hasFieldOrPropertyWithValue("programId", data.getProgramId())
         .hasFieldOrPropertyWithValue("description", data.getDescription())
         .hasFieldOrPropertyWithValue("cronExpression", data.getCronExpression());
   }
@@ -70,14 +65,12 @@ public class IntegrationTest {
   @Test
   public void shouldExportData() {
     // given
-    Configuration configuration = new Configuration();
-    TestIntegration data = new TestIntegration(UUID.randomUUID(),
-        UUID.randomUUID(), "cron", "description", configuration);
+    TestIntegration data = new TestIntegration(
+        UUID.randomUUID(), "cron", "description");
 
     Integration integration = new Integration();
     integration.setId(UUID.randomUUID());
     integration.updateFrom(data);
-    integration.setConfiguration(configuration);
 
     // when
     TestIntegration exporter = new TestIntegration();
@@ -93,10 +86,8 @@ public class IntegrationTest {
   @AllArgsConstructor
   private static final class TestIntegration implements Integration.Importer, Integration.Exporter {
     private UUID id;
-    private UUID programId;
     private String cronExpression;
     private String description;
-    private Configuration configuration;
   }
 
 }

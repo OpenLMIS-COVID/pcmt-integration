@@ -34,7 +34,6 @@ import org.javers.repository.jql.QueryBuilder;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.integration.pcmt.domain.Configuration;
 import org.openlmis.integration.pcmt.domain.Integration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -80,13 +79,6 @@ public class AuditLogInitializerIntegrationTest {
   @PersistenceContext
   private EntityManager entityManager;
 
-  @Test
-  public void shouldCreateSnapshotForConfiguration() {
-    UUID configurationId = UUID.randomUUID();
-    addConfiguration(configurationId);
-
-    executeTest(configurationId, Configuration.class);
-  }
 
   @Test
   public void shouldCreateSnapshotForIntegration() {

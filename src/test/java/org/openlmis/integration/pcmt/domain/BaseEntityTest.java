@@ -26,7 +26,6 @@ public class BaseEntityTest {
   public void equalsContract() {
     EqualsVerifier
         .forClass(BaseEntity.class)
-        .withRedefinedSubclass(Configuration.class)
         .suppress(Warning.NONFINAL_FIELDS)
         .verify();
   }
