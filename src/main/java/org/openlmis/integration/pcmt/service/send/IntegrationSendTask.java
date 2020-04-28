@@ -64,10 +64,9 @@ public abstract class IntegrationSendTask<T extends BaseDto> implements Runnable
   protected Execution initExecution() {
     Execution execution;
     if (isManualExecution()) {
-      execution = Execution.forManualExecution(getIntegration(), getUserId(), getClock(),
-          getTargetUrl());
+      execution = Execution.forManualExecution(getIntegration(), getUserId(), getClock());
     } else {
-      execution = Execution.forAutomaticExecution(getIntegration(), getClock(), getTargetUrl());
+      execution = Execution.forAutomaticExecution(getIntegration(), getClock());
     }
 
     return getExecutionRepository().saveAndFlush(execution);

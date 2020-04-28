@@ -43,12 +43,10 @@ import org.openlmis.integration.pcmt.domain.ExecutionStatus;
 public final class ExecutionDto extends BaseDto implements Execution.Exporter {
 
   private boolean manualExecution;
-  private UUID programId;
   private UUID facilityId;
   private UUID processingPeriodId;
   private ExecutionStatus status;
   private String description;
-  private String targetUrl;
   private ZonedDateTime startDate;
   private ZonedDateTime endDate;
   private UUID userId;

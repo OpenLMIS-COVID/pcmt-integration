@@ -19,6 +19,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.UUID;
+
 import javax.annotation.Resource;
 import org.javers.core.Javers;
 import org.javers.core.metamodel.object.CdoSnapshot;
@@ -28,7 +30,6 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.Seconds;
 import org.junit.After;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.integration.pcmt.domain.Integration;
@@ -41,7 +42,6 @@ import org.springframework.transaction.annotation.Transactional;
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Ignore
 public class JaVersIntegrationTest {
 
   @Resource(name = "javersProvider")
@@ -71,6 +71,7 @@ public class JaVersIntegrationTest {
     javers.commit(COMMIT_AUTHOR, integration);
 
     DateTimeZone.setDefault(DateTimeZone.forID("Africa/Johannesburg"));
+    integration.setId(UUID.randomUUID());
     javers.commit(COMMIT_AUTHOR, integration);
 
     //then

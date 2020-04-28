@@ -77,7 +77,7 @@ public abstract class BaseWebIntegrationTest {
 
   private static final String MOCK_USER_CHECK_RESULT = "{\n"
       + "  \"aud\": [\n"
-      + "    \"dhis2integration\"\n"
+      + "    \"pcmtintegration\"\n"
       + "  ],\n"
       + "  \"user_name\": \"admin\",\n"
       + "  \"referenceDataUserId\": \"35316636-6264-6331-2d34-3933322d3462\",\n"
@@ -89,7 +89,7 @@ public abstract class BaseWebIntegrationTest {
 
   private static final String MOCK_CLIENT_CHECK_RESULT = "{\n"
       + "  \"aud\": [\n"
-      + "    \"dhis2integration\"\n"
+      + "    \"pcmtintegration\"\n"
       + "  ],\n"
       + "  \"scope\": [\"read\", \"write\"],\n"
       + "  \"exp\": 1474500343,\n"

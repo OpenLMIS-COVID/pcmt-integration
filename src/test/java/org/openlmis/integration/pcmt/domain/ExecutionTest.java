@@ -211,7 +211,6 @@ public class ExecutionTest {
     private UUID processingPeriodId;
     private ExecutionStatus status;
     private String description;
-    private String targetUrl;
     private ZonedDateTime startDate;
     private ZonedDateTime endDate;
     private UUID userId;

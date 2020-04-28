@@ -27,15 +27,10 @@ public abstract class MessageKeys {
   private static final String USER = "user";
   private static final String RIGHT = "right";
   private static final String PERMISSION = "permission";
-  private static final String CONFIGURATION = "configuration";
   private static final String INTEGRATION = "integration";
   private static final String EXECUTION = "execution";
-  private static final String PERIOD = "period";
   private static final String JAVERS = "javers";
 
-  private static final String NAME = "name";
-  private static final String TARGET_URL = "targetUrl";
-  private static final String PROGRAM_ID = "programId";
   private static final String CRON_EXPRESSION = "cronExpression";
 
   private static final String ID = "id";
@@ -45,8 +40,6 @@ public abstract class MessageKeys {
   private static final String MISMATCH = "mismatch";
   private static final String MISSING = "missing";
   private static final String INVALID = "invalid";
-  private static final String REQUIRED = "required";
-  private static final String USED = "used";
 
   private static final String ERROR_PREFIX = join(SERVICE_PREFIX, ERROR);
 
@@ -55,25 +48,11 @@ public abstract class MessageKeys {
 
   public static final String ERROR_PERMISSION_MISSING = join(ERROR_PREFIX, PERMISSION, MISSING);
 
-  public static final String ERROR_CONFIGURATION_NOT_FOUND =
-      join(ERROR_PREFIX, CONFIGURATION, NOT_FOUND);
-  public static final String ERROR_CONFIGURATION_NAME_DUPLICATED =
-      join(ERROR_PREFIX, CONFIGURATION, NAME, DUPLICATED);
-  public static final String ERROR_CONFIGURATION_TARGET_URL_DUPLICATED =
-      join(ERROR_PREFIX, CONFIGURATION, TARGET_URL, DUPLICATED);
-  public static final String ERROR_CONFIGURATION_ID_MISMATCH =
-      join(ERROR_PREFIX, CONFIGURATION, ID, MISMATCH);
-  public static final String ERROR_CONFIGURATION_USED =
-      join(ERROR_PREFIX, CONFIGURATION, USED);
 
   public static final String ERROR_INTEGRATION_NOT_FOUND =
       join(ERROR_PREFIX, INTEGRATION, NOT_FOUND);
   public static final String ERROR_INTEGRATION_DUPLICATED =
       join(ERROR_PREFIX, INTEGRATION, DUPLICATED);
-  public static final String ERROR_INTEGRATION_PROGRAM_ID_DUPLICATED =
-      join(ERROR_PREFIX, INTEGRATION, PROGRAM_ID, DUPLICATED);
-  public static final String ERROR_INTEGRATION_CONFIGURATION_REQUIRED =
-      join(ERROR_PREFIX, INTEGRATION, CONFIGURATION, REQUIRED);
   public static final String ERROR_INTEGRATION_ID_MISMATCH =
       join(ERROR_PREFIX, INTEGRATION, ID, MISMATCH);
 
@@ -81,11 +60,6 @@ public abstract class MessageKeys {
       join(ERROR_PREFIX, CRON_EXPRESSION, MISSING);
   public static final String ERROR_CRON_EXPRESSION_INVALID =
       join(ERROR_PREFIX, CRON_EXPRESSION, INVALID);
-
-  public static final String ERROR_TARGET_URL_INVALID =
-      join(ERROR_PREFIX, TARGET_URL, INVALID);
-
-  public static final String ERROR_PERIOD_NOT_FOUND = join(ERROR_PREFIX, PERIOD, NOT_FOUND);
 
   public static final String ERROR_EXECUTION_NOT_FOUND = join(ERROR_PREFIX, EXECUTION, NOT_FOUND);
 

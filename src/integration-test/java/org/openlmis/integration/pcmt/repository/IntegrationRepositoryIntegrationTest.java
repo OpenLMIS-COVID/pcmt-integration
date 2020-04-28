@@ -16,15 +16,11 @@
 package org.openlmis.integration.pcmt.repository;
 
 import java.util.UUID;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.openlmis.integration.pcmt.IntegrationDataBuilder;
 import org.openlmis.integration.pcmt.domain.Integration;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.repository.CrudRepository;
 
-@Ignore
 public class IntegrationRepositoryIntegrationTest
     extends BaseCrudRepositoryIntegrationTest<Integration> {
 
@@ -40,16 +36,5 @@ public class IntegrationRepositoryIntegrationTest
   Integration generateInstance() {
     return new IntegrationDataBuilder()
         .buildAsNew();
-  }
-
-  @Test(expected = DataIntegrityViolationException.class)
-  public void shouldNotAllowToHaveSeveralIntegrationsWithSameTargetUrl() {
-    repository.save(new IntegrationDataBuilder().buildAsNew());
-    repository.saveAndFlush(new IntegrationDataBuilder().buildAsNew());
-  }
-
-  @Test(expected = DataIntegrityViolationException.class)
-  public void shouldNotAllowToSaveIntegrationWithoutConfiguration() {
-    repository.saveAndFlush(new IntegrationDataBuilder().buildAsNew());
   }
 }

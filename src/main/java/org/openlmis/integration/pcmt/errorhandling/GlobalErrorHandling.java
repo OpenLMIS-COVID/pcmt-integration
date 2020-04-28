@@ -15,10 +15,7 @@
 
 package org.openlmis.integration.pcmt.errorhandling;
 
-import static org.openlmis.integration.pcmt.i18n.MessageKeys.ERROR_CONFIGURATION_NAME_DUPLICATED;
-import static org.openlmis.integration.pcmt.i18n.MessageKeys.ERROR_CONFIGURATION_TARGET_URL_DUPLICATED;
 import static org.openlmis.integration.pcmt.i18n.MessageKeys.ERROR_INTEGRATION_DUPLICATED;
-import static org.openlmis.integration.pcmt.i18n.MessageKeys.ERROR_INTEGRATION_PROGRAM_ID_DUPLICATED;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,12 +41,6 @@ public class GlobalErrorHandling extends AbstractErrorHandling {
   private static final Map<String, String> CONSTRAINT_MAP = new HashMap<>();
 
   static {
-    CONSTRAINT_MAP.put("configuration_name_unique", ERROR_CONFIGURATION_NAME_DUPLICATED);
-    CONSTRAINT_MAP
-        .put("configuration_target_url_unique", ERROR_CONFIGURATION_TARGET_URL_DUPLICATED);
-
-    CONSTRAINT_MAP
-        .put("integration_programid_configurationid_unq", ERROR_INTEGRATION_PROGRAM_ID_DUPLICATED);
     CONSTRAINT_MAP.put("integration_configurationid_unq", ERROR_INTEGRATION_DUPLICATED);
   }
 

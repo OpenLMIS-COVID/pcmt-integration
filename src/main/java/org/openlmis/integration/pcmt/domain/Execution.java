@@ -93,8 +93,7 @@ public class Execution extends BaseEntity {
   /**
    * Creates a new automatic execution.
    */
-  public static Execution forAutomaticExecution(Integration integration, Clock clock,
-      String targetUrl) {
+  public static Execution forAutomaticExecution(Integration integration, Clock clock) {
     return new Execution(false, null, null,
         ExecutionStatus.STARTED, integration.getDescription(),
         ZonedDateTime.now(clock), null, EMPTY_JSON, null, null);
@@ -114,7 +113,7 @@ public class Execution extends BaseEntity {
    * Creates a new manual execution.
    */
   public static Execution forManualExecution(Integration integration, UUID userId,
-      Clock clock, String targetUrl) {
+      Clock clock) {
     return new Execution(true, null, null,
         ExecutionStatus.STARTED, integration.getDescription(),
         ZonedDateTime.now(clock), null, EMPTY_JSON, userId, null);

@@ -34,16 +34,16 @@ public class CustomWebMvcConfigurerAdapter extends WebMvcConfigurerAdapter {
 
   @Override
   public void addViewControllers(ViewControllerRegistry registry) {
-    registry.addViewController("/dhis2integration/docs")
-        .setViewName("redirect:" + serviceUrl + "/dhis2integration/docs/");
-    registry.addViewController("/dhis2integration/docs/")
-        .setViewName("forward:/dhis2integration/docs/index.html");
+    registry.addViewController("/pcmtintegration/docs")
+        .setViewName("redirect:" + serviceUrl + "/pcmtintegration/docs/");
+    registry.addViewController("/pcmtintegration/docs/")
+        .setViewName("forward:/pcmtintegration/docs/index.html");
     super.addViewControllers(registry);
   }
 
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
-    registry.addResourceHandler("/dhis2integration/webjars/**")
+    registry.addResourceHandler("/pcmtintegration/webjars/**")
         .addResourceLocations("classpath:/META-INF/resources/webjars/");
     super.addResourceHandlers(registry);
   }

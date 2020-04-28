@@ -85,10 +85,10 @@ public class ResourceServerSecurityConfiguration implements ResourceServerConfig
     http
         .authorizeRequests()
         .antMatchers(
-            "/dhis2integration",
+            "/pcmtintegration",
             "/webjars/**",
-            "/dhis2integration/webjars/**",
-            "/dhis2integration/docs/**"
+            "/pcmtintegration/webjars/**",
+            "/pcmtintegration/docs/**"
         ).permitAll()
         .antMatchers("/**").fullyAuthenticated();
   }

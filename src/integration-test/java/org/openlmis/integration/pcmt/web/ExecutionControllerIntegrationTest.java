@@ -97,7 +97,8 @@ public class ExecutionControllerIntegrationTest extends BaseWebIntegrationTest {
         .then()
         .statusCode(HttpStatus.SC_OK)
         .body("content", hasSize(2))
-        .body("content[0].programId", is(executionDto.getProgramId().toString()));
+        .body("content[0].id", is(executionDto.getId().toString()))
+        .body("content[0].description", is(executionDto.getDescription()));
 
     assertThat(RAML_ASSERT_MESSAGE, restAssured.getLastReport(), RamlMatchers.hasNoViolations());
   }
@@ -176,7 +177,7 @@ public class ExecutionControllerIntegrationTest extends BaseWebIntegrationTest {
         .then()
         .statusCode(HttpStatus.SC_OK)
         .body("id", is(executionDto.getId().toString()))
-        .body("programId", is(executionDto.getProgramId().toString()));
+        .body("description", is(executionDto.getDescription()));
 
     assertThat(RAML_ASSERT_MESSAGE, restAssured.getLastReport(), RamlMatchers.hasNoViolations());
   }

@@ -18,7 +18,6 @@ package org.openlmis.integration.pcmt.errorhandling;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
-import static org.openlmis.integration.pcmt.i18n.MessageKeys.ERROR_CONFIGURATION_NAME_DUPLICATED;
 import static org.openlmis.integration.pcmt.i18n.MessageKeys.ERROR_PERMISSION_MISSING;
 
 import java.util.Locale;
@@ -63,22 +62,6 @@ public class GlobalErrorHandlingTest {
         });
   }
 
-  @Test
-  public void shouldHandleDataIntegrityViolation() {
-    // given
-    String constraintName = "configuration_name_unique";
-    ConstraintViolationException constraintViolation = new ConstraintViolationException(
-        null, null, constraintName);
-    DataIntegrityViolationException exp = new DataIntegrityViolationException(
-        null, constraintViolation);
-
-    // when
-    mockMessage(ERROR_CONFIGURATION_NAME_DUPLICATED);
-    LocalizedMessage message = errorHandler.handleDataIntegrityViolation(exp);
-
-    // then
-    assertMessage(message, ERROR_CONFIGURATION_NAME_DUPLICATED);
-  }
 
   @Test
   public void shouldHandleDataIntegrityViolationEvenIfMessageKeyNotExist() {

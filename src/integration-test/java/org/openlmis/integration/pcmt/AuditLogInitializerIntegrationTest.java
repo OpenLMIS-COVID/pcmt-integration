@@ -31,7 +31,6 @@ import org.javers.core.metamodel.object.CdoSnapshot;
 import org.javers.core.metamodel.object.GlobalId;
 import org.javers.core.metamodel.object.InstanceId;
 import org.javers.repository.jql.QueryBuilder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.integration.pcmt.domain.Integration;
@@ -47,25 +46,15 @@ import org.springframework.transaction.annotation.Transactional;
 @ActiveProfiles({"test", "init-audit-log"})
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@Ignore
 public class AuditLogInitializerIntegrationTest {
 
-  private static final String[] CONFIGURATION_FIELDS = {
-      "id", "name", "targetUrl"
-  };
-
   private static final String[] INTEGRATION_FIELDS = {
-      "id", "programId", "cronExpression", "description", "configurationId"
+      "id", "cronExpression", "description"
   };
 
-  private static final String INSERT_CONFIGURATION_SQL = String.format(
-      "INSERT INTO dhis2integration.configurations (%s) VALUES (%s) ",
-      StringUtils.join(CONFIGURATION_FIELDS, ", "),
-      StringUtils.repeat("?", ", ", CONFIGURATION_FIELDS.length)
-  );
 
   private static final String INSERT_INTEGRATION_SQL = String.format(
-      "INSERT INTO dhis2integration.integrations (%s) VALUES (%s) ",
+      "INSERT INTO pcmtintegration.integrations (%s) VALUES (%s) ",
       StringUtils.join(INTEGRATION_FIELDS, ", "),
       StringUtils.repeat("?", ", ", INTEGRATION_FIELDS.length)
   );
@@ -82,11 +71,9 @@ public class AuditLogInitializerIntegrationTest {
 
   @Test
   public void shouldCreateSnapshotForIntegration() {
-    UUID configurationId = UUID.randomUUID();
     UUID integrationId = UUID.randomUUID();
 
-    addConfiguration(configurationId);
-    addIntegration(integrationId, configurationId);
+    addIntegration(integrationId);
 
     executeTest(integrationId, Integration.class);
   }
@@ -117,25 +104,13 @@ public class AuditLogInitializerIntegrationTest {
     assertThat(instanceId.getTypeName(), is(clazz.getSimpleName()));
   }
 
-  private void addConfiguration(UUID id) {
-    entityManager.flush();
-    entityManager
-        .createNativeQuery(INSERT_CONFIGURATION_SQL)
-        .setParameter(1, id)
-        .setParameter(2, "test-configuration")
-        .setParameter(3, "http://localhost")
-        .executeUpdate();
-  }
-
-  private void addIntegration(UUID id, UUID configurationId) {
+  private void addIntegration(UUID id) {
     entityManager.flush();
     entityManager
         .createNativeQuery(INSERT_INTEGRATION_SQL)
         .setParameter(1, id)
-        .setParameter(2, UUID.randomUUID())
-        .setParameter(3, "0/30 * * * * ")
-        .setParameter(4, "test-description")
-        .setParameter(5, configurationId)
+        .setParameter(2, "0/30 * * * * ")
+        .setParameter(3, "test-description")
         .executeUpdate();
   }
 }
