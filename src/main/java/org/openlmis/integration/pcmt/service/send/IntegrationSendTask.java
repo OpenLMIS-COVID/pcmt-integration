@@ -116,4 +116,24 @@ public abstract class IntegrationSendTask<T extends BaseDto> implements Runnable
 
     return isManualExecution() ? 1 : -1;
   }
+
+  /**
+   * Exports the current task state.
+   */
+  public void export(Exporter exporter) {
+    exporter.setExecutionTime(getExecutionTime());
+    exporter.setUserId(getUserId());
+    exporter.setDescription(getIntegration().getDescription());
+  }
+
+  public interface Exporter {
+
+    void setExecutionTime(ZonedDateTime executionTime);
+
+    void setUserId(UUID userId);
+
+    void setDescription(String description);
+
+  }
+
 }

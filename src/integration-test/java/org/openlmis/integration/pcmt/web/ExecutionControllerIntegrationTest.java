@@ -42,8 +42,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 
-@SuppressWarnings("PMD.TooManyMethods")
 @Ignore
+@SuppressWarnings("PMD.TooManyMethods")
 public class ExecutionControllerIntegrationTest extends BaseWebIntegrationTest {
 
   private static final String RESOURCE_URL = ExecutionController.RESOURCE_PATH;

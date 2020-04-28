@@ -45,7 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(IntegrationController.RESOURCE_PATH)
 public class IntegrationController extends BaseController {
 
-  public static final String RESOURCE_PATH = API_PATH + "/integrationProgramSchedules";
+  public static final String RESOURCE_PATH = API_PATH + "/integrationSchedules";
   public static final String ID_URL = "/{id}";
 
   @Autowired
