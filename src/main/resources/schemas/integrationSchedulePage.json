@@ -2,13 +2,13 @@
     "type": "object",
     "$schema": "http://json-schema.org/draft-04/schema",
     "title": "Collection",
-    "description": "Paginated collection of integration config",
+    "description": "Paginated collection of schedules",
     "properties": {
       "content": {
         "type": "array",
         "items": {
           "type": "object",
-          "$ref": "integrationConfiguration.json"
+          "$ref": "integrationSchedule.json"
         }
       },
       "totalPages": {

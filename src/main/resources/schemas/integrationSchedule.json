@@ -1,0 +1,19 @@
+{
+    "type": "object",
+    "$schema": "http://json-schema.org/draft-04/schema",
+    "title": "value",
+    "description": "Create Schedule",
+    "properties": {
+        "cronExpression": {
+            "type": "string",
+            "name": "cronExpression"
+        },
+        "description": {
+            "type": ["null", "string"],
+            "name": "description"
+        }
+    },
+    "required": [
+        "cronExpression"
+    ]
+}

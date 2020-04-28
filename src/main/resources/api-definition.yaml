@@ -1,13 +1,13 @@
 #%RAML 0.8
 ---
-title: OpenLMIS Malawi DHIS2 Integration API
+title: OpenLMIS PCMT Integration API
 version: "@version@"
 baseUri: "@baseUrl@"
 protocols: [ HTTP, HTTPS ]
 
 documentation:
   - title: Getting Started
-    content: Welcome to the OpenLMIS Malawi DHIS2 Integration Service documentation.
+    content: Welcome to the OpenLMIS PCMT Integration Service documentation.
 
 schemas:
   - auditLogEntry: !include schemas/auditLogEntry.json
@@ -34,10 +34,8 @@ schemas:
           "items": { "type": "object", "$ref": "integrationExecutionQueueItem" }
       }
 
-  - integrationConfiguration: !include schemas/integrationConfiguration.json
-  - integrationConfigurationPage: !include schemas/integrationConfigurationPage.json
-  - integrationProgramSchedule: !include schemas/integrationProgramSchedule.json
-  - integrationProgramSchedulePage: !include schemas/integrationProgramSchedulePage.json
+  - integrationSchedule: !include schemas/integrationSchedule.json
+  - integrationSchedulePage: !include schemas/integrationSchedulePage.json
 
 traits:
   - secured:
@@ -138,7 +136,7 @@ resourceTypes:
           type: string
           required: true
           repeat: false
-/dhis2integration:
+/pcmtintegration:
   displayName: Version
   get:
     description: Get version
@@ -170,7 +168,7 @@ resourceTypes:
               schema: localizedErrorResponse
     post:
       is: [ secured ]
-      description: Start migration to a chosen program.
+      description: Start migration.
       body:
         application/json:
           schema: manualIntegrationExecution
@@ -244,16 +242,17 @@ resourceTypes:
           body:
             application/json:
               schema: localizedErrorResponse
-  /integrationConfigurations:
-    displayName: integrationConfigurations
+
+  /integrationSchedules:
+    displayName: integrationSchedules
     get:
       is: [ secured, paginated, sorted ]
-      description: Get all integration configuration.
+      description: Get all schedules settings.
       responses:
         200:
           body:
             application/json:
-              schema: integrationConfigurationPage
+              schema: integrationSchedulePage
         401:
           body:
             application/json:
@@ -263,15 +262,15 @@ resourceTypes:
               schema: localizedErrorResponse
     post:
       is: [ secured ]
-      description: Add integration configuration.
+      description: Create a schedule.
       body:
         application/json:
-          schema: integrationConfiguration
+          schema: integrationSchedule
       responses:
         201:
           body:
             application/json:
-              schema: integrationConfiguration
+              schema: integrationSchedule
         400:
           body:
             application/json:
@@ -283,7 +282,6 @@ resourceTypes:
           body:
             application/json:
               schema: localizedErrorResponse
-    
     /{id}:
       uriParameters:
         id:
@@ -293,12 +291,12 @@ resourceTypes:
           repeat: false
       get:
         is: [ secured ]
-        description: Get integration configuration.
+        description: Get schedule.
         responses:
           200:
             body:
               application/json:
-                schema: integrationConfiguration
+                schema: integrationSchedule
           404:
             body:
               application/json:
@@ -312,124 +310,15 @@ resourceTypes:
                 schema: localizedErrorResponse
       put:
         is: [ secured ]
-        description: Change integration parameters.
+        description: Change Schedule.
         body:
           application/json:
-            schema: integrationConfiguration
+            schema: integrationSchedule
         responses:
           200:
             body:
               application/json:
-                schema: integrationConfiguration
-          400:
-            body:
-              application/json:
-                schema: localizedErrorResponse
-          401:
-            body:
-              application/json:
-          403:
-            body:
-              application/json:
-                schema: localizedErrorResponse
-          404:
-            body:
-              application/json:
-                schema: localizedErrorResponse
-      delete:
-        is: [ secured ]
-        description: "[AVOID USING] Completely removes Configuration. This action is not
-              recoverable."
-        responses:
-          204:
-          400:
-            body:
-              application/json:
-                schema: localizedErrorResponse
-          401:
-            body:
-              application/json:
-          404:
-            body:
-              application/json:
-                schema: localizedErrorResponse
-
-  /integrationProgramSchedules:
-    displayName: integrationProgramSchedules
-    get:
-      is: [ secured, paginated, sorted ]
-      description: Get all program settings.
-      responses:
-        200:
-          body:
-            application/json:
-              schema: integrationProgramSchedulePage
-        401:
-          body:
-            application/json:
-        403:
-          body:
-            application/json:
-              schema: localizedErrorResponse
-    post:
-      is: [ secured ]
-      description: Associate Program with a schedule.
-      body:
-        application/json:
-          schema: integrationProgramSchedule
-      responses:
-        201:
-          body:
-            application/json:
-              schema: integrationProgramSchedule
-        400:
-          body:
-            application/json:
-              schema: localizedErrorResponse
-        401:
-          body:
-            application/json:
-        403:
-          body:
-            application/json:
-              schema: localizedErrorResponse
-    /{id}:
-      uriParameters:
-        id:
-          displayName: id
-          type: string
-          required: true
-          repeat: false 
-      get:
-        is: [ secured ]
-        description: Get association betweend Program and Schedule.
-        responses:
-          200:
-            body:
-              application/json:
-                schema: integrationProgramSchedule
-          404:
-            body:
-              application/json:
-                schema: localizedErrorResponse
-          401:
-            body:
-              application/json:
-          403:
-            body:
-              application/json:
-                schema: localizedErrorResponse
-      put:
-        is: [ secured ]
-        description: Change association betweend Program and Schedule.
-        body:
-          application/json:
-            schema: integrationProgramSchedule
-        responses:
-          200:
-            body:
-              application/json:
-                schema: integrationProgramSchedule
+                schema: integrationSchedule
           400:
             body:
               application/json:
@@ -443,7 +332,7 @@ resourceTypes:
                 schema: localizedErrorResponse
       delete:
         is: [ secured ]
-        description: "[AVOID USING] Completely removes Program Schedule. This action is not
+        description: "[AVOID USING] Completely removes Schedule. This action is not
         recoverable."
         responses:
           204:
