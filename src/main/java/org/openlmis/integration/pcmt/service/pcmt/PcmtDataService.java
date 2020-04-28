@@ -26,16 +26,13 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 
 import java.io.IOException;
 
-import lombok.Getter;
-
 import org.openlmis.integration.pcmt.service.auth.PcmtAuthService;
 import org.openlmis.integration.pcmt.service.pcmt.dto.PcmtResponseBody;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
-
 
 @Component
 @SuppressWarnings({"PMD.AvoidPrintStackTrace", "PMD.PreserveStackTrace"})
@@ -44,12 +41,15 @@ public class PcmtDataService {
   @Autowired
   private PcmtAuthService pcmtAuthService;
 
-  @Value("${pcmt.url}")
-  @Getter
-  private String domainUrl;
+  @Autowired
+  protected Environment env;
+
+  private String getDomainUrl() {
+    return env.getProperty("pcmt.url");
+  }
 
   public String getUrl() {
-    return domainUrl + "/api/rest/v1/products";
+    return getDomainUrl() + "/api/rest/v1/products";
   }
 
   private String getToken() {
