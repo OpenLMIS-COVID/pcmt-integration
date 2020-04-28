@@ -39,7 +39,6 @@ public class ExecutionRepositoryIntegrationTest
     extends BaseCrudRepositoryIntegrationTest<Execution> {
 
   private static final Integration INTEGRATION = new IntegrationDataBuilder().build();
-  private static final UUID PROCESSING_PERIOD_ID = UUID.randomUUID();
   private static final Clock CLOCK = Clock.fixed(Instant.now(), ZoneId.systemDefault());
 
   @Autowired
@@ -55,7 +54,7 @@ public class ExecutionRepositoryIntegrationTest
 
   @Override
   Execution generateInstance() {
-    return Execution.forAutomaticExecution(INTEGRATION, PROCESSING_PERIOD_ID, CLOCK);
+    return Execution.forAutomaticExecution(INTEGRATION, CLOCK);
   }
 
   @Test

@@ -48,13 +48,6 @@ public class Execution extends BaseEntity {
   @Column(nullable = false)
   private boolean manualExecution;
 
-  @Type(type = UUID_TYPE)
-  private UUID facilityId;
-
-  @Type(type = UUID_TYPE)
-  @Column(nullable = false)
-  private UUID processingPeriodId;
-
   @Enumerated(EnumType.STRING)
   private ExecutionStatus status;
 
@@ -83,30 +76,10 @@ public class Execution extends BaseEntity {
   /**
    * Creates a new automatic execution.
    */
-  public static Execution forAutomaticExecution(Integration integration, UUID processingPeriodId,
-      Clock clock) {
-    return new Execution(false, null, processingPeriodId,
-        ExecutionStatus.STARTED, integration.getDescription(),
-        ZonedDateTime.now(clock), null, EMPTY_JSON, null, null);
-  }
-
-  /**
-   * Creates a new automatic execution.
-   */
   public static Execution forAutomaticExecution(Integration integration, Clock clock) {
-    return new Execution(false, null, null,
+    return new Execution(false,
         ExecutionStatus.STARTED, integration.getDescription(),
         ZonedDateTime.now(clock), null, EMPTY_JSON, null, null);
-  }
-
-  /**
-   * Creates a new manual execution.
-   */
-  public static Execution forManualExecution(Integration integration, UUID facilityId,
-      UUID processingPeriodId, String description, UUID userId, Clock clock) {
-    return new Execution(true, facilityId,
-        processingPeriodId, ExecutionStatus.STARTED, description,
-        ZonedDateTime.now(clock), null, EMPTY_JSON, userId, null);
   }
 
   /**
@@ -114,7 +87,7 @@ public class Execution extends BaseEntity {
    */
   public static Execution forManualExecution(Integration integration, UUID userId,
       Clock clock) {
-    return new Execution(true, null, null,
+    return new Execution(true,
         ExecutionStatus.STARTED, integration.getDescription(),
         ZonedDateTime.now(clock), null, EMPTY_JSON, userId, null);
   }
@@ -141,8 +114,6 @@ public class Execution extends BaseEntity {
   public void export(Exporter exporter) {
     exporter.setId(getId());
     exporter.setManualExecution(manualExecution);
-    exporter.setFacilityId(facilityId);
-    exporter.setProcessingPeriodId(processingPeriodId);
     exporter.setStatus(status);
     exporter.setDescription(description);
     exporter.setStartDate(startDate);
@@ -163,10 +134,6 @@ public class Execution extends BaseEntity {
   public interface Exporter extends BaseExporter {
 
     void setManualExecution(boolean manualExecution);
-
-    void setFacilityId(UUID facilityId);
-
-    void setProcessingPeriodId(UUID processingPeriodId);
 
     void setStatus(ExecutionStatus status);
 

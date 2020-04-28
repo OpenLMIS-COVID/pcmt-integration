@@ -40,8 +40,6 @@ public class ExecutionTest {
   private static final Integration INTEGRATION = new IntegrationDataBuilder().build();
   private static final Clock CLOCK = Clock.fixed(Instant.now(), ZoneId.systemDefault());
 
-  private static final UUID PROCESSING_PERIOD_ID = UUID.randomUUID();
-  private static final String DESCRIPTION = "test-description";
   private static final ZonedDateTime START_DATE = ZonedDateTime.now(CLOCK);
   private static final ZonedDateTime END_DATE = ZonedDateTime.now(CLOCK);
   private static final ExecutionResponse RESPONSE = new ExecutionResponseDataBuilder()
@@ -71,7 +69,7 @@ public class ExecutionTest {
   public void shouldCreateInstanceForAutomaticExecution() {
     // when
     Execution execution = Execution
-        .forAutomaticExecution(INTEGRATION, PROCESSING_PERIOD_ID, CLOCK);
+        .forAutomaticExecution(INTEGRATION, CLOCK);
 
     // then
     TestExecution exporter = new TestExecution();
@@ -79,8 +77,6 @@ public class ExecutionTest {
 
     assertThat(exporter.getId()).isEqualTo(execution.getId());
     assertThat(exporter.isManualExecution()).isFalse();
-    assertThat(exporter.getFacilityId()).isNull();
-    assertThat(exporter.getProcessingPeriodId()).isEqualTo(PROCESSING_PERIOD_ID);
     assertThat(exporter.getStartDate()).isEqualTo(START_DATE);
     assertThat(exporter.getEndDate()).isNull();
     assertThat(exporter.getResponse()).isNull();
@@ -90,8 +86,7 @@ public class ExecutionTest {
   @Test
   public void shouldCreateInstanceForManualExecution() {
     // when
-    Execution execution = Execution.forManualExecution(INTEGRATION, null,
-        PROCESSING_PERIOD_ID, DESCRIPTION, USER_ID, CLOCK);
+    Execution execution = Execution.forManualExecution(INTEGRATION, USER_ID, CLOCK);
 
     // then
     TestExecution exporter = new TestExecution();
@@ -99,8 +94,6 @@ public class ExecutionTest {
 
     assertThat(exporter.getId()).isEqualTo(execution.getId());
     assertThat(exporter.isManualExecution()).isTrue();
-    assertThat(exporter.getFacilityId()).isNull();
-    assertThat(exporter.getProcessingPeriodId()).isEqualTo(PROCESSING_PERIOD_ID);
     assertThat(exporter.getStatus()).isEqualTo(ExecutionStatus.STARTED);
     assertThat(exporter.getStartDate()).isEqualTo(START_DATE);
     assertThat(exporter.getEndDate()).isNull();
@@ -112,7 +105,7 @@ public class ExecutionTest {
   public void shouldSetRequestBody() {
     // given
     Execution execution = Execution
-        .forAutomaticExecution(INTEGRATION, PROCESSING_PERIOD_ID, CLOCK);
+        .forAutomaticExecution(INTEGRATION, CLOCK);
     execution.setId(UUID.randomUUID());
     String requestBody = "{}";
 
@@ -131,7 +124,7 @@ public class ExecutionTest {
   public void shouldMarkAsDone() {
     // given
     Execution execution = Execution
-        .forAutomaticExecution(INTEGRATION, PROCESSING_PERIOD_ID, CLOCK);
+        .forAutomaticExecution(INTEGRATION, CLOCK);
     execution.setId(UUID.randomUUID());
 
     TestExecutionResponse expectedResponse = new TestExecutionResponse();
@@ -153,7 +146,7 @@ public class ExecutionTest {
   public void shouldExportWithoutResponse() {
     // given
     Execution execution = Execution
-        .forAutomaticExecution(INTEGRATION, PROCESSING_PERIOD_ID, CLOCK);
+        .forAutomaticExecution(INTEGRATION, CLOCK);
     execution.setId(UUID.randomUUID());
 
     // when
@@ -163,8 +156,6 @@ public class ExecutionTest {
     // then
     assertThat(exporter.getId()).isEqualTo(execution.getId());
     assertThat(exporter.isManualExecution()).isFalse();
-    assertThat(exporter.getFacilityId()).isNull();
-    assertThat(exporter.getProcessingPeriodId()).isEqualTo(PROCESSING_PERIOD_ID);
     assertThat(exporter.getStartDate()).isEqualTo(START_DATE);
     assertThat(exporter.getEndDate()).isNull();
     assertThat(exporter.getResponse()).isNull();
@@ -173,9 +164,8 @@ public class ExecutionTest {
 
   @Test
   public void shouldExportWithResponse() {
-    // given
     Execution execution = Execution
-        .forAutomaticExecution(INTEGRATION, PROCESSING_PERIOD_ID, CLOCK);
+        .forAutomaticExecution(INTEGRATION, CLOCK);
     execution.setId(UUID.randomUUID());
     execution.markAsDone(RESPONSE, CLOCK);
 
@@ -189,8 +179,6 @@ public class ExecutionTest {
     // then
     assertThat(exporter.getId()).isEqualTo(execution.getId());
     assertThat(exporter.isManualExecution()).isFalse();
-    assertThat(exporter.getFacilityId()).isNull();
-    assertThat(exporter.getProcessingPeriodId()).isEqualTo(PROCESSING_PERIOD_ID);
     assertThat(exporter.getStartDate()).isEqualTo(START_DATE);
     assertThat(exporter.getEndDate()).isEqualTo(END_DATE);
     assertThat(exporter.getResponse()).isEqualTo(expectedResponse);
@@ -204,11 +192,10 @@ public class ExecutionTest {
   @EqualsAndHashCode
   @ToString
   private static final class TestExecution implements Execution.Exporter {
+
     private UUID id;
     private boolean manualExecution;
     private UUID programId;
-    private UUID facilityId;
-    private UUID processingPeriodId;
     private ExecutionStatus status;
     private String description;
     private ZonedDateTime startDate;

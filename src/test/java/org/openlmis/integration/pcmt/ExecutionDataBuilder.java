@@ -27,23 +27,10 @@ public class ExecutionDataBuilder {
 
   private UUID id = UUID.randomUUID();
   private Integration integration = new IntegrationDataBuilder().build();
-  private UUID facilityId = UUID.randomUUID();
-  private UUID processingPeriodId = UUID.randomUUID();
-  private String description = "test-description";
   private Clock startDate = Clock.systemUTC();
   private Clock endDate = Clock.systemUTC();
   private UUID userId = UUID.randomUUID();
   private ExecutionResponse response = new ExecutionResponseDataBuilder().build();
-
-  public ExecutionDataBuilder withFacilityId(UUID facilityId) {
-    this.facilityId = facilityId;
-    return this;
-  }
-
-  public ExecutionDataBuilder withProcessingPeriodId(UUID processingPeriodId) {
-    this.processingPeriodId = processingPeriodId;
-    return this;
-  }
 
   public ExecutionDataBuilder withStartDate(Clock startDate) {
     this.startDate = startDate;
@@ -83,8 +70,7 @@ public class ExecutionDataBuilder {
    */
 
   public Execution buildAsNewAutomatic() {
-    Execution execution = Execution
-        .forAutomaticExecution(integration, processingPeriodId, startDate);
+    Execution execution = Execution.forAutomaticExecution(integration, startDate);
     Optional.ofNullable(response).ifPresent(item -> execution.markAsDone(item, endDate));
 
     return execution;
@@ -95,9 +81,7 @@ public class ExecutionDataBuilder {
    */
 
   public Execution buildAsNewManual() {
-    Execution execution = Execution
-        .forManualExecution(integration, facilityId, processingPeriodId, description,
-            userId, startDate);
+    Execution execution = Execution.forManualExecution(integration, userId, startDate);
     Optional.ofNullable(response).ifPresent(item -> execution.markAsDone(item, endDate));
 
     return execution;

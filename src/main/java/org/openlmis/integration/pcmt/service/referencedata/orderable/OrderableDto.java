@@ -24,6 +24,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.openlmis.integration.pcmt.web.BaseDto;
 
 @Getter
@@ -31,6 +32,7 @@ import org.openlmis.integration.pcmt.web.BaseDto;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@ToString
 public final class OrderableDto extends BaseDto {
 
   private String productCode;
