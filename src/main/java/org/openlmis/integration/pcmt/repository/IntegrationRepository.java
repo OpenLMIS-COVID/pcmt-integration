@@ -47,5 +47,4 @@ public interface IntegrationRepository
       nativeQuery = true)
   Page<Integration> findAllWithoutSnapshots(Pageable pageable);
 
-  boolean existsByConfiguration_Id(UUID id);
 }
