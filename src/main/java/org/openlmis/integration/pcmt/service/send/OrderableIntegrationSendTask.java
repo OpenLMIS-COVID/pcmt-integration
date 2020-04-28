@@ -35,15 +35,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableDto> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(OrderableIntegrationSendTask.class);
+  private static final String API_PATH = "/api/orderables/";
+
   private final BlockingQueue<OrderableDto> queue;
   private final Integration integration;
   private final UUID userId;
@@ -56,6 +60,52 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
   private final ObjectMapper objectMapper;
   private final RestTemplate restTemplate;
   private final AuthService authService;
+
+  /**
+   * Constructor of OrderableIntegrationTask.
+   */
+  public OrderableIntegrationSendTask(BlockingQueue<OrderableDto> queue,
+      Integration integration, UUID userId, String targetUrl, boolean manualExecution,
+      ExecutionRepository executionRepository, Clock clock,
+      ObjectMapper objectMapper, AuthService authService) {
+    this.queue = queue;
+    this.integration = integration;
+    this.userId = userId;
+    this.targetUrl = targetUrl;
+    this.manualExecution = manualExecution;
+    this.executionRepository = executionRepository;
+    this.clock = clock;
+    this.objectMapper = objectMapper;
+    this.authService = authService;
+    this.restTemplate = new RestTemplate();
+    this.executionTime = ZonedDateTime.now(getClock());
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (!(o instanceof OrderableIntegrationSendTask)) {
+      return false;
+    }
+
+    OrderableIntegrationSendTask that = (OrderableIntegrationSendTask) o;
+
+    return new EqualsBuilder()
+        .append(getExecutionTime(), that.getExecutionTime())
+        .append(isManualExecution(), that.isManualExecution())
+        .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(11, 47)
+        .append(getExecutionTime())
+        .append(isManualExecution())
+        .toHashCode();
+  }
 
   @Override
   protected Logger getLogger() {
@@ -107,22 +157,17 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
     return objectMapper;
   }
 
-  @Override
-  protected RequestEntity<OrderableDto> initRequest(OrderableDto entity) throws URISyntaxException {
-    final String uri = getTargetUrl() + "/api/orderables/" + entity.getId();
+  protected HttpHeaders createInitHeaders() {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + getToken());
-
-    return new RequestEntity<>(entity, headers, HttpMethod.PUT, new URI(uri));
+    return headers;
   }
 
   @Override
   protected ExecutionResponse send(OrderableDto entity) {
     try {
-      RequestEntity<OrderableDto> request = initRequest(entity);
-      ResponseEntity<OrderableDto> response = getRestTemplate().exchange(request,
-          OrderableDto.class);
+      ResponseEntity<OrderableDto> response = tryToSend(entity);
       getLogger().debug("Updated Orderable with result code: {}", response.getStatusCode());
       return new ExecutionResponse(ZonedDateTime.now(getClock()), response.getStatusCodeValue(),
           response.getBody().toString());
@@ -143,49 +188,45 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
     return authService.obtainAccessToken();
   }
 
-  /**
-   * Constructor of OrderableIntegrationTask.
-   */
-  public OrderableIntegrationSendTask(BlockingQueue<OrderableDto> queue,
-      Integration integration, UUID userId, String targetUrl, boolean manualExecution,
-      ExecutionRepository executionRepository, Clock clock,
-      ObjectMapper objectMapper, AuthService authService) {
-    this.queue = queue;
-    this.integration = integration;
-    this.userId = userId;
-    this.targetUrl = targetUrl;
-    this.manualExecution = manualExecution;
-    this.executionRepository = executionRepository;
-    this.clock = clock;
-    this.objectMapper = objectMapper;
-    this.authService = authService;
-    this.restTemplate = new RestTemplate();
-    this.executionTime = ZonedDateTime.now(getClock());
+  private RequestEntity<OrderableDto> initRequest(OrderableDto entity, URI uri) {
+    return new RequestEntity<>(entity, createInitHeaders(), HttpMethod.PUT, uri);
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+  private OrderableDto get(UUID entityId) throws URISyntaxException {
+    URI uri = new URI(getTargetUrl() + API_PATH + entityId);
+    RequestEntity<OrderableDto> req = new RequestEntity<>(createInitHeaders(), HttpMethod.GET, uri);
+    ResponseEntity<OrderableDto> fetched;
+    try {
+      fetched = getRestTemplate().exchange(req, OrderableDto.class);
+      return fetched.getBody();
+    } catch (HttpClientErrorException e) {
+      if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+        return null;
+      } else {
+        throw e;
+      }
     }
-
-    if (!(o instanceof OrderableIntegrationSendTask)) {
-      return false;
-    }
-
-    OrderableIntegrationSendTask that = (OrderableIntegrationSendTask) o;
-
-    return new EqualsBuilder()
-        .append(getExecutionTime(), that.getExecutionTime())
-        .append(isManualExecution(), that.isManualExecution())
-        .isEquals();
   }
 
-  @Override
-  public int hashCode() {
-    return new HashCodeBuilder(11, 47)
-        .append(getExecutionTime())
-        .append(isManualExecution())
-        .toHashCode();
+  private ResponseEntity<OrderableDto> update(OrderableDto entity) throws URISyntaxException {
+    URI uri = new URI(getTargetUrl() + API_PATH + entity.getId());
+    RequestEntity<OrderableDto> req = initRequest(entity, uri);
+    return getRestTemplate().exchange(req, OrderableDto.class);
+  }
+
+  private ResponseEntity<OrderableDto> create(OrderableDto entity) throws URISyntaxException {
+    URI uri = new URI(getTargetUrl() + API_PATH);
+    RequestEntity<OrderableDto> req = initRequest(entity, uri);
+    return getRestTemplate().exchange(req, OrderableDto.class);
+  }
+
+  private ResponseEntity<OrderableDto> tryToSend(OrderableDto entity) throws URISyntaxException {
+    OrderableDto dto = get(entity.getId());
+    if (dto != null) {
+      entity.getPrograms().addAll(dto.getPrograms());
+      return update(entity);
+    } else {
+      return create(entity);
+    }
   }
 }

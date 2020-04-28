@@ -15,6 +15,7 @@
 
 package org.openlmis.integration.pcmt.service.referencedata.orderable;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -46,7 +47,7 @@ public final class OrderableDto extends BaseDto {
 
   private Boolean roundToZero;
 
-  private Set<ProgramOrderableDto> programs;
+  private Set<ProgramOrderableDto> programs = new HashSet<>();
 
   private Set<OrderableChildDto> children;
 

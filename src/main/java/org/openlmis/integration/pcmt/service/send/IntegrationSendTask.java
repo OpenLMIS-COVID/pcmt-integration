@@ -16,9 +16,7 @@
 package org.openlmis.integration.pcmt.service.send;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.net.URISyntaxException;
 import java.time.Clock;
-
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
@@ -28,7 +26,6 @@ import org.openlmis.integration.pcmt.domain.Integration;
 import org.openlmis.integration.pcmt.repository.ExecutionRepository;
 import org.openlmis.integration.pcmt.web.BaseDto;
 import org.slf4j.Logger;
-import org.springframework.http.RequestEntity;
 
 public abstract class IntegrationSendTask<T extends BaseDto> implements Runnable,
     Comparable<IntegrationSendTask<T>> {
@@ -56,8 +53,6 @@ public abstract class IntegrationSendTask<T extends BaseDto> implements Runnable
   public abstract boolean equals(Object o);
 
   public abstract int hashCode();
-
-  protected abstract RequestEntity<T> initRequest(T entity) throws URISyntaxException;
 
   protected abstract ExecutionResponse send(T entity);
 

@@ -15,6 +15,8 @@
 
 package org.openlmis.integration.pcmt.service.referencedata.orderable;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -24,6 +26,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import org.joda.money.Money;
+import org.openlmis.integration.pcmt.serializer.MoneyDeserializer;
+import org.openlmis.integration.pcmt.serializer.MoneySerializer;
 
 @Getter
 @Setter
@@ -49,6 +53,8 @@ public class ProgramOrderableDto {
 
   private Integer dosesPerPatient;
 
+  @JsonSerialize(using = MoneySerializer.class)
+  @JsonDeserialize(using = MoneyDeserializer.class)
   private Money pricePerPack;
 
 }
