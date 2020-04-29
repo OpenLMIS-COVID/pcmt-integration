@@ -38,6 +38,10 @@ public final class OrderableBuilder {
     orderableDto.setProductCode(item.getValues().getLmisCode().get(0).getData());
     orderableDto.setNetContent(uomQtyFactor);
     orderableDto.setDescription(item.getValues().getProductDescription().get(0).getData());
+    orderableDto.setPackRoundingThreshold(
+        Long.valueOf(item.getValues().getLmisPackRoundingThreshold().get(0).getData()));
+    orderableDto.setRoundToZero(
+        Boolean.getBoolean(item.getValues().getLmisRoundToZero().get(0).getData()));
     return orderableDto;
   }
 

@@ -50,5 +50,9 @@ public class Values {
   public List<BaseValue> productDescription;
   @JsonProperty("UOM_QTY_FACTOR")
   public List<BaseValue> uomQtyFactor;
+  @JsonProperty("LMIS_PACK_ROUNDING_THRESHOLD")
+  public List<BaseValue> lmisPackRoundingThreshold;
+  @JsonProperty("LMIS_ROUND_TO_ZERO")
+  public List<BaseValue> lmisRoundToZero;
 
 }

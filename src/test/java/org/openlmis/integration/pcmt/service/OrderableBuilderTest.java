@@ -67,5 +67,9 @@ public class OrderableBuilderTest {
     assertEquals(orderableDto.getDescription(),
         item.getValues().getProductDescription().get(0).getData());
     assertEquals(orderableDto.getNetContent(), UOM_QTY_FACTOR);
+    assertEquals(orderableDto.getPackRoundingThreshold(),
+        Long.valueOf(item.getValues().getLmisPackRoundingThreshold().get(0).getData()));
+    assertEquals(orderableDto.getRoundToZero(),
+        Boolean.getBoolean(item.getValues().getLmisRoundToZero().get(0).getData()));
   }
 }

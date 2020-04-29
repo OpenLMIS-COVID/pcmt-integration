@@ -32,6 +32,8 @@ public class ValuesDataBuilder {
   private List<BaseValue> lmisUuid;
   private List<BaseValue> productDescription;
   private List<BaseValue> uomQtyFactor;
+  private List<BaseValue> lmisPackRoundingThreshold;
+  private List<BaseValue> lmisRoundToZero;
 
   /**
    * Returns instance of {@link ValuesDataBuilder} with sample data.
@@ -53,6 +55,10 @@ public class ValuesDataBuilder {
     uomQtyFactor =
         Lists.asList(
             new BaseValueDataBuilder().withData("10.000").build());
+    lmisPackRoundingThreshold = Lists.asList(
+        new BaseValueDataBuilder().withData("4").build());
+    lmisRoundToZero = Lists.asList(
+        new BaseValueDataBuilder().withData("true").build());
   }
 
   /**
@@ -66,7 +72,9 @@ public class ValuesDataBuilder {
         lmisCode,
         lmisUuid,
         productDescription,
-        uomQtyFactor
+        uomQtyFactor,
+        lmisPackRoundingThreshold,
+        lmisRoundToZero
     );
   }
 
