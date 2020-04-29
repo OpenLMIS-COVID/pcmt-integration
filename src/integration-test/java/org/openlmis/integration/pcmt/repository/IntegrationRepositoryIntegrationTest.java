@@ -16,14 +16,11 @@
 package org.openlmis.integration.pcmt.repository;
 
 import java.util.UUID;
-
-import org.junit.Ignore;
 import org.openlmis.integration.pcmt.IntegrationDataBuilder;
 import org.openlmis.integration.pcmt.domain.Integration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 
-@Ignore
 public class IntegrationRepositoryIntegrationTest
     extends BaseCrudRepositoryIntegrationTest<Integration> {
 

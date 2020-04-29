@@ -18,7 +18,6 @@ package org.openlmis.integration.pcmt.repository;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.integration.pcmt.domain.BaseEntity;
@@ -28,7 +27,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-@Ignore
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")

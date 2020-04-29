@@ -24,8 +24,6 @@ import java.time.ZonedDateTime;
 import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openlmis.integration.pcmt.IntegrationDataBuilder;
 import org.openlmis.integration.pcmt.domain.Execution;
@@ -34,7 +32,6 @@ import org.openlmis.integration.pcmt.domain.Integration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 
-@Ignore
 public class ExecutionRepositoryIntegrationTest
     extends BaseCrudRepositoryIntegrationTest<Execution> {
 
