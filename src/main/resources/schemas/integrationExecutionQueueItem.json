@@ -8,10 +8,6 @@
       "type": "string",
       "title": "executionTime"
     },
-    "processingPeriodId": {
-      "type": "string",
-      "title": "processingPeriodId"
-    },
     "userId": {
       "type": [
         "string",
@@ -28,7 +24,6 @@
     }
   },
   "required": [
-    "executionTime",
-    "processingPeriodId"
+    "executionTime"
   ]
 }

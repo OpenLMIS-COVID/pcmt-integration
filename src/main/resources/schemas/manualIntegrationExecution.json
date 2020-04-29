@@ -8,14 +8,6 @@
             "type": "string",
             "name": "integrationId"
         },
-        "facilityId": {
-            "type": "string",
-            "name": "facilityId"
-        },
-        "periodId": {
-            "type": "string",
-            "name": "periodId"
-        },
         "description": {
             "type": ["null", "string"],
             "name": "description"

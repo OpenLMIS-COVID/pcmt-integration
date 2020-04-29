@@ -36,8 +36,6 @@ public final class ManualIntegrationDto {
    * Request body of Manual integration call.
    */
   private UUID integrationId;
-  private UUID periodId;
-  private UUID facilityId;
   private String description;
 
 }

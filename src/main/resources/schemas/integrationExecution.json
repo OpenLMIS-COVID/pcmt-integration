@@ -8,14 +8,6 @@
         "type": "boolean",
         "title": "manualExecution"
       },
-      "facilityId": {
-        "type": ["string", "null"],
-        "title": "facilityId"
-      },
-      "processingPeriodId": {
-        "type": "string",
-        "title": "processingPeriodId"
-      },
       "description": {
         "type": "string",
         "title": "description"
@@ -53,7 +45,6 @@
     },
     "required": [
       "manualExecution",
-      "processingPeriodId",
       "startDate",
       "endDate",
       "response"

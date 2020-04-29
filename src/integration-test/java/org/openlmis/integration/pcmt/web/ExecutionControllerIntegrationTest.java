@@ -310,8 +310,7 @@ public class ExecutionControllerIntegrationTest extends BaseWebIntegrationTest {
   private ManualIntegrationDto generateRequestBody() {
     ManualIntegrationDto dto = new ManualIntegrationDto();
     dto.setIntegrationId(UUID.randomUUID());
-    dto.setPeriodId(UUID.randomUUID());
-    dto.setFacilityId(UUID.randomUUID());
+    dto.setDescription("test-description");
     return dto;
   }
 
