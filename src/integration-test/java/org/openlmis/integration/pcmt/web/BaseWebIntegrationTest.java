@@ -40,6 +40,7 @@ import org.openlmis.integration.pcmt.domain.BaseEntity;
 import org.openlmis.integration.pcmt.repository.ExecutionRepository;
 import org.openlmis.integration.pcmt.repository.IntegrationRepository;
 import org.openlmis.integration.pcmt.scheduler.DynamicTaskScheduler;
+import org.openlmis.integration.pcmt.service.IntegrationExecutionService;
 import org.openlmis.integration.pcmt.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -119,6 +120,9 @@ public abstract class BaseWebIntegrationTest {
 
   @MockBean
   IntegrationRepository integrationRepository;
+
+  @MockBean
+  IntegrationExecutionService integrationExecutionService;
 
   @MockBean
   PermissionService permissionService;

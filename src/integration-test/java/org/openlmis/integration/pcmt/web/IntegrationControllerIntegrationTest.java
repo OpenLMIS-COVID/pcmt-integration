@@ -28,7 +28,6 @@ import static org.mockito.Matchers.any;
 import com.google.common.collect.Lists;
 import guru.nidi.ramltester.junit.RamlMatchers;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openlmis.integration.pcmt.IntegrationDataBuilder;
 import org.openlmis.integration.pcmt.domain.Integration;
@@ -38,7 +37,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-@Ignore
 @SuppressWarnings("PMD.TooManyMethods")
 public class IntegrationControllerIntegrationTest extends BaseWebIntegrationTest {
 

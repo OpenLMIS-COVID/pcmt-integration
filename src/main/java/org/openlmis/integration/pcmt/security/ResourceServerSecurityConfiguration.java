@@ -114,10 +114,9 @@ public class ResourceServerSecurityConfiguration implements ResourceServerConfig
   @Bean
   @Autowired
   public RemoteTokenServices remoteTokenServices(
-      @Value("${auth.server.pcmtUrl}") String checkTokenUrl,
-      @Value("${auth.server.pcmtClientId}") String clientId,
-      @Value("${auth.server.pcmtClientSecret}")
-          String clientSecret) {
+      @Value("${auth.server.olmisUrl}") String checkTokenUrl,
+      @Value("${auth.server.olmisClientId}") String clientId,
+      @Value("${auth.server.olmisClientSecret}") String clientSecret) {
     final RemoteTokenServices remoteTokenServices = new RemoteTokenServices();
     remoteTokenServices.setCheckTokenEndpointUrl(checkTokenUrl);
     remoteTokenServices.setClientId(clientId);

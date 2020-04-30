@@ -23,14 +23,12 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Matchers.any;
 
-import com.google.common.collect.Lists;
 import guru.nidi.ramltester.junit.RamlMatchers;
 import java.util.Arrays;
 import java.util.UUID;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openlmis.integration.pcmt.ExecutionDataBuilder;
 import org.openlmis.integration.pcmt.IntegrationDataBuilder;
@@ -42,7 +40,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 
-@Ignore
 @SuppressWarnings("PMD.TooManyMethods")
 public class ExecutionControllerIntegrationTest extends BaseWebIntegrationTest {
 
@@ -51,6 +48,7 @@ public class ExecutionControllerIntegrationTest extends BaseWebIntegrationTest {
   private static final String REQUEST_URL = RESOURCE_URL + ExecutionController.REQUEST_URL;
 
   private Execution execution = new ExecutionDataBuilder().buildAsAutomatic();
+
   private Execution execution1 = new ExecutionDataBuilder().buildAsManual();
 
   private ExecutionDto executionDto = ExecutionDto.newInstance(execution);
@@ -63,16 +61,12 @@ public class ExecutionControllerIntegrationTest extends BaseWebIntegrationTest {
 
   /** Set up sample data.
    */
-
   @Before
   public void setUp() {
+    given(executionRepository.findAll(any(Pageable.class)))
+        .willReturn(new PageImpl<>(Arrays.asList(execution, execution1)));
 
-    given(executionRepository
-        .findAll(any(Pageable.class)))
-        .willReturn(new PageImpl<>(Lists.newArrayList(execution, execution1)));
-
-    given(integrationRepository
-        .findOne(manualIntegrationDto.getIntegrationId()))
+    given(integrationRepository.findOne(manualIntegrationDto.getIntegrationId()))
         .willReturn(integration);
 
     given(authenticationHelper.getCurrentUser()).willReturn(userDto);
@@ -84,9 +78,6 @@ public class ExecutionControllerIntegrationTest extends BaseWebIntegrationTest {
 
   @Test
   public void shouldReturnPageOfExecutions() {
-    given(executionRepository.findAll(any(Pageable.class)))
-        .willReturn(new PageImpl<>(Arrays.asList(execution, execution1)));
-
     restAssured
         .given()
         .header(HttpHeaders.AUTHORIZATION, getTokenHeader())
