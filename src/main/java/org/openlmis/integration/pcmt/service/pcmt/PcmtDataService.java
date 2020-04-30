@@ -26,6 +26,8 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 
 import java.io.IOException;
 
+import org.apache.http.client.HttpClient;
+import org.openlmis.integration.pcmt.security.UnirestSsLConfiguration;
 import org.openlmis.integration.pcmt.service.auth.PcmtAuthService;
 import org.openlmis.integration.pcmt.service.pcmt.dto.PcmtResponseBody;
 
@@ -43,6 +45,8 @@ public class PcmtDataService {
 
   @Autowired
   protected Environment env;
+
+  private HttpClient noSslClient = new UnirestSsLConfiguration().getClient();
 
   private String getDomainUrl() {
     return env.getProperty("pcmt.url");
@@ -63,16 +67,19 @@ public class PcmtDataService {
    */
 
   public PcmtResponseBody downloadData(int pageNumber) {
+
     return getPage(pageNumber);
   }
 
   private PcmtResponseBody getPage(int pageNumber) {
-
-    String url = getUrl() + "";
+    
+    Unirest.setHttpClient(noSslClient);
     PcmtResponseBody pcmtResponseBody = new PcmtResponseBody();
+    String url = getUrl() + "";
     try {
       HttpResponse<String> response =
-          Unirest.get(url + "?with_count=true&page=" + pageNumber + "&limit=100"
+          Unirest.get(url + "?with_count=true&page=" + pageNumber
+              + "&limit=100"
               + "&search=%7B%22categories%22%3A%5B%7B%22operator%22%3A%22IN%22%2C%22"
               + "value%22%3A%5B%22LMIS%22%5D%7D%5D%7D"
           )
