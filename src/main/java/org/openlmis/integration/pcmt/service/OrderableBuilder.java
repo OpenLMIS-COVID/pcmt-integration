@@ -20,6 +20,7 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import java.util.UUID;
 import org.openlmis.integration.pcmt.service.pcmt.dto.Item;
 import org.openlmis.integration.pcmt.service.pcmt.dto.Values;
+import org.openlmis.integration.pcmt.service.referencedata.orderable.DispensableDto;
 import org.openlmis.integration.pcmt.service.referencedata.orderable.OrderableDto;
 
 public final class OrderableBuilder {
@@ -30,10 +31,13 @@ public final class OrderableBuilder {
    */
   public static OrderableDto build(Item item, Long uomQtyFactor) {
     OrderableDto orderableDto = new OrderableDto();
+    DispensableDto dispensableDto =
+        new DispensableDto(item.getValues().getBaseUom().get(0).getData(), null, null, null);
     Values values = item.getValues();
     if (isNotEmpty(values.getLmisUuid())) {
       orderableDto.setId(UUID.fromString(values.getLmisUuid().get(0).getData()));
     }
+    orderableDto.setDispensable(dispensableDto);
     orderableDto.setFullProductName(item.getValues().getProductDescription().get(0).getData());
     orderableDto.setProductCode(item.getValues().getLmisCode().get(0).getData());
     orderableDto.setNetContent(uomQtyFactor);

@@ -43,7 +43,8 @@ public class ValuesDataBuilder {
 
     packSize = null;
     priceReferences = null;
-    baseUom = null;
+    baseUom = Lists.asList(
+        new BaseValueDataBuilder().withData("each").build());
     lmisCode =
         Lists.asList(
             new BaseValueDataBuilder().withData("COV" + instanceNumber).build());

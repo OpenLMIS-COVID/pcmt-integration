@@ -71,5 +71,7 @@ public class OrderableBuilderTest {
         Long.valueOf(item.getValues().getLmisPackRoundingThreshold().get(0).getData()));
     assertEquals(orderableDto.getRoundToZero(),
         Boolean.getBoolean(item.getValues().getLmisRoundToZero().get(0).getData()));
+    assertEquals(orderableDto.getDispensable().getDispensingUnit(),
+        item.getValues().getBaseUom().get(0).getData());
   }
 }
