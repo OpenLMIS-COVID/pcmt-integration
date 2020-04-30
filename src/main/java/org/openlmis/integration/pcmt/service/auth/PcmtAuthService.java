@@ -15,10 +15,10 @@
 
 package org.openlmis.integration.pcmt.service.auth;
 
-import kong.unirest.HttpResponse;
-import kong.unirest.JsonNode;
-import kong.unirest.Unirest;
-import kong.unirest.UnirestException;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +58,6 @@ public class PcmtAuthService {
 
     HttpResponse<JsonNode> response = null;
     try {
-      Unirest.config().verifySsl(false);
       response = Unirest.post(authorizationUrl)
           .header("Content-Type", "application/json")
           .header("Authorization", "Basic " + base64Creds)

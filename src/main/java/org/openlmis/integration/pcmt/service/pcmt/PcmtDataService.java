@@ -15,21 +15,26 @@
 
 package org.openlmis.integration.pcmt.service.pcmt;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 
 import java.io.IOException;
 
-import kong.unirest.HttpResponse;
-import kong.unirest.Unirest;
-
+import org.apache.http.client.HttpClient;
+import org.openlmis.integration.pcmt.security.UnirestSsLConfiguration;
 import org.openlmis.integration.pcmt.service.auth.PcmtAuthService;
 import org.openlmis.integration.pcmt.service.pcmt.dto.PcmtResponseBody;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 
 @Component
 @SuppressWarnings({"PMD.AvoidPrintStackTrace", "PMD.PreserveStackTrace"})
@@ -40,6 +45,10 @@ public class PcmtDataService {
 
   @Autowired
   protected Environment env;
+
+  private HttpClient noSslClient = new UnirestSsLConfiguration().getClient();
+
+  private Unirest unirestHandler;
 
   private String getDomainUrl() {
     return env.getProperty("pcmt.url");
@@ -68,9 +77,9 @@ public class PcmtDataService {
     String url = getUrl() + "";
     PcmtResponseBody pcmtResponseBody = new PcmtResponseBody();
     try {
-      Unirest.config().verifySsl(false);
+      unirestHandler.setHttpClient(noSslClient);
       HttpResponse<String> response =
-          Unirest.get(url + "?with_count=true&page="
+          unirestHandler.get(url + "?with_count=true&page="
               + pageNumber
               + "&limit=100"
               + "&search=%7B%22categories%22%3A%5B%7B%22operator%22%3A%22IN%22%2C%22"
@@ -89,6 +98,12 @@ public class PcmtDataService {
 
       System.out.println(pcmtResponseBody.getLinks().getSelf());
 
+    } catch (HttpStatusCodeException | UnirestException ex) {
+      throw ((HttpStatusCodeException) ex);
+    } catch (JsonParseException e) {
+      e.printStackTrace();
+    } catch (JsonMappingException e) {
+      e.printStackTrace();
     } catch (IOException e) {
       e.printStackTrace();
     }
