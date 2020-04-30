@@ -55,10 +55,11 @@ public class PcmtAuthService {
   public String obtainAccessToken() {
     setClientCreds();
     setPlainCreds();
-
     HttpResponse<JsonNode> response = null;
     try {
-      Unirest.config().verifySsl(false);
+      Unirest.config()
+          .reset()
+          .verifySsl(false);
       response = Unirest.post(authorizationUrl)
           .header("Content-Type", "application/json")
           .header("Authorization", "Basic " + base64Creds)

@@ -68,7 +68,9 @@ public class PcmtDataService {
     String url = getUrl() + "";
     PcmtResponseBody pcmtResponseBody = new PcmtResponseBody();
     try {
-      Unirest.config().verifySsl(false);
+      Unirest.config()
+          .reset()
+          .verifySsl(false);
       HttpResponse<String> response =
           Unirest.get(url + "?with_count=true&page="
               + pageNumber
