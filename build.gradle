@@ -10,6 +10,7 @@ buildscript {
 plugins {
     id "org.flywaydb.flyway" version "4.2.0"
     id "com.moowork.node" version "1.2.0"
+    id 'war'
 }
 
 apply plugin: 'java'
@@ -60,7 +61,9 @@ dependencies {
 
     compile 'org.webjars.npm:api-console:3.0.17'
 
-    compile 'com.mashape.unirest:unirest-java:1.4.9'
+//    compile 'com.mashape.unirest:unirest-java:1.4.9'
+    providedCompile 'com.konghq:unirest-java:3.7.02'
+
 
     compile 'ca.uhn.hapi.fhir:hapi-fhir-client:3.7.0'
     compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:3.7.0'
