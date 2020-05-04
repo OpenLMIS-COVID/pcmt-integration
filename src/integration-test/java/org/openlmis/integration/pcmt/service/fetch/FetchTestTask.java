@@ -13,38 +13,44 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
  */
 
-package org.openlmis.integration.pcmt.web;
+package org.openlmis.integration.pcmt.service.fetch;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.UUID;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
+import java.util.concurrent.TimeUnit;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import org.openlmis.integration.pcmt.service.send.IntegrationSendTask;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode
-@ToString
-public final class PostPayloadTaskDto implements IntegrationSendTask.Exporter {
-  private ZonedDateTime executionTime;
-  private UUID userId;
-  private String description;
+final class FetchTestTask extends OrderableIntegrationFetchTask {
 
-  /**
-   * Creates new instance based on {@link IntegrationSendTask} object.
-   */
-  public static PostPayloadTaskDto newInstance(IntegrationSendTask<?> task) {
-    PostPayloadTaskDto dto = new PostPayloadTaskDto();
-    task.export(dto);
+  private static final int AWAIT_TIME = 3;
+  private final ZonedDateTime executionTime;
 
-    return dto;
+  @Getter
+  private boolean executed;
+
+  public FetchTestTask(ZonedDateTime executionTime) {
+    super(null, null, null,
+        Clock.fixed(Instant.now(), ZoneOffset.UTC));
+    this.executionTime = executionTime;
   }
 
+  @Override
+  protected ZonedDateTime getExecutionTime() {
+    return executionTime;
+  }
+
+  @Override
+  public void run() {
+    try {
+      TimeUnit.SECONDS.sleep(AWAIT_TIME);
+    } catch (InterruptedException exp) {
+      Thread.currentThread().interrupt();
+      throw new IllegalStateException(exp);
+    } finally {
+      executed = true;
+    }
+  }
 
 }
