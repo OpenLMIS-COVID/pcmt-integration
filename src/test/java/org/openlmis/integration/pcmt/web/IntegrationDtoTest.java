@@ -20,8 +20,8 @@ import nl.jqno.equalsverifier.Warning;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.openlmis.integration.pcmt.IntegrationDataBuilder;
 import org.openlmis.integration.pcmt.ToStringTestUtils;
+import org.openlmis.integration.pcmt.testbuilder.IntegrationDataBuilder;
 
 
 public class IntegrationDtoTest {

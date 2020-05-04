@@ -33,6 +33,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.integration.pcmt.domain.Integration;
+import org.openlmis.integration.pcmt.testbuilder.IntegrationDataBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;

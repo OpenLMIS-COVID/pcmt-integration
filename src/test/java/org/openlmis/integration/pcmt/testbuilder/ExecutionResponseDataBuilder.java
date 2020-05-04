@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org.
  */
 
-package org.openlmis.integration.pcmt;
+package org.openlmis.integration.pcmt.testbuilder;
 
 import java.time.ZonedDateTime;
 import org.openlmis.integration.pcmt.domain.ExecutionResponse;

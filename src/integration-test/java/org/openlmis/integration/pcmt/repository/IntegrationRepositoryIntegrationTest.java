@@ -16,8 +16,8 @@
 package org.openlmis.integration.pcmt.repository;
 
 import java.util.UUID;
-import org.openlmis.integration.pcmt.IntegrationDataBuilder;
 import org.openlmis.integration.pcmt.domain.Integration;
+import org.openlmis.integration.pcmt.testbuilder.IntegrationDataBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 

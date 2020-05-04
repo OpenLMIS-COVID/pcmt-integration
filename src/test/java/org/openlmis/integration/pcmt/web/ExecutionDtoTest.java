@@ -19,8 +19,8 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
 import org.junit.Test;
-import org.openlmis.integration.pcmt.ExecutionDataBuilder;
 import org.openlmis.integration.pcmt.ToStringTestUtils;
+import org.openlmis.integration.pcmt.testbuilder.ExecutionDataBuilder;
 
 public class ExecutionDtoTest {
 

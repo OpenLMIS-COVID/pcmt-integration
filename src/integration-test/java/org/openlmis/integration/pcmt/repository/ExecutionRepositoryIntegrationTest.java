@@ -25,10 +25,10 @@ import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.junit.Test;
-import org.openlmis.integration.pcmt.IntegrationDataBuilder;
 import org.openlmis.integration.pcmt.domain.Execution;
 import org.openlmis.integration.pcmt.domain.ExecutionResponse;
 import org.openlmis.integration.pcmt.domain.Integration;
+import org.openlmis.integration.pcmt.testbuilder.IntegrationDataBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 

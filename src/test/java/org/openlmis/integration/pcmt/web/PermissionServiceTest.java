@@ -17,7 +17,7 @@ package org.openlmis.integration.pcmt.web;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
-import static org.openlmis.integration.pcmt.OAuth2AuthenticationDataBuilder.SERVICE_CLIENT_ID;
+import static org.openlmis.integration.pcmt.testbuilder.OAuth2AuthenticationDataBuilder.SERVICE_CLIENT_ID;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -27,13 +27,13 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.openlmis.integration.pcmt.OAuth2AuthenticationDataBuilder;
 import org.openlmis.integration.pcmt.ObjectGenerator;
 import org.openlmis.integration.pcmt.i18n.MessageKeys;
 import org.openlmis.integration.pcmt.service.ResultDto;
 import org.openlmis.integration.pcmt.service.referencedata.RightDto;
 import org.openlmis.integration.pcmt.service.referencedata.UserDto;
 import org.openlmis.integration.pcmt.service.referencedata.UserReferenceDataService;
+import org.openlmis.integration.pcmt.testbuilder.OAuth2AuthenticationDataBuilder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
