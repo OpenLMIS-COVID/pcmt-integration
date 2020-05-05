@@ -1,2 +1,2 @@
 INSERT INTO referencedata.rights (id, description, name, type) VALUES ('5920d0eb-c2df-411f-9d16-bf1e9b745bd9', NULL, 'PCMT_MANAGEMENT', 'GENERAL_ADMIN');
-INSERT INTO referencedata.role_rights (roleid, rightid) VALUES ('104a6373-995a-412e-a0f2-09169c308555', '5920d0eb-c2df-411f-9d16-bf1e9b745bd9');
+INSERT INTO referencedata.role_rights (roleid, rightid) VALUES ('a439c5de-b8aa-11e6-80f5-76304dec7eb7', '5920d0eb-c2df-411f-9d16-bf1e9b745bd9');
