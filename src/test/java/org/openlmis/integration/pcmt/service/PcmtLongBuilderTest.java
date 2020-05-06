@@ -25,7 +25,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 public class PcmtLongBuilderTest {
 
-  private static final String PCMT_GROUPING_SEPARATOR = ".";
+  private static final String PCMT_GROUPING_SEPARATOR = ",";
+  private static final String PCMT_DECIMAL_SEPARATOR = ".";
 
   @InjectMocks
   private PcmtLongBuilder pcmtLongBuilder;
@@ -34,21 +35,32 @@ public class PcmtLongBuilderTest {
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     ReflectionTestUtils.setField(pcmtLongBuilder, "groupingSeparator", PCMT_GROUPING_SEPARATOR);
+    ReflectionTestUtils.setField(pcmtLongBuilder, "decimalSeparator", PCMT_DECIMAL_SEPARATOR);
   }
 
   @Test
   public void shouldRemoveSeparatorAndParseToLong() {
-    assertEquals(Long.valueOf("10000"), pcmtLongBuilder.build("10.000"));
+    assertEquals(Long.valueOf("10000"), pcmtLongBuilder.build("10,000.0000"));
+  }
+
+  @Test
+  public void shouldCutEverythingAfterDecimalSeparatorAndParseToLong() {
+    assertEquals(Long.valueOf("10"), pcmtLongBuilder.build("10.000"));
+  }
+
+  @Test
+  public void shouldParseToLongWhenStringDoesNotContainDecimalNorGroupingSeparator() {
+    assertEquals(Long.valueOf("10"), pcmtLongBuilder.build("10"));
   }
 
   @Test(expected = NumberFormatException.class)
   public void shouldNotRemoveDifferentSeparatorAndThrowError() {
-    pcmtLongBuilder.build("10,000");
+    pcmtLongBuilder.build("10;000.000");
   }
 
   @Test(expected = NumberFormatException.class)
   public void shouldThrowErrorWhenStringIsInvalid() {
-    pcmtLongBuilder.build("10.abc");
+    pcmtLongBuilder.build("10abc.000");
   }
 
 }

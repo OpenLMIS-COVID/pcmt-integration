@@ -21,11 +21,24 @@ import org.springframework.stereotype.Component;
 @Component
 public final class PcmtLongBuilder {
 
+  @Value("${pcmt.decimalSeparator}")
+  private String decimalSeparator;
+
   @Value("${pcmt.groupingSeparator}")
   private String groupingSeparator;
 
+  /**
+   * Builds Long from the String returned by PCMT. Uses decimal and grouping separators
+   * defined in the application.properties, i.e. 1,000.0000 = 1000 or 1.0000 = 1.
+   *
+   * @param number number string returned by PCMT
+   */
   public Long build(String number) {
-    String formatted = number.replace(groupingSeparator, "");
+    String decimal = number;
+    if (number.contains(decimalSeparator)) {
+      decimal = number.substring(0, number.indexOf(decimalSeparator));
+    }
+    String formatted = decimal.replace(groupingSeparator, "");
     return Long.valueOf(formatted);
   }
 
