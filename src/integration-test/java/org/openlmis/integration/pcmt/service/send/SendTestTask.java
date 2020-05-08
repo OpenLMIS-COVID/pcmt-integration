@@ -35,7 +35,7 @@ final class SendTestTask extends OrderableIntegrationSendTask {
   public SendTestTask(boolean manualExecution, ZonedDateTime executionTime) {
     super(null, null, null,
         null, manualExecution, null,
-        Clock.fixed(Instant.now(), ZoneOffset.UTC), null, null);
+        Clock.fixed(Instant.now(), ZoneOffset.UTC), null, null, null);
     this.executionTime = executionTime;
   }
 

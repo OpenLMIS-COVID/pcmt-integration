@@ -43,7 +43,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestOperations;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuthServiceTest {
@@ -58,7 +58,7 @@ public class AuthServiceTest {
   private Environment env;
 
   @Mock
-  private RestTemplate restTemplate;
+  private RestOperations restTemplate;
 
   @Captor
   private ArgumentCaptor<HttpEntity<String>> entityStringCaptor;

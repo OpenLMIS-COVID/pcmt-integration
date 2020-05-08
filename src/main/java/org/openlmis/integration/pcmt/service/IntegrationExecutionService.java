@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestOperations;
 
 @Service
 public class IntegrationExecutionService {
@@ -68,6 +69,9 @@ public class IntegrationExecutionService {
   @Autowired
   private PcmtLongBuilder pcmtLongBuilder;
 
+  @Autowired
+  private RestOperations restTemplate;
+
   private final BlockingQueue<OrderableDto> queue = new LinkedBlockingDeque<>();
 
   /**
@@ -77,7 +81,7 @@ public class IntegrationExecutionService {
    */
   public void integrate(Integration integration) {
     LOGGER.info("Scheduled Integration {} was started by a scheduler", integration.getId());
-    integrate(null, integration,false);
+    integrate(null, integration, false);
   }
 
   /**
@@ -89,7 +93,7 @@ public class IntegrationExecutionService {
   public void integrate(UUID userId, Integration integration) {
     LOGGER.info("Manual integration with id: {} was started by a user with id: {}",
         integration.getId(), userId);
-    integrate(userId, integration,true);
+    integrate(userId, integration, true);
   }
 
   private void integrate(UUID userId, Integration integration, boolean manualExecution) {
@@ -99,7 +103,7 @@ public class IntegrationExecutionService {
 
     IntegrationSendTask<OrderableDto> consumer = new OrderableIntegrationSendTask(
         queue, integration, userId, targetUrl, manualExecution,
-        executionRepository, clock, objectMapper, authService);
+        executionRepository, clock, objectMapper, authService, restTemplate);
 
     LOGGER.info("Integration {} was started by a user with id: {}", integration.getId(), userId);
 

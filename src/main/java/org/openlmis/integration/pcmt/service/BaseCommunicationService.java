@@ -39,7 +39,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestOperations;
-import org.springframework.web.client.RestTemplate;
 
 public abstract class BaseCommunicationService<T> {
 
@@ -53,7 +52,8 @@ public abstract class BaseCommunicationService<T> {
   protected int maxUrlLength;
 
   @Setter
-  protected RestOperations restTemplate = new RestTemplate();
+  @Autowired
+  protected RestOperations restTemplate;
 
   protected abstract String getServiceUrl();
 

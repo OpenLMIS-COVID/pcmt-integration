@@ -41,7 +41,7 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientResponseException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestOperations;
 
 public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableDto> {
 
@@ -58,7 +58,7 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
   private final ExecutionRepository executionRepository;
   private final Clock clock;
   private final ObjectMapper objectMapper;
-  private final RestTemplate restTemplate;
+  private final RestOperations restTemplate;
   private final AuthService authService;
 
   /**
@@ -67,7 +67,7 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
   public OrderableIntegrationSendTask(BlockingQueue<OrderableDto> queue,
       Integration integration, UUID userId, String targetUrl, boolean manualExecution,
       ExecutionRepository executionRepository, Clock clock,
-      ObjectMapper objectMapper, AuthService authService) {
+      ObjectMapper objectMapper, AuthService authService, RestOperations restTemplate) {
     this.queue = queue;
     this.integration = integration;
     this.userId = userId;
@@ -77,7 +77,7 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
     this.clock = clock;
     this.objectMapper = objectMapper;
     this.authService = authService;
-    this.restTemplate = new RestTemplate();
+    this.restTemplate = restTemplate;
     this.executionTime = ZonedDateTime.now(getClock());
   }
 
@@ -180,7 +180,7 @@ public class OrderableIntegrationSendTask extends IntegrationSendTask<OrderableD
     }
   }
 
-  protected RestTemplate getRestTemplate() {
+  protected RestOperations getRestTemplate() {
     return restTemplate;
   }
 

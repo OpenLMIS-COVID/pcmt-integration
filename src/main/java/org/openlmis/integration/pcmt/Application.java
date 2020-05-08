@@ -42,6 +42,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.web.client.RestOperations;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
@@ -164,6 +166,11 @@ public class Application {
   @Bean
   public Clock clock() {
     return Clock.system(ZoneId.of(timeZoneId));
+  }
+
+  @Bean
+  public RestOperations restTemplate() {
+    return new RestTemplate();
   }
 
 }

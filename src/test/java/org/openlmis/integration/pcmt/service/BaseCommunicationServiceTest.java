@@ -60,7 +60,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestOperations;
 
 @RunWith(MockitoJUnitRunner.class)
 @SuppressWarnings("PMD.TooManyMethods")
@@ -76,7 +76,7 @@ public abstract class BaseCommunicationServiceTest<T> {
   public final ExpectedException expectedException = ExpectedException.none();
 
   @Mock
-  protected RestTemplate restTemplate;
+  protected RestOperations restTemplate;
 
   @Mock
   private AuthService authService;
