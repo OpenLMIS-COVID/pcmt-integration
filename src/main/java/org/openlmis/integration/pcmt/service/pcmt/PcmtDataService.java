@@ -23,6 +23,7 @@ import java.io.IOException;
 
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
+import lombok.Setter;
 
 import org.openlmis.integration.pcmt.service.auth.PcmtAuthService;
 import org.openlmis.integration.pcmt.service.pcmt.dto.PcmtResponseBody;
@@ -32,7 +33,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Component
-@SuppressWarnings({"PMD.AvoidPrintStackTrace", "PMD.PreserveStackTrace"})
+@SuppressWarnings({"PMD.PreserveStackTrace"})
 public class PcmtDataService {
 
   @Autowired
@@ -40,6 +41,9 @@ public class PcmtDataService {
 
   @Autowired
   protected Environment env;
+
+  @Setter
+  private int pageLimit = 100;
 
   private String getDomainUrl() {
     return env.getProperty("pcmt.url");
@@ -71,10 +75,11 @@ public class PcmtDataService {
       Unirest.config()
           .reset()
           .verifySsl(false);
+
       HttpResponse<String> response =
           Unirest.get(url + "?with_count=true&page="
               + pageNumber
-              + "&limit=100"
+              + "&limit=" + pageLimit
               + "&search=%7B%22categories%22%3A%5B%7B%22operator%22%3A%22IN%22%2C%22"
               + "value%22%3A%5B%22LMIS%22%5D%7D%5D%7D"
           )
@@ -92,7 +97,7 @@ public class PcmtDataService {
       System.out.println(pcmtResponseBody.getLinks().getSelf());
 
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new IllegalStateException(e);
     }
 
     return pcmtResponseBody;
