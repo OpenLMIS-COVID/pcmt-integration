@@ -47,7 +47,7 @@ public class OrderableIntegrationSendTaskTest {
       "Manual integration");
 
   private static final Integration SCHEDULED_INT = new Integration(
-      "0 0 12 ? JAN,JUN *", "Scheduled integration");
+      "0 30 9 * * *", "Scheduled integration");
 
   private static final Clock START = Clock.fixed(Instant.now(), ZoneOffset.UTC);
   private static final Clock START_MINUS_7_DAYS = Clock.fixed(
