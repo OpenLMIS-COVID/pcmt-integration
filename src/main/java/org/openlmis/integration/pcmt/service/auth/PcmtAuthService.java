@@ -52,29 +52,22 @@ public class PcmtAuthService {
    * @return bearer token.
    */
 
-  public String obtainAccessToken() {
+  public String obtainAccessToken() throws UnirestException {
     setClientCreds();
     setPlainCreds();
-    HttpResponse<JsonNode> response = null;
-    try {
-      Unirest.config()
-          .reset()
-          .verifySsl(false);
-      response = Unirest.post(authorizationUrl)
-          .header("Content-Type", "application/json")
-          .header("Authorization", "Basic " + base64Creds)
-          .body("{\n    \"username\" : \"" + clientUsername + "\",\n"
-              + "\"password\" : \"" + clientPassword + "\",\n"
-              + "\"grant_type\": \"password\"\n}")
-          .asJson();
-    } catch (UnirestException e) {
-      e.printStackTrace();
-    }
+
+    HttpResponse<JsonNode> response = Unirest.post(authorizationUrl)
+        .header("Content-Type", "application/json")
+        .header("Authorization", "Basic " + base64Creds)
+        .body("{\n    \"username\" : \"" + clientUsername + "\",\n"
+            + "\"password\" : \"" + clientPassword + "\",\n"
+            + "\"grant_type\": \"password\"\n}")
+        .asJson();
 
     return response.getBody().getObject().get(ACCESS_TOKEN).toString();
   }
 
-  private void setClientCreds() {
+  void setClientCreds() {
     clientId = env.getProperty("auth.server.pcmtClientId");
     clientSecret = env.getProperty("auth.server.pcmtClientSecret");
     authorizationUrl = env.getProperty("auth.server.pcmtAuthorizationUrl");
@@ -82,7 +75,7 @@ public class PcmtAuthService {
     clientPassword = env.getProperty("auth.server.pcmtClientPassword");
   }
 
-  private void setPlainCreds() {
+  void setPlainCreds() {
     String plainCreds = clientId + ":" + clientSecret;
     byte[] plainCredsBytes = plainCreds.getBytes();
     byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
