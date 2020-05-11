@@ -67,7 +67,7 @@ public class PcmtAuthService {
     return response.getBody().getObject().get(ACCESS_TOKEN).toString();
   }
 
-  void setClientCreds() {
+  private void setClientCreds() {
     clientId = env.getProperty("auth.server.pcmtClientId");
     clientSecret = env.getProperty("auth.server.pcmtClientSecret");
     authorizationUrl = env.getProperty("auth.server.pcmtAuthorizationUrl");
@@ -75,7 +75,7 @@ public class PcmtAuthService {
     clientPassword = env.getProperty("auth.server.pcmtClientPassword");
   }
 
-  void setPlainCreds() {
+  private void setPlainCreds() {
     String plainCreds = clientId + ":" + clientSecret;
     byte[] plainCredsBytes = plainCreds.getBytes();
     byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
