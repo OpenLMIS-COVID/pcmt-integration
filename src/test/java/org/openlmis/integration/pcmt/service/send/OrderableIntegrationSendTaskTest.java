@@ -49,9 +49,10 @@ public class OrderableIntegrationSendTaskTest {
   private static final Integration SCHEDULED_INT = new Integration(
       "0 30 9 * * *", "Scheduled integration");
 
-  private static final Clock START = Clock.fixed(Instant.now(), ZoneOffset.UTC);
+  private static final ZonedDateTime BASE = ZonedDateTime.now();
+  private static final Clock START = Clock.fixed(BASE.toInstant(), ZoneOffset.UTC);
   private static final Clock START_MINUS_7_DAYS = Clock.fixed(
-      ZonedDateTime.now().minusDays(7).toInstant(), ZoneOffset.UTC);
+      BASE.minusDays(7).toInstant(), ZoneOffset.UTC);
 
   @Rule
   public MockitoRule mockitoRule = MockitoJUnit.rule();
