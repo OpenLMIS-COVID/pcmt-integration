@@ -15,7 +15,6 @@
 
 package org.openlmis.integration.pcmt.web;
 
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -38,14 +37,13 @@ import org.openlmis.integration.pcmt.domain.Integration.Importer;
 @ToString(callSuper = true)
 public final class IntegrationDto extends BaseDto implements Importer, Exporter {
 
-  private UUID programId;
   private String cronExpression;
+
   private String description;
 
   /**
    * Creates new instance based on domain object.
    */
-
   public static IntegrationDto newInstance(Integration integration) {
     IntegrationDto dto = new IntegrationDto();
     integration.export(dto);
