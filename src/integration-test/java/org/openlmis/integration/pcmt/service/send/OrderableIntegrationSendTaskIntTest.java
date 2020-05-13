@@ -30,6 +30,8 @@ import java.net.URI;
 import java.time.Clock;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 
@@ -48,6 +50,7 @@ import org.openlmis.integration.pcmt.repository.ExecutionRepository;
 import org.openlmis.integration.pcmt.service.auth.AuthService;
 import org.openlmis.integration.pcmt.service.referencedata.orderable.DispensableDto;
 import org.openlmis.integration.pcmt.service.referencedata.orderable.OrderableDto;
+import org.openlmis.integration.pcmt.service.referencedata.orderable.ProgramOrderableDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -84,9 +87,16 @@ public class OrderableIntegrationSendTaskIntTest {
 
   private static final UUID DEFAULT_ORDERABLE_UUID = UUID.randomUUID();
 
+  private static final UUID PROGRAM_UUID = UUID.randomUUID();
+
   private static final String NOT_FOUND_BODY = "{\n"
       + "  \"messageKey\" : \"referenceData.error.orderable.notFound\",\n"
       + "  \"message\" : \"Orderable not found\"\n"
+      + "}";
+
+  private static final String INTERNAL_SERVER_ERROR = "{\n"
+      + "  \"messageKey\" : \"referenceData.error.internal\",\n"
+      + "  \"message\" : \"Contact your administrator.\"\n"
       + "}";
 
   @Rule
@@ -116,10 +126,11 @@ public class OrderableIntegrationSendTaskIntTest {
   public void shouldCreateOrderable() throws JsonProcessingException {
     URI getUri = URI.create(OLMIS_ORDERABLE_URL + DEFAULT_ORDERABLE_UUID);
     mockGet404FromOlmisRequest(getUri);
+    OrderableDto dto = createDefaultOrderable();
     URI createUri = URI.create(OLMIS_ORDERABLE_URL);
-    mockGet200FromOlmisRequest(createUri, createDefaultOrderable());
-
-    OrderableIntegrationSendTask task = createTask(getMsgQueue());
+    mockPut200FromOlmisRequest(createUri, dto);
+    OrderableIntegrationSendTask task = createTask(getMsgQueue(dto));
+    executionRepository.deleteAll();
     assertThat(executionRepository.count()).isEqualTo(0L);
 
     // Mocks IntegrationSendExecutor which is tested
@@ -139,12 +150,82 @@ public class OrderableIntegrationSendTaskIntTest {
     executor.shutdownNow();
   }
 
+  @Test
+  public void shouldUpdateOrderable() throws JsonProcessingException {
+    final String updatedDesc = "updated description";
+    URI uri = URI.create(OLMIS_ORDERABLE_URL + DEFAULT_ORDERABLE_UUID);
+    OrderableDto existing = createExistingOrderableWithProgram();
+    OrderableDto updated = createExistingOrderableWithProgram();
+    updated.setDescription(updatedDesc);
+    mockGet200FromOlmisRequest(uri, existing);
+    mockPut200FromOlmisRequest(uri, updated);
+    OrderableIntegrationSendTask task = createTask(getMsgQueue(updated));
+    executionRepository.deleteAll();
+    assertThat(executionRepository.count()).isEqualTo(0L);
+
+    // Mocks IntegrationSendExecutor which is tested
+    // at package org.openlmis.integration.pcmt.service.send.IntegrationSendExecutorIntTest
+    ExecutorService executor = Executors.newSingleThreadExecutor();
+    executor.submit(task);
+    await().until(this::isExecuted);
+
+    verify(authService, times(2)).obtainAccessToken();
+    mockServer.verify();
+    Execution execution = executionRepository.findAll().get(0);
+    assertThat(execution.getRequestBody()).isNotNull();
+    assertThat(execution.getResponse().getStatusCode()).isEqualTo(HttpStatus.OK.value());
+    assertThat(execution.getResponse().getBody()).contains(updatedDesc);
+    assertThat(execution.getResponse().getBody()).contains(PROGRAM_UUID.toString());
+
+    // simulate completing integration request
+    executor.shutdownNow();
+  }
+
+  @Test
+  public void shouldPersistFailure() {
+    URI getUri = URI.create(OLMIS_ORDERABLE_URL + DEFAULT_ORDERABLE_UUID);
+    mockGet404FromOlmisRequest(getUri);
+    OrderableDto dto = createDefaultOrderable();
+    URI createUri = URI.create(OLMIS_ORDERABLE_URL);
+    mockPut500FromOlmisRequest(createUri);
+    OrderableIntegrationSendTask task = createTask(getMsgQueue(dto));
+    executionRepository.deleteAll();
+    assertThat(executionRepository.count()).isEqualTo(0L);
+
+    // Mocks IntegrationSendExecutor which is tested
+    // at package org.openlmis.integration.pcmt.service.send.IntegrationSendExecutorIntTest
+    ExecutorService executor = Executors.newSingleThreadExecutor();
+    executor.submit(task);
+    await().until(this::isExecuted);
+
+    verify(authService, times(2)).obtainAccessToken();
+    mockServer.verify();
+    Execution execution = executionRepository.findAll().get(0);
+    assertThat(execution.getRequestBody()).isNotNull();
+    assertThat(execution.getResponse().getStatusCode())
+        .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    assertThat(execution.getResponse().getBody()).isEqualTo(INTERNAL_SERVER_ERROR);
+
+    // simulate completing integration request
+    executor.shutdownNow();
+  }
+
   /**
    * Checks whether an integration of one orderable is completed.
    */
   private boolean isExecuted() {
     return executionRepository.count() > 0L
         && executionRepository.findAll().get(0).getResponse() != null;
+  }
+
+  private void mockGet200FromOlmisRequest(URI uri, OrderableDto dto)
+      throws JsonProcessingException {
+    mockServer.expect(ExpectedCount.once(),
+        requestTo(uri))
+        .andExpect(method(HttpMethod.GET))
+        .andRespond(withStatus(HttpStatus.OK)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(objectMapper.writeValueAsString(dto)));
   }
 
   private void mockGet404FromOlmisRequest(URI uri) {
@@ -156,7 +237,16 @@ public class OrderableIntegrationSendTaskIntTest {
             .body(NOT_FOUND_BODY));
   }
 
-  private void mockGet200FromOlmisRequest(URI uri, OrderableDto dto)
+  private void mockPut500FromOlmisRequest(URI uri) {
+    mockServer.expect(ExpectedCount.manyTimes(),
+        requestTo(uri))
+        .andExpect(method(HttpMethod.PUT))
+        .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(INTERNAL_SERVER_ERROR));
+  }
+
+  private void mockPut200FromOlmisRequest(URI uri, OrderableDto dto)
       throws JsonProcessingException {
     mockServer.expect(ExpectedCount.manyTimes(),
         requestTo(uri))
@@ -172,9 +262,9 @@ public class OrderableIntegrationSendTaskIntTest {
         executionRepository, START, objectMapper, authService, restTemplate);
   }
 
-  private BlockingQueue<OrderableDto> getMsgQueue() {
+  private BlockingQueue<OrderableDto> getMsgQueue(OrderableDto dto) {
     BlockingQueue<OrderableDto> q = new LinkedBlockingDeque<>();
-    q.add(createDefaultOrderable());
+    q.add(dto);
     return q;
   }
 
@@ -190,6 +280,19 @@ public class OrderableIntegrationSendTaskIntTest {
     dto.setDescription("Respirator, Mask, N95/FFP2 Size Medium");
     dto.setPackRoundingThreshold(4L);
     dto.setRoundToZero(false);
+
+    return dto;
+  }
+
+  private OrderableDto createExistingOrderableWithProgram() {
+    Set<ProgramOrderableDto> programs = new HashSet<>();
+    ProgramOrderableDto programDto = new ProgramOrderableDto();
+    programDto.setActive(true);
+    programDto.setProgramId(PROGRAM_UUID);
+    programs.add(programDto);
+
+    OrderableDto dto = createDefaultOrderable();
+    dto.setPrograms(programs);
 
     return dto;
   }
