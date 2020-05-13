@@ -32,7 +32,7 @@ import org.openlmis.integration.pcmt.web.BaseDto;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@ToString
+@ToString(callSuper = true)
 public final class OrderableDto extends BaseDto {
 
   private String productCode;

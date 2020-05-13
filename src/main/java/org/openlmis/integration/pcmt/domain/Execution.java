@@ -38,6 +38,7 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name = "executions")
 @NoArgsConstructor
+@Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -60,7 +61,6 @@ public class Execution extends BaseEntity {
   @Column(columnDefinition = TIMESTAMP_COLUMN_DEFINITION)
   private ZonedDateTime endDate;
 
-  @Getter
   @Basic(fetch = FetchType.LAZY)
   @Column(columnDefinition = TEXT_COLUMN_DEFINITION)
   private String requestBody;
